@@ -145,7 +145,7 @@ namespace RobotoSkunk.CircleBeats {
 			#endregion
 
 			#region Obstacles
-			for (int i = 0; i < 1000; i++) {
+			for (int i = 0; i < 15000; i++) {
 				GameObject obj = Instantiate(obstaclePrefab, obstacleParent);
 				// obj.transform.localPosition = new(-10, (i - 2) * 5f, 0f);
 				obj.transform.localPosition = 10f * Random.insideUnitCircle;
