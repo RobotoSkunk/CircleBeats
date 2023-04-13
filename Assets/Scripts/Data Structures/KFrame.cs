@@ -238,8 +238,9 @@ namespace RobotoSkunk.Structures {
 
 			last = frame ?? last;
 
+			if (float.IsNaN(result.r) || float.IsNaN(result.g) || float.IsNaN(result.b) || float.IsNaN(result.a))
+				result = Color.white;
 
-			if (float.IsNaN(result.r)) result.r = 0;
 			return result;
 		}
 	}
