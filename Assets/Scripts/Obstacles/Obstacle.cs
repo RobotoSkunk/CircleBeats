@@ -44,7 +44,7 @@ namespace RobotoSkunk.CircleBeats {
 			spriteRenderer.color = colors.GetColor(relativeTime);
 
 
-			Vector2 randomPosition = 0.5f * Random.insideUnitCircle;
+			Vector2 randomPosition = 0.25f * Random.insideUnitCircle;
 			Vector2 shakeStrength = RSMath.Clamp01(shakeStrengths.GetPosition(relativeTime));
 
 			transform.localPosition += (Vector3)(shakeStrength * randomPosition);
