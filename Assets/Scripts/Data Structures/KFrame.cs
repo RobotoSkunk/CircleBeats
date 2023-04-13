@@ -144,4 +144,103 @@ namespace RobotoSkunk.Structures {
 			return result;
 		}
 	}
+
+	public class ScalarTimeline {
+		public IntervalTree<KFrame> frames = new();
+
+		KFrame last;
+
+
+		Interval<KFrame> PrepareKFrame(
+			float startTime,
+			float endTime,
+			float startPosition,
+			float endPosition,
+			BezierCurve curve
+		) {
+			startTime = Mathf.Clamp01(startTime);
+			endTime = Mathf.Clamp01(endTime);
+
+			return new Interval<KFrame>(
+				startTime,
+				endTime,
+				new KFrame(startPosition, endPosition, curve, startTime, endTime)
+			);
+		}
+
+
+		public void Add(float startTime, float endTime, float startPosition, float endPosition, BezierCurve curve) {
+			frames.Add(PrepareKFrame(startTime, endTime, startPosition, endPosition, curve));
+		}
+
+		public void Add(Interval interval, float startPosition, float endPosition, BezierCurve curve) {
+			Add(interval.start, interval.end, startPosition, endPosition, curve);
+		}
+
+
+		public void Build() {
+			frames.Build();
+		}
+
+
+		public float GetPosition(float time) {
+			KFrame? frame = frames.Search(time)?.value ?? null;
+			float result = frame?.GetPosition(time) ?? last.GetPosition(time);
+
+			last = frame ?? last;
+
+			if (float.IsNaN(result)) result = 0;
+			return result;
+		}
+	}
+
+	public class ColorTimeline {
+		public IntervalTree<KFrameColor> frames = new();
+
+		KFrameColor last;
+
+
+		Interval<KFrameColor> PrepareKFrame(
+			float startTime,
+			float endTime,
+			Color startColor,
+			Color endColor,
+			BezierCurve curve
+		) {
+			startTime = Mathf.Clamp01(startTime);
+			endTime = Mathf.Clamp01(endTime);
+
+			return new Interval<KFrameColor>(
+				startTime,
+				endTime,
+				new KFrameColor(startColor, endColor, curve, startTime, endTime)
+			);
+		}
+
+
+		public void Add(float startTime, float endTime, Color startColor, Color endColor, BezierCurve curve) {
+			frames.Add(PrepareKFrame(startTime, endTime, startColor, endColor, curve));
+		}
+
+		public void Add(Interval interval, Color startColor, Color endColor, BezierCurve curve) {
+			Add(interval.start, interval.end, startColor, endColor, curve);
+		}
+
+
+		public void Build() {
+			frames.Build();
+		}
+
+
+		public Color GetColor(float time) {
+			KFrameColor? frame = frames.Search(time)?.value ?? null;
+			Color result = frame?.GetColor(time) ?? last.GetColor(time);
+
+			last = frame ?? last;
+
+
+			if (float.IsNaN(result.r)) result.r = 0;
+			return result;
+		}
+	}
 }
