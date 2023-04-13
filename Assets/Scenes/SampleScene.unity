@@ -1180,7 +1180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   img: {fileID: 1865287009}
-  volume: 0
+  volume: 1
   slider: {fileID: 1865287011}
   bpm: 150
   size: 1
