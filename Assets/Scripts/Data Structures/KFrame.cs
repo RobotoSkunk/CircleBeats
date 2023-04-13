@@ -111,12 +111,32 @@ namespace RobotoSkunk.Structures {
 			framesY.Add(PrepareKFrame(startTime, endTime, startPosition, endPosition, curve));
 		}
 
+
 		public void AddX(Interval interval, float startPosition, float endPosition, BezierCurve curve) {
 			AddX(interval.start, interval.end, startPosition, endPosition, curve);
 		}
 		public void AddY(Interval interval, float startPosition, float endPosition, BezierCurve curve) {
 			AddY(interval.start, interval.end, startPosition, endPosition, curve);
 		}
+
+
+		public void Add(
+			Interval interval,
+			Vector2 startPosition, Vector2 endPosition,
+			BezierCurve curve
+		) {
+			AddX(interval, startPosition.x, endPosition.x, curve);
+			AddY(interval, startPosition.y, endPosition.y, curve);
+		}
+		public void Add(
+			float startTime, float endTime,
+			Vector2 startPosition, Vector2 endPosition,
+			BezierCurve curve
+		) {
+			AddX(startTime, endTime, startPosition.x, endPosition.x, curve);
+			AddY(startTime, endTime, startPosition.y, endPosition.y, curve);
+		}
+
 
 
 		public void Build() {

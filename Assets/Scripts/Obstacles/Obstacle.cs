@@ -13,6 +13,8 @@ namespace RobotoSkunk.CircleBeats {
 		[HideInInspector] public ColorTimeline colors = new();
 		[HideInInspector] public ScalarTimeline rotations = new();
 
+		[HideInInspector] public Vector2Timeline shakeStrengths = new();
+
 
 		bool isPrepared = false;
 
@@ -27,6 +29,7 @@ namespace RobotoSkunk.CircleBeats {
 			scales.Build();
 			colors.Build();
 			rotations.Build();
+			shakeStrengths.Build();
 
 			isPrepared = true;
 		}
@@ -39,6 +42,12 @@ namespace RobotoSkunk.CircleBeats {
 			transform.localScale = scales.GetPosition(relativeTime);
 			transform.localRotation = Quaternion.Euler(0, 0, rotations.GetPosition(relativeTime));
 			spriteRenderer.color = colors.GetColor(relativeTime);
+
+
+			Vector2 randomPosition = 0.5f * Random.insideUnitCircle;
+			Vector2 shakeStrength = RSMath.Clamp01(shakeStrengths.GetPosition(relativeTime));
+
+			transform.localPosition += (Vector3)(shakeStrength * randomPosition);
 		}
 
 		float GetRelativeTime(float time) {

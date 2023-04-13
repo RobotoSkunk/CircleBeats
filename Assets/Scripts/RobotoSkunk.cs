@@ -282,6 +282,16 @@ namespace RobotoSkunk {
 			Mathf.Clamp(vector.z, min.z, max.z)
 		);
 
+		public static Vector2 Clamp01(Vector2 vector) => new(
+			Mathf.Clamp01(vector.x),
+			Mathf.Clamp01(vector.y)
+		);
+		public static Vector3 Clamp01(Vector3 vector) => new(
+			Mathf.Clamp01(vector.x),
+			Mathf.Clamp01(vector.y),
+			Mathf.Clamp01(vector.z)
+		);
+
 		public static Vector2 Lerp(Vector2 from, Vector2 to, float t) => new(
 			Mathf.Lerp(from.x, to.x, t),
 			Mathf.Lerp(from.y, to.y, t)

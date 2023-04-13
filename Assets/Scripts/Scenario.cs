@@ -147,13 +147,13 @@ namespace RobotoSkunk.CircleBeats {
 			#endregion
 
 			#region Obstacles
+
+			//// For random obstacles test only ////
+
 			for (int i = 0; i < 100; i++) {
 				Vector2 randomPosition = 10f * Random.insideUnitCircle;
 
 				Obstacle obj = Instantiate(obstaclePrefab, obstacleParent);
-				obj.transform.localPosition = randomPosition;
-				obj.transform.localScale = Vector3.one;
-				obj.transform.localRotation = Quaternion.identity;
 				obj.gameObject.SetActive(false);
 
 				float time = audioSource.clip.length * Random.value;
@@ -162,6 +162,18 @@ namespace RobotoSkunk.CircleBeats {
 				obj.positions.AddX(0.5f, 1f, randomPosition.x + 5f, randomPosition.x, BezierCurve.easeInOut);
 
 				obj.positions.AddY(0f, 1f, randomPosition.y, randomPosition.y, BezierCurve.linear);
+
+				obj.scales.AddX(0f, 0.5f, 0f, 1f, BezierCurve.linear);
+				obj.scales.AddX(0.5f, 1f, 1f, 0f, BezierCurve.linear);
+				obj.scales.AddY(0f, 0.5f, 0f, 1f, BezierCurve.linear);
+				obj.scales.AddY(0.5f, 1f, 1f, 0f, BezierCurve.linear);
+
+				obj.rotations.Add(0f, 1f, 0f, 360f, BezierCurve.linear);
+
+				obj.shakeStrengths.AddX(0f, 0.5f, 0f, 1f, BezierCurve.linear);
+				obj.shakeStrengths.AddX(0.5f, 1f, 1f, 0f, BezierCurve.linear);
+				obj.shakeStrengths.AddY(0f, 0.5f, 0f, 1f, BezierCurve.linear);
+				obj.shakeStrengths.AddY(0.5f, 1f, 1f, 0f, BezierCurve.linear);
 
 				obj.Prepare();
 
