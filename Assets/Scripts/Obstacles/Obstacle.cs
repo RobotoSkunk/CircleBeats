@@ -6,9 +6,7 @@ using RobotoSkunk.Structures;
 namespace RobotoSkunk.CircleBeats {
 	public class Obstacle : MonoBehaviour {
 		public Interval lifeTime;
-		public Vector2Timeline positions => _positions;
-
-		Vector2Timeline _positions = new();
+		public Vector2Timeline positions = new();
 
 
 		bool isPrepared = false;
@@ -20,17 +18,17 @@ namespace RobotoSkunk.CircleBeats {
 		public void Prepare() {
 			if (isPrepared) return;
 
-			_positions.Build();
+			positions.Build();
 
 			isPrepared = true;
 		}
 
 		public void SetTime(float time) {
-			if (!lifeTime.Contains(time)) return;
+			if (!lifeTime.Contains(time) || !isPrepared) return;
 			float relativeTime = GetRelativeTime(time);
 
 			// positions
-			transform.localPosition = _positions.GetPosition(time);
+			transform.localPosition = positions.GetPosition(relativeTime);
 		}
 
 		float GetRelativeTime(float time) {

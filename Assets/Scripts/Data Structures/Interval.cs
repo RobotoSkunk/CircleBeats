@@ -37,6 +37,11 @@ namespace RobotoSkunk.Structures {
 			this._end = end;
 			this._value = value;
 		}
+		public Interval(Interval interval, TValue value) {
+			this._start = interval.start;
+			this._end = interval.end;
+			this._value = value;
+		}
 
 		public bool Contains(float x) => x >= _start && x <= _end;
 		public bool Intersects(float start, float end) => this._start <= end && this._end >= start;

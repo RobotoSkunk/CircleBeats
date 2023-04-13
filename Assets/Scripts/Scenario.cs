@@ -158,19 +158,15 @@ namespace RobotoSkunk.CircleBeats {
 
 				float time = audioSource.clip.length * Random.value;
 
-				obj.positions.AddX(0.00f, 0.25f, randomPosition.x, randomPosition.x + 5f, BezierCurve.easeInOut);
-				obj.positions.AddX(0.25f, 0.50f, randomPosition.x, randomPosition.x - 5f, BezierCurve.easeInOut);
-				obj.positions.AddX(0.50f, 1.00f, randomPosition.x, randomPosition.x + 5f, BezierCurve.easeInOut);
+				obj.positions.AddX(0f, 0.5f, randomPosition.x, randomPosition.x + 5f, BezierCurve.easeInOut);
+				obj.positions.AddX(0.5f, 1f, randomPosition.x + 5f, randomPosition.x, BezierCurve.easeInOut);
 
-				obj.positions.AddY(0.00f, 0.25f, randomPosition.y, randomPosition.y + 10f, BezierCurve.easeInOut);
-				obj.positions.AddY(0.25f, 0.50f, randomPosition.y, randomPosition.y - 10f, BezierCurve.easeInOut);
-				obj.positions.AddY(0.50f, 1.00f, randomPosition.y, randomPosition.y + 10f, BezierCurve.easeInOut);
+				obj.positions.AddY(0f, 1f, randomPosition.y, randomPosition.y, BezierCurve.linear);
 
 				obj.Prepare();
 
-				obj.lifeTime = new Interval(time, time + 6f);
-
-				obstacles.Add(new(time, time + 6f, obj));
+				obj.lifeTime = new Interval(time, time + 5f);
+				obstacles.Add(obj.lifeTime, obj);
 			}
 
 			obstacles.Build();

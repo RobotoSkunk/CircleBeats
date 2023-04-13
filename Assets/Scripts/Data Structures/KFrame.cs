@@ -30,6 +30,8 @@ namespace RobotoSkunk.Structures {
 		public float GetPosition(float time) {
 			float curveTime = curve.GetTime(GetRelativeTime(time)).y;
 
+			// Debug.Log(GetRelativeTime(time) + " | " + curveTime);
+
 			return Mathf.Lerp(startPosition, endPosition, curveTime);
 		}
 

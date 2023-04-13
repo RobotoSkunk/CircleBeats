@@ -44,6 +44,10 @@ namespace RobotoSkunk.Structures {
 			backwardIntervals.Add(interval);
 		}
 
+		public void Add(Interval interval, TValue value) {
+			Add(new Interval<TValue>(interval, value));
+		}
+
 
 		// I know this is a mess, but it works!
 		// I'll try to make it better in the future.
