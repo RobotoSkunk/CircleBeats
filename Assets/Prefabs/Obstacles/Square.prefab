@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 2654688668766244455}
+  shadow: {fileID: 1129645307913828370}
 --- !u!1001 &5998159554975377485
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -164,6 +165,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98fa9c56b74f22140baaba056faca453, type: 3}
+--- !u!114 &1129645307913828370 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6670095179095986271, guid: 98fa9c56b74f22140baaba056faca453, type: 3}
+  m_PrefabInstance: {fileID: 5998159554975377485}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5017335e53701e245b54e131e4717c6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &3981942882124438209 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7241521714474005132, guid: 98fa9c56b74f22140baaba056faca453, type: 3}

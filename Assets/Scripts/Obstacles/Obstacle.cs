@@ -6,6 +6,7 @@ using RobotoSkunk.Structures;
 namespace RobotoSkunk.CircleBeats {
 	public class Obstacle : MonoBehaviour {
 		public SpriteRenderer spriteRenderer;
+		public Shadow shadow;
 
 		[HideInInspector] public Interval lifeTime;
 		[HideInInspector] public Vector2Timeline positions = new();
@@ -39,9 +40,11 @@ namespace RobotoSkunk.CircleBeats {
 			float relativeTime = GetRelativeTime(time);
 
 			transform.localPosition = positions.GetPosition(relativeTime);
-			transform.localScale = scales.GetPosition(relativeTime);
+			transform.localScale = (Vector3)scales.GetPosition(relativeTime) + Vector3.forward;
 			transform.localRotation = Quaternion.Euler(0, 0, rotations.GetPosition(relativeTime));
+
 			spriteRenderer.color = colors.GetColor(relativeTime);
+			shadow.color = 0.2f * colors.GetColor(relativeTime) + new Color(0f, 0f, 0f, 1f);
 
 
 			Vector2 randomPosition = 0.25f * Random.insideUnitCircle;

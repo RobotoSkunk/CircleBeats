@@ -163,19 +163,19 @@ namespace RobotoSkunk.CircleBeats {
 
 				obj.positions.AddY(0f, 1f, randomPosition.y, randomPosition.y, BezierCurve.linear);
 
-				obj.scales.AddX(0f, 0.5f, 0f, 1f, BezierCurve.linear);
-				obj.scales.AddX(0.5f, 1f, 1f, 0f, BezierCurve.linear);
-				obj.scales.AddY(0f, 0.5f, 0f, 1f, BezierCurve.linear);
-				obj.scales.AddY(0.5f, 1f, 1f, 0f, BezierCurve.linear);
+				obj.scales.Add(0f, 0.5f, Vector2.zero, Vector2.one, BezierCurve.linear);
+				obj.scales.Add(0.5f, 1f, Vector2.one, Vector2.zero, BezierCurve.linear);
 
 				obj.rotations.Add(0f, 1f, 0f, 360f, BezierCurve.linear);
 
-				obj.shakeStrengths.AddX(0f, 0.5f, 0f, 1f, BezierCurve.linear);
-				obj.shakeStrengths.AddX(0.5f, 1f, 1f, 0f, BezierCurve.linear);
-				obj.shakeStrengths.AddY(0f, 0.5f, 0f, 1f, BezierCurve.linear);
-				obj.shakeStrengths.AddY(0.5f, 1f, 1f, 0f, BezierCurve.linear);
+				obj.shakeStrengths.Add(0f, 0.5f, Vector2.zero, Vector2.one, BezierCurve.linear);
+				obj.shakeStrengths.Add(0.5f, 1f, Vector2.one, Vector2.zero, BezierCurve.linear);
+
+				obj.colors.Add(0f, 0.5f, Color.white, Color.red, BezierCurve.linear);
+				obj.colors.Add(0.5f, 1f, Color.red, Color.white, BezierCurve.linear);
 
 				obj.Prepare();
+
 
 				obj.lifeTime = new Interval(time, time + 5f);
 				obstacles.Add(obj.lifeTime, obj);
