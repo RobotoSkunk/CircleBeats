@@ -21,10 +21,10 @@ namespace RobotoSkunk.CircleBeats {
 
 		[Header("Settings")]
 		[SerializeField] uint bpm;
-		[SerializeField] [Range(0.5f, 2)] float size = 1f;
-		[SerializeField] [Range(0, 1)]    float bpmForce = 1f;
-		[SerializeField] [Range(0, 1)]    float spectrumForce = 1f;
-		[SerializeField] [Range(0, 1)]    float decibelsForce = 1f;
+		[SerializeField] [Range(0.5f, 2f)] float size = 1f;
+		[SerializeField] [Range(0f, 1f)]   float bpmForce = 1f;
+		[SerializeField] [Range(0f, 1f)]   float spectrumForce = 1f;
+		[SerializeField] [Range(0f, 1f)]   float decibelsForce = 1f;
 
 		[Header("Components")]
 		[SerializeField] AudioSource audioSource;
@@ -37,8 +37,11 @@ namespace RobotoSkunk.CircleBeats {
 		[Header("Captions")]
 		[SerializeField] TextMeshProUGUI captionsText;
 
+		[Header("Spectrum")]
+		[SerializeField] [Range(0f, 6f)] float spectrumBarMaxSize = 6f;
+		[SerializeField] SpectrumBar spectrumBar;
+
 		[Header("Background")]
-		[SerializeField] GameObject spectrumBar;
 		[SerializeField] Image radialPart;
 		[SerializeField] Transform radialBg;
 		[SerializeField] Transform bgObj;
@@ -53,17 +56,18 @@ namespace RobotoSkunk.CircleBeats {
 		AudioClipAnalyzer.AudioClipData audioClipData = new();
 		AudioWaveform waveform;
 		AudioSourceReader audioReader;
-		float nextSize, sPosTime = 0f, spectrumSize = 0f;
-		List<GameObject>[] visualizer = new List<GameObject>[5];
+		float nextSize, spectrumSpikeTimer = 0f, spectrumSize = 0f;
+		SpectrumBar[][] carrouselBars;
 		List<Image> radialBackground = new();
 
 
 		float[] spectrumBuffer = new float[Globals.spectrumSamples];
-		int sPos = 0;
+		int spectrumSpikePosition = 0;
 
 		float bpmDelta { get => audioSource.time / (60f / (bpm == 0 ? 1 : bpm)); }
 		Vector2 sceneSize { get => new(size, size); }
 		readonly int radialParts = 8;
+		readonly int carrouselSpikes = 5;
 		float nextBpm = 0f;
 
 
@@ -90,27 +94,25 @@ namespace RobotoSkunk.CircleBeats {
 				radialBackground.Add(obj);
 			}
 
-			UniTask.Void(async () => {
-				for (int j = 0; j < visualizer.Length; j++) {
-					float jAngle = j * (360f / visualizer.Length);
-					int chunk = 0, chunkSize = visualizer.Length * Globals.spectrumSamples / 16;
+			carrouselBars = new SpectrumBar[carrouselSpikes][];
+			spectrumBarMaxSize = Mathf.Clamp(spectrumBarMaxSize, 0f, 6f);
 
-					visualizer[j] = new();
+			UniTask.Void(async () => {
+				for (int j = 0; j < carrouselBars.Length; j++) {
+					float jAngle = j * (360f / carrouselBars.Length);
+					int chunk = 0, chunkSize = carrouselBars.Length * Globals.spectrumSamples / 16;
+
+					carrouselBars[j] = new SpectrumBar[Globals.spectrumSamples];
 
 
 					for (int i = 0; i < Globals.spectrumSamples; i++) {
 						float angle = i * (360f / Globals.spectrumSamples) + jAngle;
 
-						GameObject obj = Instantiate(spectrumBar);
-						obj.transform.SetParent(bgObj);
-						obj.transform.localEulerAngles = (angle - 90f) * Vector3.forward;
-						obj.transform.localPosition = 5f * RSMath.GetDirVector(angle * Mathf.Deg2Rad) + Globals.bgDistance * Vector3.forward;
-						obj.transform.localScale = new Vector3(0.25f, 0f, 1f);
-						// obj.index = i;
-						// obj.maxSize = 6f;
-						// obj.enabled = false;
+						SpectrumBar obj = Instantiate(spectrumBar, bgObj);
+						obj.maxSize = spectrumBarMaxSize;
+						obj.angle = angle;
 
-						visualizer[j].Add(obj);
+						carrouselBars[j][i] = obj;
 
 						chunk++;
 						if (chunk >= chunkSize) {
@@ -145,12 +147,11 @@ namespace RobotoSkunk.CircleBeats {
 			#endregion
 
 			#region Obstacles
-			for (int i = 0; i < 15000; i++) {
+			for (int i = 0; i < 1000; i++) {
 				GameObject obj = Instantiate(obstaclePrefab, obstacleParent);
-				// obj.transform.localPosition = new(-10, (i - 2) * 5f, 0f);
 				obj.transform.localPosition = 10f * Random.insideUnitCircle;
 				obj.transform.localScale = Vector3.one;
-				obj.transform.rotation = Quaternion.identity;
+				obj.transform.localRotation = Quaternion.identity;
 				obj.SetActive(false);
 
 
@@ -215,44 +216,57 @@ namespace RobotoSkunk.CircleBeats {
 			#region Spectrum and carousel
 			System.Array.Clear(Globals.spectrum, 0, Globals.spectrum.Length);
 
+			// Get spectrum data
 			for (int channel = 0; channel < audioSource.clip.channels; channel++) {
 				audioSource.GetSpectrumData(spectrumBuffer, channel, FFTWindow.Rectangular);
 
 				for (int i = 0; i < Globals.spectrumSamples; i++) {
-					int j = i + sPos;
-					if (j >= Globals.spectrumSamples) j -= Globals.spectrumSamples;
+					int j = i + spectrumSpikePosition;
 
-					if (spectrumBuffer[j] > Globals.spectrum[i])
+					if (j >= Globals.spectrumSamples) {
+						j -= Globals.spectrumSamples;
+					}
+
+					if (spectrumBuffer[j] > Globals.spectrum[i]) {
 						Globals.spectrum[i] = spectrumBuffer[j];
+					}
 				}
 			}
 
 			float barY;
-			spectrumSize = Mathf.Lerp(spectrumSize, spectrumForce * 6f, 0.2f * RSTime.delta);
+			spectrumSize = Mathf.Lerp(spectrumSize, spectrumForce, 0.2f * RSTime.delta);
 
+
+			// i = spectrum index
+			// r = carrousel spike index
+
+			// Update carrousel bars
 			for (int i = 0; i < Globals.spectrumSamples; i++) {
 				barY = spectrumSize * Globals.spectrum[i];
 
-				for (int r = 0; r < visualizer.Length; r++) {
-					if (visualizer[r] == null) continue;
-					if (i >= visualizer[r].Count) continue;
+				for (int r = 0; r < carrouselSpikes; r++) {
+					if (carrouselBars[r] == null) continue;
+					if (carrouselBars[r][i] == null) continue;
 
-					Vector2 s = visualizer[r][i].transform.localScale;
-					s.y = Mathf.Lerp(s.y, 0f, 0.1f * RSTime.delta);
 
-					if (barY > s.y) s.y = barY;
+					float currentSize = carrouselBars[r][i].size;
+					if (barY > currentSize) carrouselBars[r][i].size = Mathf.Clamp01(barY);
 
-					visualizer[r][i].transform.localScale = s;
+					// float currentSize = Mathf.Lerp(carrouselBars[r][i].transform.localScale.y, 0f, 0.1f * RSTime.delta);
+					// if (barY > currentSize) currentSize = barY;
+
+					// carrouselBars[r][i].transform.localScale = new Vector2(1f, currentSize);
 				}
 			}
 
 
-			sPosTime += Time.deltaTime;
-			if (sPosTime > (1f / 30f)) {
-				sPosTime = 0f;
-				sPos += 3;
+			// Spin carrousel
+			spectrumSpikeTimer += Time.deltaTime;
+			if (spectrumSpikeTimer > (1f / 15f)) {
+				spectrumSpikeTimer = 0f;
+				spectrumSpikePosition += 5;
 
-				if (sPos >= Globals.spectrumSamples) sPos = 0;
+				if (spectrumSpikePosition >= Globals.spectrumSamples) spectrumSpikePosition = 0;
 			}
 			#endregion
 
@@ -265,13 +279,6 @@ namespace RobotoSkunk.CircleBeats {
 
 			#region Obstacles
 			obstacles.Execute(audioSource.time);
-
-			// foreach (var obstacle in obstacles.Query(audioSource.time)) {
-			// 	obstacle.value.SetActive(true);
-			// }
-			// foreach (var obstacle in obstacles.GetDisabledIntervals()) {
-			// 	obstacle.value.SetActive(false);
-			// }
 			#endregion
 		}
 

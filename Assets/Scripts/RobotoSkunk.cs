@@ -307,7 +307,7 @@ namespace RobotoSkunk {
 	/// A collection of time functions.
 	/// </summary>
 	public static class RSTime {
-		public static float delta { get => Time.deltaTime / 0.016666f; }
+		public static float delta { get => Time.deltaTime / (1f / 60f); }
 	}
 
 	/// <summary>

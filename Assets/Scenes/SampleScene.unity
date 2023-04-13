@@ -1154,7 +1154,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1710808219}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.2113091, y: 0.2113091, z: -0.0468461, w: 0.9531539}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1166,7 +1166,7 @@ Transform:
   - {fileID: 949696895}
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 25, y: 25, z: 0}
 --- !u!114 &1710808221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1192,7 +1192,8 @@ MonoBehaviour:
   obstaclePrefab: {fileID: 777271939498253507, guid: 50956a5a0ea7e3813b8deb2620c0ae0e, type: 3}
   obstacleParent: {fileID: 949696895}
   captionsText: {fileID: 2107653730}
-  spectrumBar: {fileID: 6532714262814982355, guid: 46fe4d984cfac494faa0f5d73bb7c2b3, type: 3}
+  spectrumBarMaxSize: 6
+  spectrumBar: {fileID: 8024427859737760550, guid: 46fe4d984cfac494faa0f5d73bb7c2b3, type: 3}
   radialPart: {fileID: 3254408709497347042, guid: 8e2e2ee02e79eef48bc71d0d16518309, type: 3}
   radialBg: {fileID: 477274965}
   bgObj: {fileID: 1759518027}
@@ -1206,7 +1207,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 082fad6e7ac124540ba14f8ab8c88ff1, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 474c32ad018fd454a855ae3c2366fddc, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 4b907e7c0a10a884ea1c0becfdb8d7d8, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
