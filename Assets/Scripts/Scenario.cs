@@ -31,7 +31,7 @@ namespace RobotoSkunk.CircleBeats {
 		[SerializeField] AudioMixer audioMixer;
 
 		[Header("Obstacles")]
-		[SerializeField] GameObject obstaclePrefab;
+		[SerializeField] Obstacle obstaclePrefab;
 		[SerializeField] Transform obstacleParent;
 
 		[Header("Captions")]
@@ -48,7 +48,7 @@ namespace RobotoSkunk.CircleBeats {
 
 
 		IntervalTree<string> captions = new();
-		RS_Queue<GameObject> obstacles = new();
+		RS_Queue<Obstacle> obstacles = new();
 
 
 
@@ -147,17 +147,30 @@ namespace RobotoSkunk.CircleBeats {
 			#endregion
 
 			#region Obstacles
-			for (int i = 0; i < 1000; i++) {
-				GameObject obj = Instantiate(obstaclePrefab, obstacleParent);
-				obj.transform.localPosition = 10f * Random.insideUnitCircle;
+			for (int i = 0; i < 100; i++) {
+				Vector2 randomPosition = 10f * Random.insideUnitCircle;
+
+				Obstacle obj = Instantiate(obstaclePrefab, obstacleParent);
+				obj.transform.localPosition = randomPosition;
 				obj.transform.localScale = Vector3.one;
 				obj.transform.localRotation = Quaternion.identity;
-				obj.SetActive(false);
-
+				obj.gameObject.SetActive(false);
 
 				float time = audioSource.clip.length * Random.value;
 
-				obstacles.Add(new(time, time + 5f, obj));
+				obj.positions.AddX(0.00f, 0.25f, randomPosition.x, randomPosition.x + 5f, BezierCurve.easeInOut);
+				obj.positions.AddX(0.25f, 0.50f, randomPosition.x, randomPosition.x - 5f, BezierCurve.easeInOut);
+				obj.positions.AddX(0.50f, 1.00f, randomPosition.x, randomPosition.x + 5f, BezierCurve.easeInOut);
+
+				obj.positions.AddY(0.00f, 0.25f, randomPosition.y, randomPosition.y + 10f, BezierCurve.easeInOut);
+				obj.positions.AddY(0.25f, 0.50f, randomPosition.y, randomPosition.y - 10f, BezierCurve.easeInOut);
+				obj.positions.AddY(0.50f, 1.00f, randomPosition.y, randomPosition.y + 10f, BezierCurve.easeInOut);
+
+				obj.Prepare();
+
+				obj.lifeTime = new Interval(time, time + 6f);
+
+				obstacles.Add(new(time, time + 6f, obj));
 			}
 
 			obstacles.Build();
@@ -174,12 +187,18 @@ namespace RobotoSkunk.CircleBeats {
 		}
 
 
-		void OnIntervalDisabled(Interval<GameObject> interval) {
-			interval.value.SetActive(false);
+		void OnIntervalDisabled(Interval<Obstacle> interval) {
+			if (interval.value.gameObject.activeInHierarchy) {
+				interval.value.gameObject.SetActive(false);
+			}
 		}
 
-		void OnIntervalCall(Interval<GameObject> interval, float time) {
-			interval.value.SetActive(true);
+		void OnIntervalCall(Interval<Obstacle> interval, float time) {
+			if (!interval.value.gameObject.activeInHierarchy) {
+				interval.value.gameObject.SetActive(true);
+			}
+
+			interval.value.SetTime(time);
 		}
 
 

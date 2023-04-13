@@ -1180,7 +1180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   img: {fileID: 1865287009}
-  volume: 1
+  volume: 0
   slider: {fileID: 1865287011}
   bpm: 150
   size: 1
@@ -1189,7 +1189,7 @@ MonoBehaviour:
   decibelsForce: 1
   audioSource: {fileID: 1710808222}
   audioMixer: {fileID: 24100000, guid: 082fad6e7ac124540ba14f8ab8c88ff1, type: 2}
-  obstaclePrefab: {fileID: 777271939498253507, guid: 50956a5a0ea7e3813b8deb2620c0ae0e, type: 3}
+  obstaclePrefab: {fileID: 4821892927535733258, guid: 50956a5a0ea7e3813b8deb2620c0ae0e, type: 3}
   obstacleParent: {fileID: 949696895}
   captionsText: {fileID: 2107653730}
   spectrumBarMaxSize: 6
