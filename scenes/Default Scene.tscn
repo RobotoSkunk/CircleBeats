@@ -10,14 +10,14 @@
 shading_mode = 0
 albedo_color = Color(0.470588, 0.470588, 0.470588, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tdhbc"]
-shading_mode = 0
-albedo_color = Color(0.705898, 0.705898, 0.705898, 1)
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i5dbc"]
 transparency = 1
 shading_mode = 0
 albedo_color = Color(0, 0, 0, 0.784314)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tdhbc"]
+shading_mode = 0
+albedo_color = Color(0.705898, 0.705898, 0.705898, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wxgji"]
 shading_mode = 0
@@ -33,7 +33,7 @@ shading_mode = 0
 shading_mode = 0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2c6wr"]
-size = Vector3(1, 1.5, 0.5)
+size = Vector3(0.5, 0.75, 0.5)
 
 [node name="Default Scene" type="Node3D"]
 
@@ -60,58 +60,66 @@ cast_shadow = 0
 mesh = ExtResource("1_gt5du")
 skeleton = NodePath("../..")
 
-[node name="Circle" type="MeshInstance3D" parent="Scenario"]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 1, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_tdhbc")
-cast_shadow = 0
-mesh = ExtResource("1_gt5du")
-skeleton = NodePath("../..")
+[node name="Circle" type="Node3D" parent="Scenario"]
 
 [node name="Shadow" type="MeshInstance3D" parent="Scenario/Circle"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.24)
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, -0.24)
 material_override = SubResource("StandardMaterial3D_i5dbc")
 cast_shadow = 0
 mesh = ExtResource("1_gt5du")
 skeleton = NodePath("../../..")
 
-[node name="Circle2" type="MeshInstance3D" parent="Scenario/Circle"]
-transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0.002)
+[node name="Outer Circle" type="Node3D" parent="Scenario/Circle"]
+
+[node name="Ring" type="MeshInstance3D" parent="Scenario/Circle/Outer Circle"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_tdhbc")
+cast_shadow = 0
+mesh = ExtResource("1_gt5du")
+skeleton = NodePath("../../../..")
+
+[node name="Center" type="MeshInstance3D" parent="Scenario/Circle/Outer Circle"]
+transform = Transform3D(4.5, 0, 0, 0, 4.5, 0, 0, 0, 4.5, 0, 0, 0.01)
 material_override = SubResource("StandardMaterial3D_wxgji")
 cast_shadow = 0
 mesh = ExtResource("1_gt5du")
-skeleton = NodePath("../../..")
+skeleton = NodePath("../../../..")
 
-[node name="Circle3" type="MeshInstance3D" parent="Scenario/Circle"]
-transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0.004)
+[node name="Inner Circle" type="Node3D" parent="Scenario/Circle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+
+[node name="Ring" type="MeshInstance3D" parent="Scenario/Circle/Inner Circle"]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_v0qm5")
 cast_shadow = 0
 mesh = ExtResource("1_gt5du")
-skeleton = NodePath("../../..")
+skeleton = NodePath("../../../..")
 
-[node name="Circle4" type="MeshInstance3D" parent="Scenario/Circle"]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0.006)
+[node name="Center" type="MeshInstance3D" parent="Scenario/Circle/Inner Circle"]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0.01)
 material_override = SubResource("StandardMaterial3D_botnc")
 cast_shadow = 0
 mesh = ExtResource("1_gt5du")
-skeleton = NodePath("../../..")
+skeleton = NodePath("../../../..")
 
 [node name="Player" type="CharacterBody3D" parent="Scenario"]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 6, -1.49012e-08)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, -1.49012e-08)
 
-[node name="Player" type="MeshInstance3D" parent="Scenario/Player"]
+[node name="Shadow" type="MeshInstance3D" parent="Scenario/Player"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, -0.24)
+material_override = SubResource("StandardMaterial3D_i5dbc")
+cast_shadow = 0
+mesh = ExtResource("3_5fpd7")
+skeleton = NodePath("../../..")
+
+[node name="Model" type="MeshInstance3D" parent="Scenario/Player"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_axrou")
 cast_shadow = 0
 mesh = ExtResource("3_5fpd7")
 skeleton = NodePath("../../..")
 
-[node name="Player2" type="MeshInstance3D" parent="Scenario/Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.48)
-material_override = SubResource("StandardMaterial3D_i5dbc")
-cast_shadow = 0
-mesh = ExtResource("3_5fpd7")
-skeleton = NodePath("../../..")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Scenario/Player"]
+[node name="Hitbox" type="CollisionShape3D" parent="Scenario/Player"]
 shape = SubResource("BoxShape3D_2c6wr")
 
 [node name="Control" type="Control" parent="."]

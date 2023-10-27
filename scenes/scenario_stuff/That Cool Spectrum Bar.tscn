@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://cda5akmjbhhb5"]
+
+[ext_resource type="ArrayMesh" uid="uid://ddant82bpb4vd" path="res://assets/models/Square.obj" id="1_7m7d3"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pgd6t"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(1, 1, 1, 0.25098)
+
+[node name="That Cool Spectrum Bar" type="Node3D"]
+
+[node name="Renderer" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.15, 0, 0, 0, 0.15, 0, 0, 0, 0.15, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_pgd6t")
+mesh = ExtResource("1_7m7d3")

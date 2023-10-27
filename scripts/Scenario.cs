@@ -38,11 +38,6 @@ namespace ClockBombGames.CircleBeats
 
 		// readonly float minDb = -160;
 
-		// This is an average loudness of the samples pre-calculated by the
-		// previous tests made with Unity. In the future this will be replaced
-		// when Godot implements a way to get the samples of an audio file.
-		readonly float loudness = 0.65f;
-
 
 		public override void _Ready()
 		{
@@ -73,11 +68,10 @@ namespace ClockBombGames.CircleBeats
 			// float db = Mathf.Clamp(audioStreamReader.Decibels, minDb, 0f) + Mathf.Abs(minDb);
 			AudioBusReaderOutput output = audioStreamReader.CalculateOutput();
 
-			float bumpMultiplier = Mathf.Clamp(output.averageData / loudness, 0, 1);
-
+			float bumpMultiplier = Mathf.Clamp(output.averageData, 0, 1);
 			float bump = 1f - 0.2f * decibelsForce + 0.5f * bumpMultiplier * decibelsForce;
 
-			debugLabel.Text = $"Decibels: {output.decibels}\nCalculated:{bump}";
+			debugLabel.Text = $"Decibels: {output.decibels}\nCalculated: {bump}";
 
 
 			// float _scale = 1f + db / Mathf.Abs(minDb) * 0.5f;
