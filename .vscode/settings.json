@@ -46,8 +46,35 @@
 		"ProjectSettings/":true,
 		"temp/":true,
 		"Temp/":true,
-		"*.csproj":true
+		"*.csproj":true,
+		"**/*.sln": true
 	},
+
+	// CSharp and OmniSharp settings
 	"omnisharp.autoStart": true,
-	"omnisharp.useModernNet": false
+	"omnisharp.useModernNet": true,
+	"dotnet.server.useOmnisharp": true,
+
+	// Editor settings
+	"editor.rulers": [
+		120
+	],
+	"editor.tabSize": 4,
+	"editor.insertSpaces": false,
+	"[markdown]": {
+		"editor.rulers": [
+			80
+		],
+		"editor.tabSize": 4,
+		"editor.insertSpaces": true
+	},
+
+	// Theme settings
+	"csharp.semanticHighlighting.enabled": true,
+
+	"editor.semanticTokenColorCustomizations": {
+		"rules": {
+			"macro": "#818181"
+		}
+	},
 }

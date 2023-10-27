@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://cvyeq2ktigpe1"]
+[gd_scene load_steps=13 format=3 uid="uid://cvyeq2ktigpe1"]
 
 [ext_resource type="ArrayMesh" uid="uid://dy52yn0fjoiiq" path="res://assets/models/Circle.obj" id="1_gt5du"]
+[ext_resource type="Script" path="res://scripts/Scenario.cs" id="2_ared2"]
 [ext_resource type="ArrayMesh" uid="uid://b28o3mieaajx7" path="res://assets/models/Player.obj" id="3_5fpd7"]
 
 [sub_resource type="Environment" id="Environment_0mkta"]
@@ -11,6 +12,7 @@ albedo_color = Color(0.470588, 0.470588, 0.470588, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tdhbc"]
 shading_mode = 0
+albedo_color = Color(0.705898, 0.705898, 0.705898, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i5dbc"]
 transparency = 1
@@ -19,20 +21,19 @@ albedo_color = Color(0, 0, 0, 0.784314)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wxgji"]
 shading_mode = 0
-albedo_color = Color(0.705882, 0.705882, 0.705882, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v0qm5"]
 shading_mode = 0
+albedo_color = Color(0.705898, 0.705898, 0.705898, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_botnc"]
 shading_mode = 0
-albedo_color = Color(0.701961, 0.701961, 0.701961, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_axrou"]
 shading_mode = 0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2c6wr"]
-size = Vector3(1, 1.5, 1)
+size = Vector3(1, 1.5, 0.5)
 
 [node name="Default Scene" type="Node3D"]
 
@@ -41,59 +42,96 @@ environment = SubResource("Environment_0mkta")
 
 [node name="Camera3D" type="Camera3D" parent="WorldEnvironment"]
 process_mode = 3
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
 
-[node name="Scenario" type="Node3D" parent="."]
+[node name="Scenario" type="Node3D" parent="." node_paths=PackedStringArray("musicPlayer", "debugLabel")]
+script = ExtResource("2_ared2")
+musicPlayer = NodePath("AudioStreamPlayer")
+debugLabel = NodePath("../Control/RichTextLabel")
+decibelsForce = 0.306
 
-[node name="Circle5" type="MeshInstance3D" parent="Scenario"]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Scenario"]
+bus = &"Music"
+
+[node name="Background" type="MeshInstance3D" parent="Scenario"]
 transform = Transform3D(150, 0, 0, 0, 150, 0, 0, 0, 150, 0, 0, -0.25)
 material_override = SubResource("StandardMaterial3D_8qar0")
+cast_shadow = 0
 mesh = ExtResource("1_gt5du")
 skeleton = NodePath("../..")
 
 [node name="Circle" type="MeshInstance3D" parent="Scenario"]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 1, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_tdhbc")
+cast_shadow = 0
 mesh = ExtResource("1_gt5du")
 skeleton = NodePath("../..")
 
 [node name="Shadow" type="MeshInstance3D" parent="Scenario/Circle"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.048)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.24)
 material_override = SubResource("StandardMaterial3D_i5dbc")
+cast_shadow = 0
 mesh = ExtResource("1_gt5du")
 skeleton = NodePath("../../..")
 
 [node name="Circle2" type="MeshInstance3D" parent="Scenario/Circle"]
 transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0.002)
 material_override = SubResource("StandardMaterial3D_wxgji")
+cast_shadow = 0
 mesh = ExtResource("1_gt5du")
 skeleton = NodePath("../../..")
 
 [node name="Circle3" type="MeshInstance3D" parent="Scenario/Circle"]
 transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0.004)
 material_override = SubResource("StandardMaterial3D_v0qm5")
+cast_shadow = 0
 mesh = ExtResource("1_gt5du")
 skeleton = NodePath("../../..")
 
 [node name="Circle4" type="MeshInstance3D" parent="Scenario/Circle"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0.006)
 material_override = SubResource("StandardMaterial3D_botnc")
+cast_shadow = 0
 mesh = ExtResource("1_gt5du")
 skeleton = NodePath("../../..")
 
-[node name="CharacterBody3D" type="CharacterBody3D" parent="Scenario"]
+[node name="Player" type="CharacterBody3D" parent="Scenario"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 6, -1.49012e-08)
 
-[node name="Player" type="MeshInstance3D" parent="Scenario/CharacterBody3D"]
+[node name="Player" type="MeshInstance3D" parent="Scenario/Player"]
 material_override = SubResource("StandardMaterial3D_axrou")
+cast_shadow = 0
 mesh = ExtResource("3_5fpd7")
 skeleton = NodePath("../../..")
 
-[node name="Player2" type="MeshInstance3D" parent="Scenario/CharacterBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.24)
+[node name="Player2" type="MeshInstance3D" parent="Scenario/Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.48)
 material_override = SubResource("StandardMaterial3D_i5dbc")
+cast_shadow = 0
 mesh = ExtResource("3_5fpd7")
 skeleton = NodePath("../../..")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Scenario/CharacterBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Scenario/Player"]
 shape = SubResource("BoxShape3D_2c6wr")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 8.0
+offset_right = -19.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 35
+text = "asdasd"

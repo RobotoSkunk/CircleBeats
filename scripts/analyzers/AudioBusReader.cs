@@ -1,0 +1,113 @@
+/*
+	CircleBeats, a bullet hell rhythmic game.
+	Copyright (C) 2023 Edgar Lima <contact@robotoskunk.com>
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+
+using System;
+using Godot;
+
+
+namespace ClockBombGames.CircleBeats.Analyzers
+{
+	public struct AudioBusReaderOutput
+	{
+		public float decibels;
+		public float averageData;
+
+
+		public AudioBusReaderOutput(float decibels, float averageData)
+		{
+			this.decibels = decibels;
+			this.averageData = averageData;
+		}
+
+		public override readonly string ToString()
+		{
+			return $"Decibels: {decibels}, Average: {averageData}";
+		}
+	}
+
+	public class AudioBusReader
+	{
+		readonly int busIndex = -1;
+		readonly AudioEffectCapture capture;
+
+		float decibels = -160f;
+		float averageData = 0f;
+
+
+		public AudioBusReader(string bus) {
+			busIndex = AudioServer.GetBusIndex(bus);
+
+			for (int i = 0; i < AudioServer.GetBusEffectCount(busIndex); i++) {
+				if (AudioServer.GetBusEffect(busIndex, i) is AudioEffectCapture audioEffectCapture) {
+					capture = audioEffectCapture;
+				}
+			}
+		}
+
+		public AudioBusReaderOutput CalculateOutput()
+		{
+
+			if (capture == null) {
+				int busChannels = AudioServer.GetBusChannels(busIndex);
+				float db = 0f;
+
+				if (busChannels > 0) {
+					for (int i = 0; i < busChannels; i++) {
+						db += AudioServer.GetBusPeakVolumeLeftDb(busIndex, i);
+						db += AudioServer.GetBusPeakVolumeRightDb(busIndex, i);
+					}
+
+					db /= busChannels * 2;
+				}
+
+				decibels = db;
+				averageData = Mathf.Abs(decibels) / 200f;
+
+			} else {
+				int qSamples = capture.GetFramesAvailable();
+
+				if (qSamples > 0) {
+					Vector2[] buffer = capture.GetBuffer(qSamples);
+
+					float sum = 0;
+					averageData = 0;
+
+					for (int i = 0; i < buffer.Length; i++) {
+						Vector2 sample = buffer[i];
+
+						sum += sample.X * sample.X + sample.Y * sample.Y;
+						averageData += Mathf.Abs(sample.X) + Mathf.Abs(sample.Y);
+					}
+
+					float rms = Mathf.Sqrt(sum / qSamples);
+					averageData /= qSamples;
+
+					decibels = 20f * MathF.Log10(rms / 0.1f);
+				}
+
+
+				if (decibels < -160f) {
+					decibels = -160f;
+				}
+			}
+
+			return new(decibels, averageData);
+		}
+	}
+}
