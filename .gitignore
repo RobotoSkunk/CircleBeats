@@ -1,3 +1,8 @@
 # Godot 4+ specific ignores
 .godot/
+
+# Tests files
 test/
+
+# Blender autosave
+*.blend1
