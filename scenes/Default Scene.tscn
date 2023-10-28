@@ -45,13 +45,14 @@ environment = SubResource("Environment_0mkta")
 process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
 
-[node name="Scenario" type="Node3D" parent="." node_paths=PackedStringArray("musicPlayer", "debugLabel", "carrouselContainer")]
+[node name="Scenario" type="Node3D" parent="." node_paths=PackedStringArray("musicPlayer", "debugLabel", "carrouselContainer", "musicSlider")]
 script = ExtResource("2_ared2")
 decibelsForce = 0.5
 musicPlayer = NodePath("AudioStreamPlayer")
 debugLabel = NodePath("../Control/RichTextLabel")
 carrouselBarScene = ExtResource("2_xq2wh")
 carrouselContainer = NodePath("Circle/Carrousel Container")
+musicSlider = NodePath("../Control/HSlider")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Scenario"]
 bus = &"Music"
@@ -150,3 +151,18 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/normal_font_size = 35
 text = "asdasd"
+
+[node name="HSlider" type="HSlider" parent="Control"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 21.0
+offset_top = -38.0
+offset_right = -26.0
+offset_bottom = -22.0
+grow_horizontal = 2
+grow_vertical = 0
+max_value = 1.0
+step = 0.0

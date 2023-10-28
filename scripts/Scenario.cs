@@ -34,6 +34,7 @@ namespace ClockBombGames.CircleBeats
 		[Export] RichTextLabel debugLabel;
 		[Export] PackedScene carrouselBarScene;
 		[Export] Node3D carrouselContainer;
+		[Export] Slider musicSlider;
 
 
 		AudioBusReader audioBusReader;
@@ -53,6 +54,13 @@ namespace ClockBombGames.CircleBeats
 		{
 			audioBusReader = new AudioBusReader(musicPlayer.Bus);
 			spectrumBuffer = new float[spectrumSamples];
+
+			musicSlider.MaxValue = musicPlayer.Stream.GetLength();
+
+			musicSlider.ValueChanged += (value) => {
+				musicPlayer.Seek((float)value);
+			};
+
 
 			for (int j = 0; j < carrouselBars.Length; j++) {
 				float jAngle = j * (360f / carrouselBars.Length);
@@ -86,6 +94,7 @@ namespace ClockBombGames.CircleBeats
 			scale = Mathf.Lerp(scale, bump, 0.75f);
 			Scale = new Vector3(scale, scale, 1f);
 
+			musicSlider.SetValueNoSignal(musicPlayer.GetPlaybackPosition());
 
 
 			#region Spectrum and carousel
