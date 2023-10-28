@@ -52,8 +52,6 @@ namespace ClockBombGames.CircleBeats
 		public override void _Ready()
 		{
 			audioBusReader = new AudioBusReader(musicPlayer.Bus);
-			musicPlayer.Play();
-
 			spectrumBuffer = new float[spectrumSamples];
 
 			for (int j = 0; j < carrouselBars.Length; j++) {
@@ -94,7 +92,7 @@ namespace ClockBombGames.CircleBeats
 
 			if (musicPlayer.Playing) {
 				float[] spectrum = new float[spectrumSamples];
-				audioBusReader.GetSpectrum(ref spectrum, 11050);
+				audioBusReader.GetSpectrum(ref spectrum, 8000);
 
 				System.Array.Clear(spectrumBuffer, 0, spectrumBuffer.Length);
 
@@ -139,12 +137,14 @@ namespace ClockBombGames.CircleBeats
 				carrouselTickTime += delta;
 				if (carrouselTickTime > (1.0 / 15.0)) {
 					carrouselTickTime = 0.0;
-					spectrumSpikePosition += 5;
+					spectrumSpikePosition -= 5;
 
-					if (spectrumSpikePosition >= spectrumSamples) {
-						spectrumSpikePosition = 0;
+					if (spectrumSpikePosition < 0) {
+						spectrumSpikePosition = spectrumSamples - 1;
 					}
 				}
+			} else {
+				musicPlayer.Play();
 			}
 			#endregion
 		}

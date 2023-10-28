@@ -47,7 +47,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
 
 [node name="Scenario" type="Node3D" parent="." node_paths=PackedStringArray("musicPlayer", "debugLabel", "carrouselContainer")]
 script = ExtResource("2_ared2")
-decibelsForce = 0.306
+decibelsForce = 0.5
 musicPlayer = NodePath("AudioStreamPlayer")
 debugLabel = NodePath("../Control/RichTextLabel")
 carrouselBarScene = ExtResource("2_xq2wh")
@@ -110,6 +110,7 @@ skeleton = NodePath("../../../..")
 
 [node name="Player" type="CharacterBody3D" parent="Scenario"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, -1.49012e-08)
+visible = false
 
 [node name="Shadow" type="MeshInstance3D" parent="Scenario/Player"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, -0.24)
