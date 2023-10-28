@@ -1,7 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://cvyeq2ktigpe1"]
+[gd_scene load_steps=14 format=3 uid="uid://cvyeq2ktigpe1"]
 
 [ext_resource type="ArrayMesh" uid="uid://dy52yn0fjoiiq" path="res://assets/models/Circle.obj" id="1_gt5du"]
 [ext_resource type="Script" path="res://scripts/Scenario.cs" id="2_ared2"]
+[ext_resource type="PackedScene" uid="uid://cda5akmjbhhb5" path="res://scenes/scenario_stuff/That Cool Spectrum Bar.tscn" id="2_xq2wh"]
 [ext_resource type="ArrayMesh" uid="uid://b28o3mieaajx7" path="res://assets/models/Player.obj" id="3_5fpd7"]
 
 [sub_resource type="Environment" id="Environment_0mkta"]
@@ -13,7 +14,7 @@ albedo_color = Color(0.470588, 0.470588, 0.470588, 1)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i5dbc"]
 transparency = 1
 shading_mode = 0
-albedo_color = Color(0, 0, 0, 0.784314)
+albedo_color = Color(0, 0, 0, 0.882353)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tdhbc"]
 shading_mode = 0
@@ -44,17 +45,19 @@ environment = SubResource("Environment_0mkta")
 process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
 
-[node name="Scenario" type="Node3D" parent="." node_paths=PackedStringArray("musicPlayer", "debugLabel")]
+[node name="Scenario" type="Node3D" parent="." node_paths=PackedStringArray("musicPlayer", "debugLabel", "carrouselContainer")]
 script = ExtResource("2_ared2")
+decibelsForce = 0.306
 musicPlayer = NodePath("AudioStreamPlayer")
 debugLabel = NodePath("../Control/RichTextLabel")
-decibelsForce = 0.306
+carrouselBarScene = ExtResource("2_xq2wh")
+carrouselContainer = NodePath("Circle/Carrousel Container")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Scenario"]
 bus = &"Music"
 
 [node name="Background" type="MeshInstance3D" parent="Scenario"]
-transform = Transform3D(150, 0, 0, 0, 150, 0, 0, 0, 150, 0, 0, -0.25)
+transform = Transform3D(1500, 0, 0, 0, 1500, 0, 0, 0, 1500, 0, 0, -0.26)
 material_override = SubResource("StandardMaterial3D_8qar0")
 cast_shadow = 0
 mesh = ExtResource("1_gt5du")
@@ -68,6 +71,9 @@ material_override = SubResource("StandardMaterial3D_i5dbc")
 cast_shadow = 0
 mesh = ExtResource("1_gt5du")
 skeleton = NodePath("../../..")
+
+[node name="Carrousel Container" type="Node3D" parent="Scenario/Circle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
 
 [node name="Outer Circle" type="Node3D" parent="Scenario/Circle"]
 

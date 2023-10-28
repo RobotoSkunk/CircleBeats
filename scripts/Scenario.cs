@@ -17,7 +17,6 @@
 */
 
 
-using System;
 using ClockBombGames.CircleBeats.Analyzers;
 using Godot;
 
@@ -26,58 +25,128 @@ namespace ClockBombGames.CircleBeats
 {
 	public partial class Scenario : Node3D
 	{
-		[Export] AudioStreamPlayer musicPlayer;
-		[Export] RichTextLabel debugLabel;
-		
+		[ExportCategory("Properties")]
 		[Export(PropertyHint.Range, "0, 1, 0.01")]
 		float decibelsForce = 1f;
 
-		AudioBusReader audioStreamReader;
-		AudioEffectCapture audioEffectCapture;
-		float scale;
+		[ExportCategory("Components")]
+		[Export] AudioStreamPlayer musicPlayer;
+		[Export] RichTextLabel debugLabel;
+		[Export] PackedScene carrouselBarScene;
+		[Export] Node3D carrouselContainer;
 
-		// readonly float minDb = -160;
+
+		AudioBusReader audioBusReader;
+
+		int spectrumSpikePosition;
+
+		double carrouselTickTime;
+
+		float scale;
+		float[] spectrumBuffer;
+
+		readonly CarrouselBar[][] carrouselBars = new CarrouselBar[5][];
+		readonly int spectrumSamples = 128;
 
 
 		public override void _Ready()
 		{
-			audioStreamReader = new AudioBusReader(musicPlayer.Bus);
+			audioBusReader = new AudioBusReader(musicPlayer.Bus);
 			musicPlayer.Play();
 
-			int bus = AudioServer.GetBusIndex(musicPlayer.Bus);
+			spectrumBuffer = new float[spectrumSamples];
+
+			for (int j = 0; j < carrouselBars.Length; j++) {
+				float jAngle = j * (360f / carrouselBars.Length);
+
+				carrouselBars[j] = new CarrouselBar[spectrumSamples];
 
 
-			for (int i = 0; i < AudioServer.GetBusEffectCount(bus); i++)
-			{
-				if (AudioServer.GetBusEffect(bus, i) is AudioEffectCapture audioEffectCapture) {
-					this.audioEffectCapture = audioEffectCapture;
+				for (int i = 0; i < spectrumSamples; i++) {
+					float angle = i * (360f / spectrumSamples) + jAngle;
+
+					CarrouselBar bar = carrouselBarScene.Instantiate<CarrouselBar>();
+					carrouselContainer.AddChild(bar);
+					bar.Angle = angle;
+					bar.CalculatePositions();
+
+					carrouselBars[j][i] = bar;
 				}
 			}
-
-
-			// var reader = new AudioStreamReader(musicPlayer.Stream);
-			// byte[] buffer = null;
-
-			// reader.ReadNonAlloc(ref buffer);
-
-			// GD.Print(buffer);
 		}
 
 		public override void _Process(double delta)
 		{
-			// float db = Mathf.Clamp(audioStreamReader.Decibels, minDb, 0f) + Mathf.Abs(minDb);
-			AudioBusReaderOutput output = audioStreamReader.CalculateOutput();
+			AudioBusReaderOutput output = audioBusReader.CalculateOutput();
 
 			float bumpMultiplier = Mathf.Clamp(output.averageData, 0, 1);
 			float bump = 1f - 0.2f * decibelsForce + 0.5f * bumpMultiplier * decibelsForce;
 
-			debugLabel.Text = $"Decibels: {output.decibels}\nCalculated: {bump}";
+			debugLabel.Text = $"Decibels: {output.decibels}\nCalculated: {bump}\nFPS: {Engine.GetFramesPerSecond()}";
 
-
-			// float _scale = 1f + db / Mathf.Abs(minDb) * 0.5f;
 
 			scale = Mathf.Lerp(scale, bump, 0.75f);
 			Scale = new Vector3(scale, scale, 1f);
+
+
+
+			#region Spectrum and carousel
+
+			if (musicPlayer.Playing) {
+				float[] spectrum = new float[spectrumSamples];
+				audioBusReader.GetSpectrum(ref spectrum, 11050);
+
+				System.Array.Clear(spectrumBuffer, 0, spectrumBuffer.Length);
+
+
+				// Get spectrum data
+				for (int i = 0; i < spectrum.Length; i++) {
+					int j = i + spectrumSpikePosition;
+
+					if (j >= spectrum.Length) {
+						j -= spectrum.Length;
+					}
+
+					if (spectrum[j] > spectrumBuffer[i]) {
+						spectrumBuffer[i] = spectrum[j];
+					}
+				}
+
+				float barY;
+
+				// i = spectrum index
+				// r = carrousel spike index
+
+				// Update carrousel bars
+				for (int i = 0; i < spectrumSamples; i++) {
+					barY = spectrumBuffer[i];
+
+					for (int r = 0; r < carrouselBars.Length; r++) {
+						if (carrouselBars[r] == null || carrouselBars[r][i] == null) {
+							continue;
+						}
+
+
+						float currentSize = carrouselBars[r][i].Size;
+
+						if (barY > currentSize) {
+							carrouselBars[r][i].Size = Mathf.Clamp(barY, 0f, 1f) * 10f;
+						}
+					}
+				}
+
+				// Spin carrousel
+				carrouselTickTime += delta;
+				if (carrouselTickTime > (1.0 / 15.0)) {
+					carrouselTickTime = 0.0;
+					spectrumSpikePosition += 5;
+
+					if (spectrumSpikePosition >= spectrumSamples) {
+						spectrumSpikePosition = 0;
+					}
+				}
+			}
+			#endregion
 		}
 	}
 }

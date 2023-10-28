@@ -45,24 +45,38 @@ namespace ClockBombGames.CircleBeats.Analyzers
 	{
 		readonly int busIndex = -1;
 		readonly AudioEffectCapture capture;
+		readonly AudioEffectSpectrumAnalyzerInstance spectrumAnalyzer;
 
 		float decibels = -160f;
 		float averageData = 0f;
+
+		readonly int minDb = 42;
 
 
 		public AudioBusReader(string bus) {
 			busIndex = AudioServer.GetBusIndex(bus);
 
 			for (int i = 0; i < AudioServer.GetBusEffectCount(busIndex); i++) {
-				if (AudioServer.GetBusEffect(busIndex, i) is AudioEffectCapture audioEffectCapture) {
+				AudioEffect effect = AudioServer.GetBusEffect(busIndex, i);
+
+				if (effect is AudioEffectCapture audioEffectCapture) {
 					capture = audioEffectCapture;
+					break;
+				}
+			}
+
+			for (int i = 0; i < AudioServer.GetBusEffectCount(busIndex); i++) {
+				AudioEffectInstance effect = AudioServer.GetBusEffectInstance(busIndex, i);
+
+				if (effect is AudioEffectSpectrumAnalyzerInstance audioEffectSpectrumAnalyzerInstance) {
+					spectrumAnalyzer = audioEffectSpectrumAnalyzerInstance;
+					break;
 				}
 			}
 		}
 
 		public AudioBusReaderOutput CalculateOutput()
 		{
-
 			if (capture == null) {
 				int busChannels = AudioServer.GetBusChannels(busIndex);
 				float db = 0f;
@@ -108,6 +122,24 @@ namespace ClockBombGames.CircleBeats.Analyzers
 			}
 
 			return new(decibels, averageData);
+		}
+
+		public void GetSpectrum(ref float[] spectrum, float maxFrequency)
+		{
+			if (spectrumAnalyzer == null) {
+				return;
+			}
+
+			float prevHz = 0f;
+
+			for (int i = 0; i < spectrum.Length; i++) {
+				float hz = i * maxFrequency / spectrum.Length;
+				float magnitude = spectrumAnalyzer.GetMagnitudeForFrequencyRange(prevHz, hz).Length();
+				float energy = Mathf.Clamp((minDb + Mathf.LinearToDb(magnitude)) / minDb, 0f, 1f);
+
+				spectrum[i] = energy;
+				prevHz = hz;
+			}
 		}
 	}
 }
