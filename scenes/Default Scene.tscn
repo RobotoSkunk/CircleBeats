@@ -1,13 +1,14 @@
-[gd_scene load_steps=14 format=3 uid="uid://cvyeq2ktigpe1"]
+[gd_scene load_steps=15 format=3 uid="uid://cvyeq2ktigpe1"]
 
 [ext_resource type="ArrayMesh" uid="uid://dy52yn0fjoiiq" path="res://assets/models/Circle.obj" id="1_gt5du"]
+[ext_resource type="ArrayMesh" uid="uid://ddant82bpb4vd" path="res://assets/models/Square.obj" id="1_m701o"]
 [ext_resource type="Script" path="res://scripts/Scenario.cs" id="2_ared2"]
 [ext_resource type="PackedScene" uid="uid://cda5akmjbhhb5" path="res://scenes/scenario_stuff/That Cool Spectrum Bar.tscn" id="2_xq2wh"]
 [ext_resource type="ArrayMesh" uid="uid://b28o3mieaajx7" path="res://assets/models/Player.obj" id="3_5fpd7"]
-
-[sub_resource type="Environment" id="Environment_0mkta"]
+[ext_resource type="Script" path="res://scripts/Player.cs" id="4_0ol4r"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8qar0"]
+transparency = 1
 shading_mode = 0
 albedo_color = Color(0.470588, 0.470588, 0.470588, 1)
 
@@ -18,14 +19,14 @@ albedo_color = Color(0, 0, 0, 0.882353)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tdhbc"]
 shading_mode = 0
-albedo_color = Color(0.705898, 0.705898, 0.705898, 1)
+albedo_color = Color(0.705882, 0.705882, 0.705882, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wxgji"]
 shading_mode = 0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v0qm5"]
 shading_mode = 0
-albedo_color = Color(0.705898, 0.705898, 0.705898, 1)
+albedo_color = Color(0.705882, 0.705882, 0.705882, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_botnc"]
 shading_mode = 0
@@ -38,96 +39,125 @@ size = Vector3(0.5, 0.75, 0.5)
 
 [node name="Default Scene" type="Node3D"]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_0mkta")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(4.95606, -6.84856, 0.0504415, 1.57919, 0.658125, 0.672347, -21.0898, -1.56012, 0.0621983, -0.131845, 0.247326, -0.0261345)
+mesh = ExtResource("1_m701o")
 
-[node name="Camera3D" type="Camera3D" parent="WorldEnvironment"]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="SubViewportContainer"]
+layout_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+msaa_3d = 2
+use_occlusion_culling = true
+audio_listener_enable_3d = true
+size = Vector2i(1270, 720)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
 process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
 
-[node name="Scenario" type="Node3D" parent="." node_paths=PackedStringArray("musicPlayer", "debugLabel", "carrouselContainer", "musicSlider")]
+[node name="Scenario" type="Node3D" parent="SubViewportContainer/SubViewport" node_paths=PackedStringArray("musicPlayer", "debugLabel", "carrouselContainer", "musicSlider", "virtualSlider")]
 script = ExtResource("2_ared2")
 decibelsForce = 0.5
 musicPlayer = NodePath("AudioStreamPlayer")
-debugLabel = NodePath("../Control/RichTextLabel")
+debugLabel = NodePath("../../../Control/RichTextLabel")
 carrouselBarScene = ExtResource("2_xq2wh")
-carrouselContainer = NodePath("Circle/Carrousel Container")
-musicSlider = NodePath("../Control/HSlider")
+carrouselContainer = NodePath("Content/Circle/Carrousel Container")
+musicSlider = NodePath("../../../Control/HSlider")
+virtualSlider = NodePath("../../../Control/HSlider2")
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Scenario"]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Scenario"]
 bus = &"Music"
 
-[node name="Background" type="MeshInstance3D" parent="Scenario"]
+[node name="Background" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Scenario"]
 transform = Transform3D(1500, 0, 0, 0, 1500, 0, 0, 0, 1500, 0, 0, -0.26)
+visible = false
 material_override = SubResource("StandardMaterial3D_8qar0")
 cast_shadow = 0
 mesh = ExtResource("1_gt5du")
-skeleton = NodePath("../..")
+skeleton = NodePath("../../../..")
 
-[node name="Circle" type="Node3D" parent="Scenario"]
+[node name="Content" type="Node3D" parent="SubViewportContainer/SubViewport/Scenario"]
 
-[node name="Shadow" type="MeshInstance3D" parent="Scenario/Circle"]
+[node name="Circle" type="Node3D" parent="SubViewportContainer/SubViewport/Scenario/Content"]
+
+[node name="Shadow" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Scenario/Content/Circle"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, -0.24)
+visible = false
 material_override = SubResource("StandardMaterial3D_i5dbc")
 cast_shadow = 0
 mesh = ExtResource("1_gt5du")
-skeleton = NodePath("../../..")
+skeleton = NodePath("../../../../../..")
 
-[node name="Carrousel Container" type="Node3D" parent="Scenario/Circle"]
+[node name="Carrousel Container" type="Node3D" parent="SubViewportContainer/SubViewport/Scenario/Content/Circle"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
 
-[node name="Outer Circle" type="Node3D" parent="Scenario/Circle"]
+[node name="Outer Circle" type="Node3D" parent="SubViewportContainer/SubViewport/Scenario/Content/Circle"]
 
-[node name="Ring" type="MeshInstance3D" parent="Scenario/Circle/Outer Circle"]
+[node name="Ring" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Scenario/Content/Circle/Outer Circle"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_tdhbc")
 cast_shadow = 0
 mesh = ExtResource("1_gt5du")
-skeleton = NodePath("../../../..")
+skeleton = NodePath("../../../../../../..")
 
-[node name="Center" type="MeshInstance3D" parent="Scenario/Circle/Outer Circle"]
+[node name="Center" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Scenario/Content/Circle/Outer Circle"]
 transform = Transform3D(4.5, 0, 0, 0, 4.5, 0, 0, 0, 4.5, 0, 0, 0.01)
 material_override = SubResource("StandardMaterial3D_wxgji")
 cast_shadow = 0
 mesh = ExtResource("1_gt5du")
-skeleton = NodePath("../../../..")
+skeleton = NodePath("../../../../../../..")
 
-[node name="Inner Circle" type="Node3D" parent="Scenario/Circle"]
+[node name="Inner Circle" type="Node3D" parent="SubViewportContainer/SubViewport/Scenario/Content/Circle"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
 
-[node name="Ring" type="MeshInstance3D" parent="Scenario/Circle/Inner Circle"]
+[node name="Ring" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Scenario/Content/Circle/Inner Circle"]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_v0qm5")
 cast_shadow = 0
 mesh = ExtResource("1_gt5du")
-skeleton = NodePath("../../../..")
+skeleton = NodePath("../../../../../../..")
 
-[node name="Center" type="MeshInstance3D" parent="Scenario/Circle/Inner Circle"]
+[node name="Center" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Scenario/Content/Circle/Inner Circle"]
 transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0.01)
 material_override = SubResource("StandardMaterial3D_botnc")
 cast_shadow = 0
 mesh = ExtResource("1_gt5du")
-skeleton = NodePath("../../../..")
+skeleton = NodePath("../../../../../../..")
 
-[node name="Player" type="CharacterBody3D" parent="Scenario"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, -1.49012e-08)
-visible = false
+[node name="Player" type="CharacterBody3D" parent="SubViewportContainer/SubViewport/Scenario/Content" node_paths=PackedStringArray("dart")]
+script = ExtResource("4_0ol4r")
+speed = 450.0
+dart = NodePath("Model")
 
-[node name="Shadow" type="MeshInstance3D" parent="Scenario/Player"]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, -0.24)
-material_override = SubResource("StandardMaterial3D_i5dbc")
-cast_shadow = 0
-mesh = ExtResource("3_5fpd7")
-skeleton = NodePath("../../..")
-
-[node name="Model" type="MeshInstance3D" parent="Scenario/Player"]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+[node name="Model" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Scenario/Content/Player"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 6, 0)
 material_override = SubResource("StandardMaterial3D_axrou")
 cast_shadow = 0
 mesh = ExtResource("3_5fpd7")
-skeleton = NodePath("../../..")
+skeleton = NodePath("../../../../../..")
 
-[node name="Hitbox" type="CollisionShape3D" parent="Scenario/Player"]
+[node name="Shadow" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Scenario/Content/Player/Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.48)
+visible = false
+material_override = SubResource("StandardMaterial3D_i5dbc")
+cast_shadow = 0
+mesh = ExtResource("3_5fpd7")
+skeleton = NodePath("../../../../../../..")
+
+[node name="Hitbox" type="CollisionShape3D" parent="SubViewportContainer/SubViewport/Scenario/Content/Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
 shape = SubResource("BoxShape3D_2c6wr")
 
 [node name="Control" type="Control" parent="."]
@@ -166,3 +196,23 @@ grow_horizontal = 2
 grow_vertical = 0
 max_value = 1.0
 step = 0.0
+
+[node name="HSlider2" type="HSlider" parent="Control"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 21.0
+offset_top = -62.0
+offset_right = -26.0
+offset_bottom = -46.0
+grow_horizontal = 2
+grow_vertical = 0
+max_value = 1.0
+step = 0.0
+editable = false
+scrollable = false
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)

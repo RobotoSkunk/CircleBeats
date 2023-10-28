@@ -17,6 +17,7 @@
 */
 
 
+using System;
 using ClockBombGames.CircleBeats.Analyzers;
 using Godot;
 
@@ -35,6 +36,7 @@ namespace ClockBombGames.CircleBeats
 		[Export] PackedScene carrouselBarScene;
 		[Export] Node3D carrouselContainer;
 		[Export] Slider musicSlider;
+		[Export] Slider virtualSlider;
 
 
 		AudioBusReader audioBusReader;
@@ -42,12 +44,19 @@ namespace ClockBombGames.CircleBeats
 		int spectrumSpikePosition;
 
 		double carrouselTickTime;
+		double virtualTime;
+		// double timeStart;
+		// double timeDelay;
 
 		float scale;
 		float[] spectrumBuffer;
 
+		long songTicks;
+		long virtualTicks;
+
 		readonly CarrouselBar[][] carrouselBars = new CarrouselBar[5][];
 		readonly int spectrumSamples = 128;
+		readonly int ticksPerSecond = 240;
 
 
 		public override void _Ready()
@@ -57,9 +66,13 @@ namespace ClockBombGames.CircleBeats
 
 			musicPlayer.Stream = music;
 
+			virtualSlider.MaxValue = musicPlayer.Stream.GetLength();
+
 			musicSlider.MaxValue = musicPlayer.Stream.GetLength();
 			musicSlider.ValueChanged += (value) => {
 				musicPlayer.Seek((float)value);
+
+				virtualTicks = TimeToTicks(value);
 			};
 
 
@@ -89,15 +102,18 @@ namespace ClockBombGames.CircleBeats
 			float bumpMultiplier = Mathf.Clamp(output.averageData, 0, 1);
 			float bump = 1f - 0.2f * decibelsForce + 0.5f * bumpMultiplier * decibelsForce;
 
-			debugLabel.Text = "Decibels: " + output.decibels +
+			debugLabel.Text = "FPS: " + Engine.GetFramesPerSecond() +
 							"\nCalculated: " + bump +
-							"\nFPS: " + Engine.GetFramesPerSecond();
+							"\nDecibels: " + output.decibels +
+							"\nTicks: " + virtualTicks + " / " + songTicks;
 
 
 			scale = Mathf.Lerp(scale, bump, 0.75f);
 			Scale = new Vector3(scale, scale, 1f);
 
-			musicSlider.SetValueNoSignal(musicPlayer.GetPlaybackPosition());
+			double playbackPosition = musicPlayer.GetPlaybackPosition();
+			songTicks = TimeToTicks(playbackPosition);
+			musicSlider.SetValueNoSignal(playbackPosition);
 
 
 			#region Spectrum and carousel
@@ -156,9 +172,42 @@ namespace ClockBombGames.CircleBeats
 					}
 				}
 			} else {
+				virtualTicks = 0;
 				musicPlayer.Play();
+
+				// timeStart = Time.GetTicksUsec();
+				// timeDelay = AudioServer.GetTimeToNextMix() + AudioServer.GetOutputLatency();
 			}
 			#endregion
+		}
+
+		public override void _PhysicsProcess(double delta)
+		{
+			// if (musicPlayer.Playing) {
+			// 	virtualTime = (Time.GetTicksUsec() - timeStart) / 1000000f;
+			// 	virtualTime = Math.Max(0, virtualTime - timeDelay);
+
+			// 	virtualSlider.SetValueNoSignal(virtualTime);
+			// }
+
+			while (songTicks > virtualTicks) {
+				virtualTicks++;
+
+			}
+
+			virtualTime = TicksToTime(virtualTicks);
+			virtualSlider.SetValueNoSignal(virtualTime);
+		}
+
+
+		private double TicksToTime(long ticks)
+		{
+			return ticks * (1.0 / ticksPerSecond);
+		}
+
+		private long TimeToTicks(double time)
+		{
+			return (long)(time / (1.0 / ticksPerSecond));
 		}
 	}
 }
