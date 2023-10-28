@@ -2,7 +2,6 @@
 
 [sub_resource type="AudioEffectSpectrumAnalyzer" id="AudioEffectSpectrumAnalyzer_38we8"]
 resource_name = "SpectrumAnalyzer"
-buffer_length = 4.0
 
 [sub_resource type="AudioEffectCapture" id="AudioEffectCapture_c8evt"]
 resource_name = "Capture"

@@ -26,8 +26,8 @@ namespace ClockBombGames.CircleBeats
 	public partial class Scenario : Node3D
 	{
 		[ExportCategory("Properties")]
-		[Export(PropertyHint.Range, "0, 1, 0.01")]
-		float decibelsForce = 1f;
+		[Export(PropertyHint.Range, "0, 1, 0.01")] float decibelsForce = 1f;
+		[Export] AudioStream music;
 
 		[ExportCategory("Components")]
 		[Export] AudioStreamPlayer musicPlayer;
@@ -55,8 +55,9 @@ namespace ClockBombGames.CircleBeats
 			audioBusReader = new AudioBusReader(musicPlayer.Bus);
 			spectrumBuffer = new float[spectrumSamples];
 
-			musicSlider.MaxValue = musicPlayer.Stream.GetLength();
+			musicPlayer.Stream = music;
 
+			musicSlider.MaxValue = musicPlayer.Stream.GetLength();
 			musicSlider.ValueChanged += (value) => {
 				musicPlayer.Seek((float)value);
 			};
@@ -88,7 +89,9 @@ namespace ClockBombGames.CircleBeats
 			float bumpMultiplier = Mathf.Clamp(output.averageData, 0, 1);
 			float bump = 1f - 0.2f * decibelsForce + 0.5f * bumpMultiplier * decibelsForce;
 
-			debugLabel.Text = $"Decibels: {output.decibels}\nCalculated: {bump}\nFPS: {Engine.GetFramesPerSecond()}";
+			debugLabel.Text = "Decibels: " + output.decibels +
+							"\nCalculated: " + bump +
+							"\nFPS: " + Engine.GetFramesPerSecond();
 
 
 			scale = Mathf.Lerp(scale, bump, 0.75f);
@@ -101,7 +104,7 @@ namespace ClockBombGames.CircleBeats
 
 			if (musicPlayer.Playing) {
 				float[] spectrum = new float[spectrumSamples];
-				audioBusReader.GetSpectrum(ref spectrum, 8000);
+				audioBusReader.GetSpectrum(ref spectrum, 24000);
 
 				System.Array.Clear(spectrumBuffer, 0, spectrumBuffer.Length);
 

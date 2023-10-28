@@ -50,8 +50,6 @@ namespace ClockBombGames.CircleBeats.Analyzers
 		float decibels = -160f;
 		float averageData = 0f;
 
-		readonly int minDb = 35;
-
 
 		public AudioBusReader(string bus) {
 			busIndex = AudioServer.GetBusIndex(bus);
@@ -135,15 +133,21 @@ namespace ClockBombGames.CircleBeats.Analyzers
 			for (int i = 0; i < spectrum.Length; i++) {
 				float hz = i * maxFrequency / spectrum.Length;
 
-				Vector2 range = spectrumAnalyzer.GetMagnitudeForFrequencyRange(
+				Vector2 rangeAvg = spectrumAnalyzer.GetMagnitudeForFrequencyRange(
 					prevHz,
 					hz,
 					AudioEffectSpectrumAnalyzerInstance.MagnitudeMode.Average
 				);
 
-				// spectrum[i] = Mathf.Clamp((minDb + Mathf.LinearToDb(range.Length())) / minDb, 0f, 1f);
+				Vector2 rangeMax = spectrumAnalyzer.GetMagnitudeForFrequencyRange(
+					prevHz,
+					hz,
+					AudioEffectSpectrumAnalyzerInstance.MagnitudeMode.Max
+				);
 
-				spectrum[i] = Mathf.Abs(range.X + range.Y) / 2f * 10f;
+				Vector2 range = (rangeAvg + rangeMax) / 2f;
+
+				spectrum[i] = (range.X + range.Y) / 2f * 10f;
 				prevHz = hz;
 			}
 		}
