@@ -50,6 +50,7 @@ namespace ClockBombGames.CircleBeats
 
 		float scale;
 		float[] spectrumBuffer;
+		float[] spectrum;
 
 		long songTicks;
 		long virtualTicks;
@@ -63,6 +64,7 @@ namespace ClockBombGames.CircleBeats
 		{
 			audioBusReader = new AudioBusReader(musicPlayer.Bus);
 			spectrumBuffer = new float[spectrumSamples];
+			spectrum = new float[spectrumSamples];
 
 			musicPlayer.Stream = music;
 
@@ -119,7 +121,6 @@ namespace ClockBombGames.CircleBeats
 			#region Spectrum and carousel
 
 			if (musicPlayer.Playing) {
-				float[] spectrum = new float[spectrumSamples];
 				audioBusReader.GetSpectrum(ref spectrum, 24000);
 
 				System.Array.Clear(spectrumBuffer, 0, spectrumBuffer.Length);
