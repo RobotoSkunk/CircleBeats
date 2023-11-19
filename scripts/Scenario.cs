@@ -102,7 +102,8 @@ namespace ClockBombGames.CircleBeats
 			float bump = 1f - 0.2f * decibelsForce + 0.5f * output.averageData * decibelsForce;
 
 			debugLabel.Text = "FPS: " + Engine.GetFramesPerSecond() +
-							"\nCalculated: " + bump +
+							"\nDraw Calls: " + Performance.GetMonitor(Performance.Monitor.RenderTotalDrawCallsInFrame) +
+							"\nAverage Audio Data: " + output.averageData +
 							"\nDecibels: " + output.decibels +
 							"\nTicks: " + virtualTicks + " / " + songTicks;
 
