@@ -99,8 +99,7 @@ namespace ClockBombGames.CircleBeats
 		{
 			AudioBusReaderOutput output = audioBusReader.CalculateOutput();
 
-			float bumpMultiplier = Mathf.Clamp(output.averageData, 0, 1);
-			float bump = 1f - 0.2f * decibelsForce + 0.5f * bumpMultiplier * decibelsForce;
+			float bump = 1f - 0.2f * decibelsForce + 0.5f * output.averageData * decibelsForce;
 
 			debugLabel.Text = "FPS: " + Engine.GetFramesPerSecond() +
 							"\nCalculated: " + bump +
@@ -183,16 +182,8 @@ namespace ClockBombGames.CircleBeats
 
 		public override void _PhysicsProcess(double delta)
 		{
-			// if (musicPlayer.Playing) {
-			// 	virtualTime = (Time.GetTicksUsec() - timeStart) / 1000000f;
-			// 	virtualTime = Math.Max(0, virtualTime - timeDelay);
-
-			// 	virtualSlider.SetValueNoSignal(virtualTime);
-			// }
-
 			while (songTicks > virtualTicks) {
 				virtualTicks++;
-
 			}
 
 			virtualTime = TicksToTime(virtualTicks);
