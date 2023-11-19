@@ -131,7 +131,7 @@ namespace ClockBombGames.CircleBeats.Analyzers
 			float prevHz = 0f;
 
 			for (int i = 0; i < spectrum.Length; i++) {
-				float hz = i * maxFrequency / spectrum.Length;
+				float hz = (i + 1) * maxFrequency / spectrum.Length;
 
 				Vector2 rangeAvg = spectrumAnalyzer.GetMagnitudeForFrequencyRange(
 					prevHz,
