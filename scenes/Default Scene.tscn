@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://cvyeq2ktigpe1"]
+[gd_scene load_steps=16 format=3 uid="uid://cvyeq2ktigpe1"]
 
 [ext_resource type="ArrayMesh" uid="uid://dy52yn0fjoiiq" path="res://assets/models/Circle.obj" id="1_gt5du"]
 [ext_resource type="ArrayMesh" uid="uid://ddant82bpb4vd" path="res://assets/models/Square.obj" id="1_m701o"]
 [ext_resource type="Script" path="res://scripts/Scenario.cs" id="2_ared2"]
 [ext_resource type="PackedScene" uid="uid://cda5akmjbhhb5" path="res://scenes/scenario_stuff/That Cool Spectrum Bar.tscn" id="2_xq2wh"]
 [ext_resource type="ArrayMesh" uid="uid://b28o3mieaajx7" path="res://assets/models/Player.obj" id="3_5fpd7"]
+[ext_resource type="AudioStream" uid="uid://b7icroaorlt3e" path="res://assets/music/test/Laur - Sound Chimera.MP3" id="3_p4udu"]
 [ext_resource type="Script" path="res://scripts/Player.cs" id="4_0ol4r"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8qar0"]
@@ -51,6 +52,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="TextureRect" type="TextureRect" parent="SubViewportContainer"]
+visible = false
 layout_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
@@ -70,6 +72,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
 [node name="Scenario" type="Node3D" parent="SubViewportContainer/SubViewport" node_paths=PackedStringArray("musicPlayer", "debugLabel", "carrouselContainer", "musicSlider", "virtualSlider")]
 script = ExtResource("2_ared2")
 decibelsForce = 0.5
+music = ExtResource("3_p4udu")
 musicPlayer = NodePath("AudioStreamPlayer")
 debugLabel = NodePath("../../../Control/RichTextLabel")
 carrouselBarScene = ExtResource("2_xq2wh")
