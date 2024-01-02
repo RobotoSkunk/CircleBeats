@@ -147,7 +147,7 @@ namespace ClockBombGames.CircleBeats.Analyzers
 
 				Vector2 range = (rangeAvg + rangeMax) / 2f;
 
-				spectrum[i] = (range.X + range.Y) / 2f * 10f;
+				spectrum[i] = Mathf.Max(range.X, range.Y) * 10f;
 				prevHz = hz;
 			}
 		}

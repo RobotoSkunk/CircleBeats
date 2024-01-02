@@ -121,9 +121,9 @@ namespace ClockBombGames.CircleBeats
 			#region Spectrum and carousel
 
 			if (musicPlayer.Playing) {
-				audioBusReader.GetSpectrum(ref spectrum, 24000);
+				audioBusReader.GetSpectrum(ref spectrum, 16000);
 
-				System.Array.Clear(spectrumBuffer, 0, spectrumBuffer.Length);
+				Array.Clear(spectrumBuffer, 0, spectrumBuffer.Length);
 
 
 				// Get spectrum data
@@ -148,16 +148,18 @@ namespace ClockBombGames.CircleBeats
 				for (int i = 0; i < spectrumSamples; i++) {
 					barY = spectrumBuffer[i];
 
-					for (int r = 0; r < carrouselBars.Length; r++) {
-						if (carrouselBars[r] == null || carrouselBars[r][i] == null) {
-							continue;
-						}
+					if (barY > 0.005f) {
+						for (int r = 0; r < carrouselBars.Length; r++) {
+							if (carrouselBars[r] == null || carrouselBars[r][i] == null) {
+								continue;
+							}
 
 
-						float currentSize = carrouselBars[r][i].Size;
+							float currentSize = carrouselBars[r][i].Size;
 
-						if (barY > currentSize) {
-							carrouselBars[r][i].Size = Mathf.Clamp(barY, 0f, 1f) * 10f;
+							if (barY > currentSize) {
+								carrouselBars[r][i].Size = Mathf.Clamp(barY, 0f, 1f) * 10f;
+							}
 						}
 					}
 				}

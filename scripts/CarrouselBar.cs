@@ -40,9 +40,15 @@ namespace ClockBombGames.CircleBeats
 		}
 
 		public override void _Process(double delta) {
-			Scale = new(Size, 1f, 1f);
+			if (Size > 0f) {
+				Scale = new(Size, 1f, 1f);
 
-			Size = Mathf.Lerp(Size, 0f, 0.1f * RSMath.FixedDelta(delta));
+				Size = Mathf.Lerp(Size, 0f, 0.1f * RSMath.FixedDelta(delta));
+
+				if (Size < 0.01f) {
+					Size = 0f;
+				}
+			}
 		}
 	}
 }
