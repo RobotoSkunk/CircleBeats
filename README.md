@@ -1,3 +1,7 @@
+**⚠️ This branch has been saved for historical reasons. It is not recommended to work on this branch. ⚠️**
+
+**Use the main branch instead.**
+
 # CircleBeats
 
 CircleBeats it's a videogame about a triangle spinning around a circle avoiding all the obstacles that appears
