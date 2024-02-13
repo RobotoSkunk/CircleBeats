@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cvyeq2ktigpe1"]
+[gd_scene load_steps=16 format=3 uid="uid://cvyeq2ktigpe1"]
 
 [ext_resource type="ArrayMesh" uid="uid://dy52yn0fjoiiq" path="res://assets/models/Circle.obj" id="1_gt5du"]
 [ext_resource type="ArrayMesh" uid="uid://ddant82bpb4vd" path="res://assets/models/Square.obj" id="1_m701o"]
@@ -8,18 +8,21 @@
 [ext_resource type="Script" path="res://scripts/Player.cs" id="4_0ol4r"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8qar0"]
-transparency = 1
 shading_mode = 0
 albedo_color = Color(0.470588, 0.470588, 0.470588, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i5dbc"]
-transparency = 1
 shading_mode = 0
-albedo_color = Color(0, 0, 0, 0.882353)
+albedo_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tdhbc"]
 shading_mode = 0
 albedo_color = Color(0.705882, 0.705882, 0.705882, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aptxg"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 0.858824)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wxgji"]
 shading_mode = 0
@@ -41,6 +44,7 @@ size = Vector3(0.5, 0.75, 0.5)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(4.95606, -6.84856, 0.0504415, 1.57919, 0.658125, 0.672347, -21.0898, -1.56012, 0.0621983, -0.131845, 0.247326, -0.0261345)
+visible = false
 mesh = ExtResource("1_m701o")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
@@ -49,10 +53,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="TextureRect" type="TextureRect" parent="SubViewportContainer"]
-visible = false
-layout_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
 own_world_3d = true
@@ -91,12 +91,12 @@ mesh = ExtResource("1_gt5du")
 skeleton = NodePath("../../../..")
 
 [node name="Content" type="Node3D" parent="SubViewportContainer/SubViewport/Scenario"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Circle" type="Node3D" parent="SubViewportContainer/SubViewport/Scenario/Content"]
 
 [node name="Shadow" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Scenario/Content/Circle"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, -0.24)
-visible = false
 material_override = SubResource("StandardMaterial3D_i5dbc")
 cast_shadow = 0
 mesh = ExtResource("1_gt5du")
@@ -110,6 +110,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
 [node name="Ring" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Scenario/Content/Circle/Outer Circle"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_tdhbc")
+cast_shadow = 0
+mesh = ExtResource("1_gt5du")
+skeleton = NodePath("../../../../../../..")
+
+[node name="Ring2" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Scenario/Content/Circle/Outer Circle"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, -0.274758)
+material_override = SubResource("StandardMaterial3D_aptxg")
 cast_shadow = 0
 mesh = ExtResource("1_gt5du")
 skeleton = NodePath("../../../../../../..")
@@ -152,7 +159,6 @@ skeleton = NodePath("../../../../../..")
 
 [node name="Shadow" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Scenario/Content/Player/Model"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.48)
-visible = false
 material_override = SubResource("StandardMaterial3D_i5dbc")
 cast_shadow = 0
 mesh = ExtResource("3_5fpd7")
