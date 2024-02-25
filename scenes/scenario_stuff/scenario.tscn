@@ -112,9 +112,10 @@ cast_shadow = 0
 mesh = ExtResource("4_mdrxw")
 skeleton = NodePath("../../../../../../..")
 
-[node name="Player" type="CharacterBody3D" parent="Content"]
+[node name="Player" type="CharacterBody3D" parent="Content" node_paths=PackedStringArray("dart")]
 script = ExtResource("5_2a4ub")
 speed = 450.0
+dart = NodePath("Model")
 
 [node name="Model" type="MeshInstance3D" parent="Content/Player"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 6, 0)

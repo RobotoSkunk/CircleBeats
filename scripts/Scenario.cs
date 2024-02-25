@@ -57,7 +57,7 @@ namespace ClockBombGames.CircleBeats
 
 		readonly CarrouselBar[][] carrouselBars = new CarrouselBar[5][];
 		readonly int spectrumSamples = 128;
-		readonly int ticksPerSecond = 240;
+		readonly int ticksPerSecond = 120;
 
 
 		public override void _Ready()
@@ -139,14 +139,12 @@ namespace ClockBombGames.CircleBeats
 					}
 				}
 
-				float barY;
-
 				// i = spectrum index
 				// r = carrousel spike index
 
 				// Update carrousel bars
 				for (int i = 0; i < spectrumSamples; i++) {
-					barY = spectrumBuffer[i];
+					float barY = spectrumBuffer[i];
 
 					if (barY > 0.005f) {
 						for (int r = 0; r < carrouselBars.Length; r++) {

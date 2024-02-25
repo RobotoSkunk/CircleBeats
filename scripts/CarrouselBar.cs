@@ -39,7 +39,8 @@ namespace ClockBombGames.CircleBeats
 			Position = new Vector3(pos.X, pos.Y, 0);
 		}
 
-		public override void _Process(double delta) {
+		public override void _Process(double delta)
+		{
 			if (Size > 0f) {
 				Scale = new(Size, 1f, 1f);
 
