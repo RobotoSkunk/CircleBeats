@@ -39,11 +39,13 @@ shading_mode = 0
 [sub_resource type="BoxShape3D" id="BoxShape3D_2c6wr"]
 size = Vector3(0.5, 0.75, 0.5)
 
-[node name="Scenario" type="Node3D"]
+[node name="Scenario" type="Node3D" node_paths=PackedStringArray("musicPlayer", "carrouselContainer")]
 transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 1, 0, 0, 0)
 script = ExtResource("1_qcnj4")
 decibelsForce = 0.5
+musicPlayer = NodePath("AudioStreamPlayer")
 carrouselBarScene = ExtResource("3_3i72d")
+carrouselContainer = NodePath("Content/Circle/Carrousel Container")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 bus = &"Music"
