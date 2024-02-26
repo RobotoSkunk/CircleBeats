@@ -1,0 +1,136 @@
+[gd_scene load_steps=15 format=3 uid="uid://blex4yt0sysmo"]
+
+[ext_resource type="Script" path="res://scripts/Scenario.cs" id="1_qcnj4"]
+[ext_resource type="PackedScene" uid="uid://cda5akmjbhhb5" path="res://scenes/scenario_stuff/That Cool Spectrum Bar.tscn" id="3_3i72d"]
+[ext_resource type="ArrayMesh" uid="uid://dy52yn0fjoiiq" path="res://assets/models/Circle.obj" id="4_mdrxw"]
+[ext_resource type="Script" path="res://scripts/Player.cs" id="5_2a4ub"]
+[ext_resource type="ArrayMesh" uid="uid://b28o3mieaajx7" path="res://assets/models/Player.obj" id="6_ti46p"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8qar0"]
+shading_mode = 0
+albedo_color = Color(0.470588, 0.470588, 0.470588, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i5dbc"]
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tdhbc"]
+shading_mode = 0
+albedo_color = Color(0.705882, 0.705882, 0.705882, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aptxg"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 0.858824)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wxgji"]
+shading_mode = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v0qm5"]
+shading_mode = 0
+albedo_color = Color(0.705882, 0.705882, 0.705882, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_botnc"]
+shading_mode = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_axrou"]
+shading_mode = 0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2c6wr"]
+size = Vector3(0.5, 0.75, 0.5)
+
+[node name="Scenario" type="Node3D" node_paths=PackedStringArray("musicPlayer", "carrouselContainer")]
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 1, 0, 0, 0)
+script = ExtResource("1_qcnj4")
+decibelsForce = 0.5
+musicPlayer = NodePath("AudioStreamPlayer")
+carrouselBarScene = ExtResource("3_3i72d")
+carrouselContainer = NodePath("Content/Circle/Carrousel Container")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+bus = &"Music"
+
+[node name="Background" type="MeshInstance3D" parent="."]
+transform = Transform3D(1500, 0, 0, 0, 1500, 0, 0, 0, 1500, 0, 0, -0.26)
+visible = false
+material_override = SubResource("StandardMaterial3D_8qar0")
+cast_shadow = 0
+mesh = ExtResource("4_mdrxw")
+skeleton = NodePath("../../../..")
+
+[node name="Content" type="Node3D" parent="."]
+
+[node name="Circle" type="Node3D" parent="Content"]
+
+[node name="Shadow" type="MeshInstance3D" parent="Content/Circle"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, -0.24)
+material_override = SubResource("StandardMaterial3D_i5dbc")
+cast_shadow = 0
+mesh = ExtResource("4_mdrxw")
+skeleton = NodePath("../../../../../..")
+
+[node name="Carrousel Container" type="Node3D" parent="Content/Circle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
+
+[node name="Outer Circle" type="Node3D" parent="Content/Circle"]
+
+[node name="Ring" type="MeshInstance3D" parent="Content/Circle/Outer Circle"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_tdhbc")
+cast_shadow = 0
+mesh = ExtResource("4_mdrxw")
+skeleton = NodePath("../../../../../../..")
+
+[node name="Ring2" type="MeshInstance3D" parent="Content/Circle/Outer Circle"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, -0.274758)
+material_override = SubResource("StandardMaterial3D_aptxg")
+cast_shadow = 0
+mesh = ExtResource("4_mdrxw")
+skeleton = NodePath("../../../../../../..")
+
+[node name="Center" type="MeshInstance3D" parent="Content/Circle/Outer Circle"]
+transform = Transform3D(4.5, 0, 0, 0, 4.5, 0, 0, 0, 4.5, 0, 0, 0.01)
+material_override = SubResource("StandardMaterial3D_wxgji")
+cast_shadow = 0
+mesh = ExtResource("4_mdrxw")
+skeleton = NodePath("../../../../../../..")
+
+[node name="Inner Circle" type="Node3D" parent="Content/Circle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+
+[node name="Ring" type="MeshInstance3D" parent="Content/Circle/Inner Circle"]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_v0qm5")
+cast_shadow = 0
+mesh = ExtResource("4_mdrxw")
+skeleton = NodePath("../../../../../../..")
+
+[node name="Center" type="MeshInstance3D" parent="Content/Circle/Inner Circle"]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0.01)
+material_override = SubResource("StandardMaterial3D_botnc")
+cast_shadow = 0
+mesh = ExtResource("4_mdrxw")
+skeleton = NodePath("../../../../../../..")
+
+[node name="Player" type="CharacterBody3D" parent="Content" node_paths=PackedStringArray("dart")]
+script = ExtResource("5_2a4ub")
+speed = 450.0
+dart = NodePath("Model")
+
+[node name="Model" type="MeshInstance3D" parent="Content/Player"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 6, 0)
+material_override = SubResource("StandardMaterial3D_axrou")
+cast_shadow = 0
+mesh = ExtResource("6_ti46p")
+skeleton = NodePath("../../../../../..")
+
+[node name="Shadow" type="MeshInstance3D" parent="Content/Player/Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.48)
+material_override = SubResource("StandardMaterial3D_i5dbc")
+cast_shadow = 0
+mesh = ExtResource("6_ti46p")
+skeleton = NodePath("../../../../../../..")
+
+[node name="Hitbox" type="CollisionShape3D" parent="Content/Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+shape = SubResource("BoxShape3D_2c6wr")
