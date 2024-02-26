@@ -25,15 +25,39 @@ namespace ClockBombGames.CircleBeats
 {
 	public partial class CarrouselBar : Node3D
 	{
-		public float Angle { get; set; }
 		public float Size { get; set; }
 
+		Scenario scenario;
+		int carrouselIndex;
 
-		public void CalculatePositions()
+
+		private int Index
 		{
+			get
+			{
+				int index = carrouselIndex + scenario.CarrouselIndexPosition;
+
+				if (index >= scenario.Spectrum.Length) {
+					index -= scenario.Spectrum.Length;
+
+				} else if (index < 0) {
+					index += scenario.Spectrum.Length;
+				}
+
+
+				return index;
+			}
+		}
+
+
+		public void SetUp(float angle, Scenario scenario, int carrouselIndex)
+		{
+			this.scenario = scenario;
+			this.carrouselIndex = carrouselIndex;
+
 			Scale = Vector3.Zero;
 
-			RotationDegrees = (Angle - 90f) * Vector3.Forward;
+			RotationDegrees = (angle - 90f) * Vector3.Forward;
 
 			Vector2 pos = new Vector2(5f, 0).Rotated(Mathf.DegToRad(RotationDegrees.Z));
 			Position = new Vector3(pos.X, pos.Y, 0);
@@ -41,6 +65,12 @@ namespace ClockBombGames.CircleBeats
 
 		public override void _Process(double delta)
 		{
+			float value = scenario.Spectrum[Index];
+
+			if (value > Size) {
+				Size = Mathf.Clamp(value, 0, 1) * 10f;
+			}
+
 			if (Size > 0f) {
 				Scale = new(Size, 1f, 1f);
 

@@ -41,6 +41,7 @@ namespace ClockBombGames.CircleBeats
 
 		AudioBusReader audioBusReader;
 
+
 		int spectrumSpikePosition;
 
 		double carrouselTickTime;
@@ -49,7 +50,6 @@ namespace ClockBombGames.CircleBeats
 		// double timeDelay;
 
 		float scale;
-		float[] spectrumBuffer;
 		float[] spectrum;
 
 		long songTicks;
@@ -59,11 +59,27 @@ namespace ClockBombGames.CircleBeats
 		readonly int spectrumSamples = 128;
 		readonly int ticksPerSecond = 120;
 
+		public float[] Spectrum
+		{
+			get
+			{
+				return spectrum;
+			}
+		}
+
+		public int CarrouselIndexPosition
+		{
+			get
+			{
+				return spectrumSpikePosition;
+			}
+		}
+
+
 
 		public override void _Ready()
 		{
 			audioBusReader = new AudioBusReader(musicPlayer.Bus);
-			spectrumBuffer = new float[spectrumSamples];
 			spectrum = new float[spectrumSamples];
 
 			musicPlayer.Stream = music;
@@ -89,8 +105,7 @@ namespace ClockBombGames.CircleBeats
 
 					CarrouselBar bar = carrouselBarScene.Instantiate<CarrouselBar>();
 					carrouselContainer.AddChild(bar);
-					bar.Angle = angle;
-					bar.CalculatePositions();
+					bar.SetUp(angle, this, i);
 
 					carrouselBars[j][i] = bar;
 				}
@@ -122,45 +137,6 @@ namespace ClockBombGames.CircleBeats
 
 			if (musicPlayer.Playing) {
 				audioBusReader.GetSpectrum(ref spectrum, 16000);
-
-				Array.Clear(spectrumBuffer, 0, spectrumBuffer.Length);
-
-
-				// Get spectrum data
-				for (int i = 0; i < spectrum.Length; i++) {
-					int j = i + spectrumSpikePosition;
-
-					if (j >= spectrum.Length) {
-						j -= spectrum.Length;
-					}
-
-					if (spectrum[j] > spectrumBuffer[i]) {
-						spectrumBuffer[i] = spectrum[j];
-					}
-				}
-
-				// i = spectrum index
-				// r = carrousel spike index
-
-				// Update carrousel bars
-				for (int i = 0; i < spectrumSamples; i++) {
-					float barY = spectrumBuffer[i];
-
-					if (barY > 0.005f) {
-						for (int r = 0; r < carrouselBars.Length; r++) {
-							if (carrouselBars[r] == null || carrouselBars[r][i] == null) {
-								continue;
-							}
-
-
-							float currentSize = carrouselBars[r][i].Size;
-
-							if (barY > currentSize) {
-								carrouselBars[r][i].Size = Mathf.Clamp(barY, 0f, 1f) * 10f;
-							}
-						}
-					}
-				}
 
 				// Spin carrousel
 				carrouselTickTime += delta;
