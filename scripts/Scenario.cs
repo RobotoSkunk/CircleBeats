@@ -140,6 +140,7 @@ namespace ClockBombGames.CircleBeats
 
 				// Spin carrousel
 				carrouselTickTime += delta;
+
 				if (carrouselTickTime > (1.0 / 15.0)) {
 					carrouselTickTime = 0.0;
 					spectrumSpikePosition -= 5;

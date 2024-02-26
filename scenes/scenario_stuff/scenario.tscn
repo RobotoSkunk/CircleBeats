@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dpofm4n3mc88k"]
+[gd_scene load_steps=15 format=3 uid="uid://blex4yt0sysmo"]
 
 [ext_resource type="Script" path="res://scripts/Scenario.cs" id="1_qcnj4"]
 [ext_resource type="PackedScene" uid="uid://cda5akmjbhhb5" path="res://scenes/scenario_stuff/That Cool Spectrum Bar.tscn" id="3_3i72d"]

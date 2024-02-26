@@ -25,10 +25,11 @@ namespace ClockBombGames.CircleBeats
 {
 	public partial class CarrouselBar : Node3D
 	{
-		public float Size { get; set; }
+		int carrouselIndex;
+
+		float size;
 
 		Scenario scenario;
-		int carrouselIndex;
 
 
 		private int Index
@@ -67,17 +68,17 @@ namespace ClockBombGames.CircleBeats
 		{
 			float value = scenario.Spectrum[Index];
 
-			if (value > Size) {
-				Size = Mathf.Clamp(value, 0, 1) * 10f;
+			if (value > size) {
+				size = Mathf.Clamp(value, 0, 1) * 10f;
 			}
 
-			if (Size > 0f) {
-				Scale = new(Size, 1f, 1f);
+			if (size > 0f) {
+				Scale = new(size, 1f, 1f);
 
-				Size = Mathf.Lerp(Size, 0f, 0.1f * RSMath.FixedDelta(delta));
+				size = Mathf.Lerp(size, 0f, 0.1f * RSMath.FixedDelta(delta));
 
-				if (Size < 0.01f) {
-					Size = 0f;
+				if (size < 0.01f) {
+					size = 0f;
 				}
 			}
 		}

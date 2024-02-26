@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cvyeq2ktigpe1"]
 
 [ext_resource type="ArrayMesh" uid="uid://ddant82bpb4vd" path="res://assets/models/Square.obj" id="1_m701o"]
-[ext_resource type="PackedScene" uid="uid://dpofm4n3mc88k" path="res://scenes/scenario_stuff/scenario.tscn" id="2_go7nh"]
+[ext_resource type="PackedScene" uid="uid://blex4yt0sysmo" path="res://scenes/scenario_stuff/scenario.tscn" id="2_go7nh"]
 
 [node name="Default Scene" type="Node3D"]
 
