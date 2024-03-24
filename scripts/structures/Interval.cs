@@ -25,16 +25,15 @@ namespace ClockBombGames.CircleBeats.Structures
 {
 	interface IInterval
 	{
-		float start { get; }
-		float end { get; }
+		float Start { get; }
+		float End { get; }
 
-		public bool Contains(float x);
-		public bool Intersects(float start, float end);
+		public bool HasTime(float time);
 	}
 
 	interface IInterval<TValue> : IInterval
 	{
-		public TValue value { get; }
+		public TValue Value { get; }
 	}
 
 
@@ -43,13 +42,9 @@ namespace ClockBombGames.CircleBeats.Structures
 	/// </summary>
 	public struct Interval<TValue> : IInterval<TValue>, IEquatable<Interval<TValue>>
 	{
-		public TValue value => _value;
-		public float start => _start;
-		public float end => _end;
-
-		TValue _value;
-		float _start;
-		float _end;
+		public TValue Value { get; private set; }
+		public float Start { get; private set; }
+		public float End { get; private set; }
 
 
 		public Interval(float start, float end, TValue value)
@@ -58,62 +53,72 @@ namespace ClockBombGames.CircleBeats.Structures
 				throw new ArgumentException("Start must be less than or equal to end.");
 			}
 
-			this._start = start;
-			this._end = end;
-			this._value = value;
+			Start = start;
+			End = end;
+			Value = value;
 		}
 
 		public Interval(Interval interval, TValue value)
 		{
-			this._start = interval.start;
-			this._end = interval.end;
-			this._value = value;
+			Start = interval.Start;
+			End = interval.End;
+			Value = value;
 		}
 
 
-		public bool Contains(float x)
+		public readonly bool HasTime(float time)
 		{
-			return x >= _start && x <= _end;
+			return Start <= time && End >= time;
 		}
 
-		public bool Intersects(float start, float end)
+
+		public readonly int CompareTo(Interval<TValue> other)
 		{
-			return this._start <= end && this._end >= start;
+			if (Start < other.Start) {
+				return -1;
+			}
+
+			if (Start == other.Start) {
+				if (End < other.End) {
+					return -1;
+				}
+				
+				if (End == other.End) {
+					return 0;
+				}
+			}
+
+			return 1;
 		}
 
-		public bool Overlaps(Interval<TValue> other)
+
+		public readonly bool Equals(Interval<TValue> other)
 		{
-			return Intersects(other._start, other._end);
+			return Start == other.Start
+				&& End == other.End
+				&& EqualityComparer<TValue>.Default.Equals(Value, other.Value);
 		}
 
-
-		public bool Equals(Interval<TValue> other)
-		{
-			return start == other.start
-				&& end == other.end
-				&& EqualityComparer<TValue>.Default.Equals(value, other.value);
-		}
-
-		public override bool Equals(object obj)
+		public readonly override bool Equals(object obj)
 		{
 			return obj is Interval<TValue> interval && Equals(interval);
 		}
 
-		public override int GetHashCode()
+		public readonly override int GetHashCode()
 		{
-			return HashCode.Combine(start, end, value);
+			return HashCode.Combine(Start, End, Value);
 		}
 
-		public override string ToString()
+		public readonly override string ToString()
 		{
-			return String.Concat("([", start.ToString(), ", ", end.ToString(), "] ", value.ToString(), ")");
+			return string.Concat("([", Start.ToString(), ", ", End.ToString(), "] ", Value.ToString(), ")");
 		}
 
 		public static bool operator ==(Interval<TValue> a, Interval<TValue> b)
 		{
-			return a.start == b.start
-				&& a.end == b.end
-				&& a.value.Equals(b.value);
+			return a.Start == b.Start
+				&& a.End == b.End
+				&& a.Value.Equals(b.Value);
 		}
 
 		public static bool operator !=(Interval<TValue> a, Interval<TValue> b)
@@ -129,62 +134,72 @@ namespace ClockBombGames.CircleBeats.Structures
 	/// </summary>
 	public struct Interval : IInterval, IEquatable<Interval>
 	{
-		float _start, _end;
-
-		public float start => _start;
-		public float end => _end;
+		public float Start { get; private set; }
+		public float End { get; private set; }
 
 
 		public Interval(float start, float end)
 		{
-			if (start > end) throw new ArgumentException("Start must be less than or equal to end.");
+			if (start > end) {
+				throw new ArgumentException("Start must be less than or equal to end.");
+			}
 
-			this._start = start;
-			this._end = end;
+			Start = start;
+			End = end;
 		}
 
 
-		public bool Contains(float x)
+		public readonly bool HasTime(float time)
 		{
-			return x >= _start && x <= _end;
+			return Start <= time && End >= time;
 		}
 
-		public bool Intersects(float start, float end)
+		public readonly int CompareTo(Interval other)
 		{
-			return this._start <= end && this._end >= start;
+			if (Start < other.Start) {
+				return -1;
+			}
+
+			if (Start == other.Start) {
+				if (End < other.End) {
+					return -1;
+				}
+				
+				if (End == other.End) {
+					return 0;
+				}
+			}
+
+			return 1;
 		}
 
-		public bool Overlaps(Interval other)
+
+		public readonly bool Equals(Interval other)
 		{
-			return Intersects(other._start, other._end);
+			return Start == other.Start
+				&& End == other.End;
 		}
 
-		public bool Equals(Interval other)
-		{
-			return start == other.start
-				&& end == other.end;
-		}
-
-		public override bool Equals(object obj)
+		public readonly override bool Equals(object obj)
 		{
 			return obj is Interval interval && Equals(interval);
 		}
 
-		public override int GetHashCode()
+		public readonly override int GetHashCode()
 		{
-			return HashCode.Combine(start, end);
+			return HashCode.Combine(Start, End);
 		}
 
-		public override string ToString()
+		public readonly override string ToString()
 		{
-			return String.Concat("([", start.ToString(), ", ", end.ToString(), "])");
+			return string.Concat("([", Start.ToString(), ", ", End.ToString(), "])");
 		}
 
 
 		public static bool operator ==(Interval a, Interval b)
 		{
-			return a.start == b.start
-				&& a.end == b.end;
+			return a.Start == b.Start
+				&& a.End == b.End;
 		}
 
 		public static bool operator !=(Interval a, Interval b)
