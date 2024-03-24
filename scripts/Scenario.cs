@@ -17,7 +17,6 @@
 */
 
 
-using System;
 using ClockBombGames.CircleBeats.Analyzers;
 using Godot;
 

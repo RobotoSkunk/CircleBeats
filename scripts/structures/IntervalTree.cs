@@ -26,22 +26,22 @@ namespace ClockBombGames.CircleBeats.Structures
 {
 	/// <summary>
 	/// A structure of an interval tree. This structure is used to store intervals and retrieve them efficiently.
-	/// <para>Note: This structure can't retrieve intervals that are partially overlapping.</para>
 	/// </summary>
 	public class IntervalTree<TValue>
 	{
 		public class Node
 		{
-			public Interval<TValue> interval => _interval;
-			public Node left => _left;
-			public Node right => _right;
-			public float max => _max;
-			public TValue value => _interval.value;
+			public Interval<TValue> Interval { get; private set; }
 
-			Interval<TValue> _interval;
-			Node _left;
-			Node _right;
-			float _max;
+			public Node Left  { get; private set; }
+			public Node Right  { get; private set; }
+			public float Max  { get; private set; }
+
+			public TValue Value => Interval.Value;
+
+			float Start => Interval.Start;
+			float End   => Interval.End;
+
 
 
 			/// <summary>
@@ -49,7 +49,7 @@ namespace ClockBombGames.CircleBeats.Structures
 			/// </summary>
 			public Node(float start, float end, TValue value)
 			{
-				_interval = new Interval<TValue>(start, end, value);
+				Interval = new Interval<TValue>(start, end, value);
 			}
 
 			/// <summary>
@@ -57,7 +57,7 @@ namespace ClockBombGames.CircleBeats.Structures
 			/// </summary>
 			public Node(Interval<TValue> interval)
 			{
-				this._interval = interval;
+				Interval = interval;
 			}
 
 			/// <summary>
@@ -69,8 +69,8 @@ namespace ClockBombGames.CircleBeats.Structures
 					return;
 				}
 
-				_interval = intervals[0];
-				_max = _interval.end;
+				Interval = intervals[0];
+				Max = Interval.End;
 
 				if (intervals.Length == 1) {
 					return;
@@ -84,81 +84,101 @@ namespace ClockBombGames.CircleBeats.Structures
 
 
 				if (left.Length > 0) {
-					this._left = new Node(left);
+					Left = new Node(left);
 				}
 
 				if (right.Length > 0) {
-					this._right = new Node(right);
+					Right = new Node(right);
 				}
 
-				if (this._left != null) {
-					_max = Mathf.Max(_max, this._left.max);
+				if (Left != null) {
+					Max = Mathf.Max(Max, Left.Max);
 				}
 
-				if (this._right != null) {
-					_max = Mathf.Max(_max, this._right.max);
+				if (Right != null) {
+					Max = Mathf.Max(Max, Right.Max);
 				}
 			}
 
 
+			public int CompareTo(Node other)
+			{
+				return Interval.CompareTo(other.Interval);
+			}
+
 
 			/// <summary>
-			/// Adds an interval to the tree like a binary search tree.
-			/// It should be only called if you're f*cked up with the tree.
+			/// Adds a new node to the tree.
 			/// </summary>
-			public void ForceAdd(Interval<TValue> interval)
+			public Node AddNode(Node newNode)
 			{
-				if (interval.start < this._interval.start) {
+				if (newNode.End > Max) {
+					Max = newNode.End;
+				}
 
-					if (_left == null) {
-						_left = new Node(interval);
+				if (CompareTo(newNode) <= 0) {
+					if (Right == null) {
+						Right = newNode;
 					} else {
-						_left.ForceAdd(interval);
+						Right.AddNode(newNode);
 					}
-
 				} else {
-					if (_right == null) {
-						_right = new Node(interval);
+					if (Left == null) {
+						Left = newNode;
 					} else {
-						_right.ForceAdd(interval);
+						Left.AddNode(newNode);
 					}
 				}
+
+
+				return this;
 			}
 
+
+
 			/// <summary>
-			/// Searches for an interval that contains the given interval.
+			/// Searches for an interval that contains the given time.
 			/// </summary>
-			public Node Search(float start, float end)
+			public Node FindInterval(float time)
 			{
-				if (_interval.Intersects(start, end)) {
+				if (Interval.HasTime(time)) {
 					return this;
 				}
 
-				if (_left != null && _left.max >= start) {
-					return _left.Search(start, end);
+				if (Left != null && Left.Max >= time) {
+					Left.FindInterval(time);
 				}
 
-				if (_right != null) {
-					return _right.Search(start, end);
+				if (Start <= time) {
+					Right?.FindInterval(time);
 				}
 
 				return null;
 			}
 
 			/// <summary>
-			/// Searches for an interval that contains the given scalar.
+			/// Searches for an interval that contains the given time.
 			/// </summary>
-			public Node Search(float x) {
-				return Search(x, x);
+			public void FindIntersectInterval(float time, List<Node> result)
+			{
+				if (Interval.HasTime(time)) {
+					result.Add(this);
+				}
+
+				if (Left != null && Left.Max >= time) {
+					Left.FindIntersectInterval(time, result);
+				}
+
+				if (Start > time) {
+					return;
+				}
+
+				Right?.FindIntersectInterval(time, result);
 			}
 		}
 
-		public Node root => _root;
-		Node _root;
+		public Node Root { get; private set; }
 		Node _temporalNode;
-
-		List<Interval<TValue>> _intervals = new();
-
 
 		/// <summary>
 		/// Creates a new empty interval tree.
@@ -166,53 +186,24 @@ namespace ClockBombGames.CircleBeats.Structures
 		public IntervalTree() { }
 
 		/// <summary>
-		/// Creates a new interval tree with the specified intervals. Remember to call Build() after this.
+		/// Creates a balanced interval tree from a given list.
 		/// </summary>
-		public IntervalTree(Interval<TValue>[] intervals)
+		public IntervalTree(List<Interval<TValue>> intervals)
 		{
-			_intervals = new List<Interval<TValue>>(intervals);
+			intervals.Sort((a, b) => a.CompareTo(b));
+			Root = new Node(intervals.ToArray());
 		}
 
 
 		/// <summary>
-		/// Builds the tree from the given intervals. You feel like a charm, the birds sing and the sun shines.
+		/// Searches for an interval that contains the given scalar. If there's a cached node and it contains
+		/// the given scalar, it will be used instead.
 		/// </summary>
-		public void Build()
-		{
-			_root = null;
-
-			_intervals.Sort((a, b) => a.start.CompareTo(b.start));
-			_root = new Node(_intervals.ToArray());
-		}
-
-
-		/// <summary>
-		/// Forces the tree to search for an interval that contains the given interval instead of using
-		/// the cached node.
-		/// </summary>
-		public Node ForceSearch(float start, float end)
-		{
-			return _root.Search(start, end);
-		}
-
-		/// <summary>
-		/// Forces the tree to search for an interval that contains the given scalar instead of using
-		/// the cached node.
-		/// </summary>
-		public Node ForceSearch(float x)
-		{
-			return _root.Search(x);
-		}
-
-
-		/// <summary>
-		/// Searches for an interval that contains the given interval.
-		/// </summary>
-		public Node Search(float start, float end)
+		public Node Search(float time)
 		{
 			if (_temporalNode != null) {
 
-				if (_temporalNode.interval.Intersects(start, end)) {
+				if (_temporalNode.Interval.HasTime(time)) {
 					return _temporalNode;
 				} else {
 					_temporalNode = null;
@@ -220,47 +211,27 @@ namespace ClockBombGames.CircleBeats.Structures
 			}
 
 
-			_temporalNode = ForceSearch(start, end);
+			_temporalNode = ForceSearch(time);
 
 			return _temporalNode;
 		}
 
 		/// <summary>
-		/// Searches for an interval that contains the given scalar.
+		/// Forces the tree to search for an interval that contains the given scalar, ignoring any cached node.
 		/// </summary>
-		public Node Search(float x)
+		public Node ForceSearch(float time)
 		{
-			return Search(x, x);
+			return Root.FindInterval(time);
 		}
 
 
 
 		/// <summary>
 		/// Adds an interval to the tree like a binary search tree.
-		/// Note: it only works if the tree is already built.
 		/// </summary>
 		public void Add(Interval<TValue> interval)
 		{
-			_intervals.Add(interval);
-
-			if (_root != null) {
-				_root.ForceAdd(interval);
-			}
-		}
-
-		/// <summary>
-		/// Adds an interval to the tree like a binary search tree.
-		/// It should be only called if you're f*cked up with the tree.
-		/// </summary>
-		public void ForceAdd(Interval<TValue> interval)
-		{
-			_intervals.Add(interval);
-
-			if (_root != null) {
-				_root.ForceAdd(interval);
-			} else {
-				_root = new Node(interval);
-			}
+			Root?.AddNode(new Node(interval));
 		}
 	}
 }
