@@ -33,7 +33,6 @@ namespace ClockBombGames.CircleBeats
 
 		float horizontalAxis;
 		float angle;
-		float angleDelta;
 		float effect = 0f;
 
 		Vector2 move;
@@ -47,11 +46,10 @@ namespace ClockBombGames.CircleBeats
 
 		public override void _PhysicsProcess(double delta)
 		{
-			angleDelta += horizontalAxis * speed * (float)delta;
-			angle = Mathf.Lerp(angle, angleDelta, 0.65f);
+			angle += horizontalAxis * speed * (float)delta;
 			RotationDegrees = Vector3.Forward * angle;
 
-			effect = Mathf.Lerp(effect, horizontalAxis * 25f, 0.17f);
+			effect = Mathf.Lerp(effect, horizontalAxis * 25f, 0.2f);
 			dart.RotationDegrees = Vector3.Forward * effect;
 		}
 	}
