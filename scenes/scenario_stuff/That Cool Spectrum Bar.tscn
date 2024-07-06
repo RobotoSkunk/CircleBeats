@@ -5,7 +5,6 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pgd6t"]
 shading_mode = 0
-albedo_color = Color(1, 1, 1, 0.25098)
 
 [node name="That Cool Spectrum Bar" type="Node3D"]
 script = ExtResource("1_ryknt")
@@ -13,5 +12,5 @@ script = ExtResource("1_ryknt")
 [node name="Renderer" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.5, 0, 0, 0, 0.15, 0, 0, 0, 1, 0.5, 0, 0)
 material_override = SubResource("StandardMaterial3D_pgd6t")
-transparency = 0.65
+transparency = 0.85
 mesh = ExtResource("1_7m7d3")
