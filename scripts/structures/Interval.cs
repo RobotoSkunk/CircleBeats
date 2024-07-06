@@ -1,6 +1,6 @@
 /*
 	CircleBeats, a bullet hell rhythmic game.
-	Copyright (C) 2024 Edgar Lima <contact@robotoskunk.com>
+	Copyright (C) 2024 Edgar Lima (RobotoSkunk) <contact@robotoskunk.com>
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
