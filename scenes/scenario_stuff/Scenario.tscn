@@ -21,17 +21,12 @@ albedo_color = Color(0.691176, 0.691176, 0.691176, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_2c6wr"]
 size = Vector3(0.5, 0.75, 0.5)
 
-[node name="Scenario" type="Node3D" node_paths=PackedStringArray("carrouselContainer", "radialParts", "musicPlayer")]
+[node name="Scenario" type="Node3D" node_paths=PackedStringArray("carrouselContainer", "radialParts")]
 transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 1, 0, 0, 0)
 script = ExtResource("1_qcnj4")
-decibelsForce = 0.5
 carrouselBarScene = ExtResource("3_3i72d")
 carrouselContainer = NodePath("Content/Circle/Carrousel Container")
 radialParts = [NodePath("Content/Background/Radial Part 1"), NodePath("Content/Background/Radial Part 2"), NodePath("Content/Background/Radial Part 3"), NodePath("Content/Background/Radial Part 4"), NodePath("Content/Background/Radial Part 5"), NodePath("Content/Background/Radial Part 6"), NodePath("Content/Background/Radial Part 7"), NodePath("Content/Background/Radial Part 8")]
-musicPlayer = NodePath("AudioStreamPlayer")
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-bus = &"Music"
 
 [node name="Content" type="Node3D" parent="."]
 

@@ -17,7 +17,6 @@
 */
 
 
-using System.Threading;
 using System.Threading.Tasks;
 using ClockBombGames.CircleBeats.Analyzers;
 using Godot;
@@ -27,41 +26,28 @@ namespace ClockBombGames.CircleBeats
 {
 	public partial class Scenario : Node3D
 	{
-		[ExportCategory("Properties")]
-		[Export(PropertyHint.Range, "0, 1, 0.01")] float decibelsForce = 1f;
-		[Export] AudioStream music;
+		[ExportCategory("Components")]
+		[Export] Playground playground;
 
 		[ExportCategory("Scenario Parts")]
 		[Export] PackedScene carrouselBarScene;
 		[Export] Node3D carrouselContainer;
 		[Export] MeshInstance3D[] radialParts;
 
-		[ExportCategory("Components")]
-		[Export] AudioStreamPlayer musicPlayer;
-		[Export] RichTextLabel debugLabel;
-		[Export] Slider musicSlider;
-		[Export] Slider virtualSlider;
-
 
 		AudioBusReader audioBusReader;
 
 
-		int spectrumSpikePosition;
-
 		double carrouselTickTime;
-		double virtualTime;
-		// double timeStart;
-		// double timeDelay;
 
 		float scale;
 		float[] spectrum;
 
-		long songTicks;
-		long virtualTicks;
-
 		readonly int carrouselSpikes = 5;
 		readonly int spectrumSamples = 128;
-		readonly int ticksPerSecond = 120;
+
+		public int CarrouselIndexPosition { get; private set; }
+		public AudioBusReaderOutput AudioReaderOutput { get; private set; }
 
 		public float[] Spectrum
 		{
@@ -71,31 +57,12 @@ namespace ClockBombGames.CircleBeats
 			}
 		}
 
-		public int CarrouselIndexPosition
-		{
-			get
-			{
-				return spectrumSpikePosition;
-			}
-		}
-
-
 
 		public override void _Ready()
 		{
-			audioBusReader = new AudioBusReader(musicPlayer.Bus);
+			audioBusReader = new AudioBusReader(playground.MusicPlayer.Bus);
+
 			spectrum = new float[spectrumSamples];
-
-			musicPlayer.Stream = music;
-
-			virtualSlider.MaxValue = musicPlayer.Stream.GetLength();
-
-			musicSlider.MaxValue = musicPlayer.Stream.GetLength();
-			musicSlider.ValueChanged += (value) => {
-				musicPlayer.Seek((float)value);
-
-				virtualTicks = TimeToTicks(value);
-			};
 
 			for (int i = 0; i < radialParts.Length; i++) {
 				MeshInstance3D mesh = radialParts[i];
@@ -132,28 +99,19 @@ namespace ClockBombGames.CircleBeats
 
 		public override void _Process(double delta)
 		{
-			AudioBusReaderOutput output = audioBusReader.CalculateOutput();
+			AudioReaderOutput = audioBusReader.CalculateOutput();
+			float decibelsForce = playground.DecibelsForce;
 
-			float bump = 1f - 0.2f * decibelsForce + 0.5f * output.averageData * decibelsForce;
-
-			debugLabel.Text = "FPS: " + Engine.GetFramesPerSecond() +
-							"\nDraw Calls: " + Performance.GetMonitor(Performance.Monitor.RenderTotalDrawCallsInFrame) +
-							"\nAverage Audio Data: " + output.averageData +
-							"\nDecibels: " + output.decibels +
-							"\nTicks: " + virtualTicks + " / " + songTicks;
+			float bump = 1f - 0.2f * decibelsForce + 0.5f * AudioReaderOutput.averageData * decibelsForce;
 
 
 			scale = Mathf.Lerp(scale, bump, 0.75f);
 			Scale = new Vector3(scale, scale, 1f);
 
-			double playbackPosition = musicPlayer.GetPlaybackPosition();
-			songTicks = TimeToTicks(playbackPosition);
-			musicSlider.SetValueNoSignal(playbackPosition);
-
 
 			#region Spectrum and carousel
 
-			if (musicPlayer.Playing) {
+			if (playground.MusicPlayer.Playing) {
 				audioBusReader.GetSpectrum(ref spectrum, 16000);
 
 				// Spin carrousel
@@ -161,41 +119,14 @@ namespace ClockBombGames.CircleBeats
 
 				if (carrouselTickTime > (1.0 / 15.0)) {
 					carrouselTickTime = 0.0;
-					spectrumSpikePosition -= 5;
+					CarrouselIndexPosition -= 5;
 
-					if (spectrumSpikePosition < 0) {
-						spectrumSpikePosition = spectrumSamples - 1;
+					if (CarrouselIndexPosition < 0) {
+						CarrouselIndexPosition = spectrumSamples - 1;
 					}
 				}
-			} else {
-				virtualTicks = 0;
-				musicPlayer.Play();
-
-				// timeStart = Time.GetTicksUsec();
-				// timeDelay = AudioServer.GetTimeToNextMix() + AudioServer.GetOutputLatency();
 			}
 			#endregion
-		}
-
-		public override void _PhysicsProcess(double delta)
-		{
-			while (songTicks > virtualTicks) {
-				virtualTicks++;
-			}
-
-			virtualTime = TicksToTime(virtualTicks);
-			virtualSlider.SetValueNoSignal(virtualTime);
-		}
-
-
-		private double TicksToTime(long ticks)
-		{
-			return ticks * (1.0 / ticksPerSecond);
-		}
-
-		private long TimeToTicks(double time)
-		{
-			return (long)(time / (1.0 / ticksPerSecond));
 		}
 	}
 }
