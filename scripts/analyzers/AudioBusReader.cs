@@ -29,6 +29,12 @@ namespace ClockBombGames.CircleBeats.Analyzers
 		public float averageData;
 
 
+		public AudioBusReaderOutput()
+		{
+			decibels = 0f;
+			averageData = 0f;
+		}
+
 		public AudioBusReaderOutput(float decibels, float averageData)
 		{
 			this.decibels = decibels;
@@ -73,7 +79,7 @@ namespace ClockBombGames.CircleBeats.Analyzers
 			}
 		}
 
-		public AudioBusReaderOutput CalculateOutput()
+		public void CalculateOutput(ref AudioBusReaderOutput output)
 		{
 			if (capture == null) {
 				int busChannels = AudioServer.GetBusChannels(busIndex);
@@ -119,7 +125,8 @@ namespace ClockBombGames.CircleBeats.Analyzers
 				}
 			}
 
-			return new(decibels, averageData);
+			output.decibels = decibels;
+			output.averageData = averageData;
 		}
 
 		public void GetSpectrum(ref float[] spectrum, float maxFrequency)

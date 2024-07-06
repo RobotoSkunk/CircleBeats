@@ -35,9 +35,6 @@ namespace ClockBombGames.CircleBeats
 		[Export] MeshInstance3D[] radialParts;
 
 
-		AudioBusReader audioBusReader;
-
-
 		double carrouselTickTime;
 
 		float scale;
@@ -47,7 +44,6 @@ namespace ClockBombGames.CircleBeats
 		readonly int spectrumSamples = 128;
 
 		public int CarrouselIndexPosition { get; private set; }
-		public AudioBusReaderOutput AudioReaderOutput { get; private set; }
 
 		public float[] Spectrum
 		{
@@ -60,8 +56,6 @@ namespace ClockBombGames.CircleBeats
 
 		public override void _Ready()
 		{
-			audioBusReader = new AudioBusReader(playground.MusicPlayer.Bus);
-
 			spectrum = new float[spectrumSamples];
 
 			for (int i = 0; i < radialParts.Length; i++) {
@@ -99,10 +93,9 @@ namespace ClockBombGames.CircleBeats
 
 		public override void _Process(double delta)
 		{
-			AudioReaderOutput = audioBusReader.CalculateOutput();
 			float decibelsForce = playground.DecibelsForce;
 
-			float bump = 1f - 0.2f * decibelsForce + 0.5f * AudioReaderOutput.averageData * decibelsForce;
+			float bump = 1f - 0.2f * decibelsForce + 0.5f * playground.AudioReaderOutput.averageData * decibelsForce;
 
 
 			scale = Mathf.Lerp(scale, bump, 0.75f);
@@ -112,7 +105,7 @@ namespace ClockBombGames.CircleBeats
 			#region Spectrum and carousel
 
 			if (playground.MusicPlayer.Playing) {
-				audioBusReader.GetSpectrum(ref spectrum, 16000);
+				playground.AudioBusReader.GetSpectrum(ref spectrum, 16000);
 
 				// Spin carrousel
 				carrouselTickTime += delta;

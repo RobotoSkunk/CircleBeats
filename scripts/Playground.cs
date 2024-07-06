@@ -17,6 +17,7 @@
 */
 
 
+using ClockBombGames.CircleBeats.Analyzers;
 using Godot;
 
 
@@ -41,6 +42,9 @@ namespace ClockBombGames.CircleBeats
 		[Export] Slider virtualSlider;
 
 
+		AudioBusReader audioBusReader;
+		AudioBusReaderOutput audioReaderOutput = new();
+
 		long songTicks;
 		long virtualTicks;
 
@@ -60,11 +64,28 @@ namespace ClockBombGames.CircleBeats
 			}
 		}
 
+		public AudioBusReader AudioBusReader
+		{
+			get
+			{
+				return audioBusReader;
+			}
+		}
+
+		public AudioBusReaderOutput AudioReaderOutput
+		{
+			get
+			{
+				return audioReaderOutput;
+			}
+		}
+
 		public float DecibelsForce { get; private set; }
 
 
 		public override void _Ready()
 		{
+			audioBusReader = new AudioBusReader(musicPlayer.Bus);
 
 			musicPlayer.Stream = music;
 
@@ -80,6 +101,8 @@ namespace ClockBombGames.CircleBeats
 
 		public override void _Process(double delta)
 		{
+			audioBusReader.CalculateOutput(ref audioReaderOutput);
+
 			Vector3 rotation = scenario.RotationDegrees;
 
 			rotationZ += (float)(sliderRotationSpeedZ.Value * delta);
@@ -99,8 +122,8 @@ namespace ClockBombGames.CircleBeats
 
 			debugLabel.Text = "FPS: " + Engine.GetFramesPerSecond() +
 							"\nDraw Calls: " + Performance.GetMonitor(Performance.Monitor.RenderTotalDrawCallsInFrame) +
-							"\nAverage Audio Data: " + scenario.AudioReaderOutput.averageData +
-							"\nDecibels: " + scenario.AudioReaderOutput.decibels +
+							"\nAverage Audio Data: " + audioReaderOutput.averageData +
+							"\nDecibels: " + audioReaderOutput.decibels +
 							"\nTicks: " + virtualTicks + " / " + songTicks;
 
 			if (!musicPlayer.Playing) {
