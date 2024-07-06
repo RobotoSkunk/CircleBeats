@@ -1,12 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://vgucmfperviw"]
+[gd_scene load_steps=3 format=3 uid="uid://vgucmfperviw"]
 
 [ext_resource type="Script" path="res://scripts/Playground.cs" id="1_6h4qg"]
 [ext_resource type="PackedScene" uid="uid://blex4yt0sysmo" path="res://scenes/scenario_stuff/Scenario.tscn" id="2_gy3sf"]
-[ext_resource type="AudioStream" uid="uid://dvf3pjaby0a6l" path="res://assets/music/ParagonX9 - Chaoz Fantasy.mp3" id="3_1sy8h"]
 
 [node name="Playground" type="Node" node_paths=PackedStringArray("sliderRotationX", "sliderRotationY", "sliderRotationSpeedZ", "sliderDecibelsForce", "scenario", "musicPlayer", "debugLabel", "musicSlider", "virtualSlider")]
 script = ExtResource("1_6h4qg")
-music = ExtResource("3_1sy8h")
 sliderRotationX = NodePath("HUD/Inspector/Slider Rot X")
 sliderRotationY = NodePath("HUD/Inspector/Slider Rot Y")
 sliderRotationSpeedZ = NodePath("HUD/Inspector/Slider Rot Z")
