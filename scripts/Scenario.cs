@@ -17,6 +17,8 @@
 */
 
 
+using System.Threading;
+using System.Threading.Tasks;
 using ClockBombGames.CircleBeats.Analyzers;
 using Godot;
 
@@ -54,7 +56,7 @@ namespace ClockBombGames.CircleBeats
 		long songTicks;
 		long virtualTicks;
 
-		readonly CarrouselBar[][] carrouselBars = new CarrouselBar[5][];
+		readonly int carrouselSpikes = 5;
 		readonly int spectrumSamples = 128;
 		readonly int ticksPerSecond = 120;
 
@@ -93,22 +95,27 @@ namespace ClockBombGames.CircleBeats
 			};
 
 
-			for (int j = 0; j < carrouselBars.Length; j++) {
-				float jAngle = j * (360f / carrouselBars.Length);
+			Task.Run(async () =>
+			{
+				for (int j = 0; j < carrouselSpikes; j++) {
+					float jAngle = j * (360f / carrouselSpikes);
 
-				carrouselBars[j] = new CarrouselBar[spectrumSamples];
+					for (int i = 0; i < spectrumSamples; i++) {
+						float angle = i * (360f / spectrumSamples) + jAngle;
+
+						CarrouselBar bar = carrouselBarScene.Instantiate<CarrouselBar>();
+
+						Callable.From((int index, float angle) =>
+						{
+							carrouselContainer.AddChild(bar);
+							bar.SetUp(angle, this, index);
+						}).CallDeferred(i, angle);
 
 
-				for (int i = 0; i < spectrumSamples; i++) {
-					float angle = i * (360f / spectrumSamples) + jAngle;
-
-					CarrouselBar bar = carrouselBarScene.Instantiate<CarrouselBar>();
-					carrouselContainer.AddChild(bar);
-					bar.SetUp(angle, this, i);
-
-					carrouselBars[j][i] = bar;
+						await Task.Yield();
+					}
 				}
-			}
+			});
 		}
 
 		public override void _Process(double delta)
