@@ -30,7 +30,7 @@ mono_crash.*.json
 .vscode/
 
 
-## OS specific ignores
+#### OS specific ignores ####
 
 ### macOS
 # General
@@ -58,7 +58,7 @@ Temporary Items
 .apdisk
 
 
-## Windows
+### Windows
 # Windows thumbnail cache files
 Thumbs.db
 Thumbs.db:encryptable
@@ -85,7 +85,7 @@ $RECYCLE.BIN/
 *.lnk
 
 
-## Linux
+### Linux
 *~
 
 # temporary files which can be created if a process still has a handle open of a deleted file
