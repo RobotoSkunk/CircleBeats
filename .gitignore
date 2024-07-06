@@ -15,8 +15,9 @@ export_presets.cfg
 data_*/
 mono_crash.*.json
 
-# Tests files
+# Tests folders
 [Tt]est/
+[Tt]ests/
 
 # Output and builds
 [Oo]utput/
