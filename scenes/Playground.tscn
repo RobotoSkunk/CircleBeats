@@ -4,9 +4,13 @@
 [ext_resource type="PackedScene" uid="uid://blex4yt0sysmo" path="res://scenes/scenario_stuff/Scenario.tscn" id="2_gy3sf"]
 [ext_resource type="AudioStream" uid="uid://dvf3pjaby0a6l" path="res://assets/music/ParagonX9 - Chaoz Fantasy.mp3" id="3_1sy8h"]
 
-[node name="Playground" type="Node" node_paths=PackedStringArray("scenario", "musicPlayer", "debugLabel", "musicSlider", "virtualSlider")]
+[node name="Playground" type="Node" node_paths=PackedStringArray("sliderRotationX", "sliderRotationY", "sliderRotationSpeedZ", "sliderDecibelsForce", "scenario", "musicPlayer", "debugLabel", "musicSlider", "virtualSlider")]
 script = ExtResource("1_6h4qg")
 music = ExtResource("3_1sy8h")
+sliderRotationX = NodePath("HUD/Inspector/Slider Rot X")
+sliderRotationY = NodePath("HUD/Inspector/Slider Rot Y")
+sliderRotationSpeedZ = NodePath("HUD/Inspector/Slider Rot Z")
+sliderDecibelsForce = NodePath("HUD/Inspector/Slider Decibels")
 scenario = NodePath("HUD/Viewports Container/Game Viewport/Scenario")
 musicPlayer = NodePath("AudioStreamPlayer")
 debugLabel = NodePath("HUD/Debugger")
@@ -94,6 +98,9 @@ text = "Rotation X"
 
 [node name="Slider Rot X" type="HSlider" parent="HUD/Inspector"]
 layout_mode = 2
+min_value = -20.0
+max_value = 20.0
+step = 0.01
 
 [node name="Label Rot Y" type="Label" parent="HUD/Inspector"]
 layout_mode = 2
@@ -101,6 +108,9 @@ text = "Rotation Y"
 
 [node name="Slider Rot Y" type="HSlider" parent="HUD/Inspector"]
 layout_mode = 2
+min_value = -20.0
+max_value = 20.0
+step = 0.01
 
 [node name="Label Rot Z" type="Label" parent="HUD/Inspector"]
 layout_mode = 2
@@ -109,6 +119,9 @@ text = "Rotation Speed Z
 
 [node name="Slider Rot Z" type="HSlider" parent="HUD/Inspector"]
 layout_mode = 2
+min_value = -1080.0
+max_value = 1080.0
+step = 0.1
 
 [node name="Label Decibels" type="Label" parent="HUD/Inspector"]
 layout_mode = 2
@@ -116,6 +129,9 @@ text = "Decibels force"
 
 [node name="Slider Decibels" type="HSlider" parent="HUD/Inspector"]
 layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
 
 [node name="Debugger" type="RichTextLabel" parent="HUD"]
 layout_mode = 1

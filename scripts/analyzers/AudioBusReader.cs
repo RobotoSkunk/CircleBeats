@@ -23,7 +23,7 @@ using Godot;
 
 namespace ClockBombGames.CircleBeats.Analyzers
 {
-	public struct AudioBusReaderOutput
+	public class AudioBusReaderOutput
 	{
 		public float decibels;
 		public float averageData;
@@ -35,7 +35,7 @@ namespace ClockBombGames.CircleBeats.Analyzers
 			this.averageData = averageData;
 		}
 
-		public override readonly string ToString()
+		public override string ToString()
 		{
 			return $"Decibels: {decibels}, Average: {averageData}";
 		}

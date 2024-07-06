@@ -25,8 +25,13 @@ namespace ClockBombGames.CircleBeats
 	public partial class Playground : Node
 	{
 		[ExportCategory("Properties")]
-		[Export(PropertyHint.Range, "0, 1, 0.01")] float decibelsForce = 1f;
 		[Export] AudioStream music;
+
+		[ExportCategory("Inspector Components")]
+		[Export] HSlider sliderRotationX;
+		[Export] HSlider sliderRotationY;
+		[Export] HSlider sliderRotationSpeedZ;
+		[Export] HSlider sliderDecibelsForce;
 
 		[ExportCategory("Components")]
 		[Export] Scenario scenario;
@@ -40,6 +45,7 @@ namespace ClockBombGames.CircleBeats
 		long virtualTicks;
 
 		double virtualTime;
+		float rotationZ;
 
 
 		public static readonly int ticksPerSecond = ProjectSettings
@@ -54,13 +60,7 @@ namespace ClockBombGames.CircleBeats
 			}
 		}
 
-		public float DecibelsForce
-		{
-			get
-			{
-				return decibelsForce;
-			}
-		}
+		public float DecibelsForce { get; private set; }
 
 
 		public override void _Ready()
@@ -80,6 +80,19 @@ namespace ClockBombGames.CircleBeats
 
 		public override void _Process(double delta)
 		{
+			Vector3 rotation = scenario.RotationDegrees;
+
+			rotationZ += (float)(sliderRotationSpeedZ.Value * delta);
+
+			rotation.X = (float)sliderRotationX.Value;
+			rotation.Y = (float)sliderRotationY.Value;
+			rotation.Z = rotationZ;
+
+			DecibelsForce = (float)sliderDecibelsForce.Value;
+
+			scenario.RotationDegrees = rotation;
+
+
 			double playbackPosition = musicPlayer.GetPlaybackPosition();
 			songTicks = TimeToTicks(playbackPosition);
 			musicSlider.SetValueNoSignal(playbackPosition);
