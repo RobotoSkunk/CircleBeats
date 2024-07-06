@@ -8,7 +8,6 @@
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(4.95606, -6.84856, 0.0504415, 1.57919, 0.658125, 0.672347, -21.0898, -1.56012, 0.0621983, -0.131845, 0.247326, -0.0261345)
-visible = false
 mesh = ExtResource("1_m701o")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
@@ -17,6 +16,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
 own_world_3d = true

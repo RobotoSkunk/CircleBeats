@@ -31,11 +31,14 @@ namespace ClockBombGames.CircleBeats
 		[Export(PropertyHint.Range, "0, 1, 0.01")] float decibelsForce = 1f;
 		[Export] AudioStream music;
 
+		[ExportCategory("Scenario Parts")]
+		[Export] PackedScene carrouselBarScene;
+		[Export] Node3D carrouselContainer;
+		[Export] MeshInstance3D[] radialParts;
+
 		[ExportCategory("Components")]
 		[Export] AudioStreamPlayer musicPlayer;
 		[Export] RichTextLabel debugLabel;
-		[Export] PackedScene carrouselBarScene;
-		[Export] Node3D carrouselContainer;
 		[Export] Slider musicSlider;
 		[Export] Slider virtualSlider;
 
@@ -93,6 +96,15 @@ namespace ClockBombGames.CircleBeats
 
 				virtualTicks = TimeToTicks(value);
 			};
+
+			for (int i = 0; i < radialParts.Length; i++) {
+				MeshInstance3D mesh = radialParts[i];
+				StandardMaterial3D material = (StandardMaterial3D)mesh.MaterialOverride.Duplicate();
+
+				material.AlbedoColor = Color.FromHsv(0, 0, i % 2 == 0 ? 0.5f : 0.75f);
+
+				mesh.MaterialOverride = material;
+			}
 
 
 			Task.Run(async () =>
