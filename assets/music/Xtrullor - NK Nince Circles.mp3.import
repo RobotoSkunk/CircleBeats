@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://ccsqo6uooghmn"
+path="res://.godot/imported/Xtrullor - NK Nince Circles.mp3-8535f4f3911966008aa635a68e71aec1.mp3str"
+
+[deps]
+
+source_file="res://assets/music/Xtrullor - NK Nince Circles.mp3"
+dest_files=["res://.godot/imported/Xtrullor - NK Nince Circles.mp3-8535f4f3911966008aa635a68e71aec1.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
