@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://blex4yt0sysmo" path="res://scenes/scenario_stuff/Scenario.tscn" id="2_gy3sf"]
 [ext_resource type="AudioStream" uid="uid://dvf3pjaby0a6l" path="res://assets/music/ParagonX9 - Chaoz Fantasy.mp3" id="3_1sy8h"]
 
-[node name="Playground" type="Node3D" node_paths=PackedStringArray("scenario", "musicPlayer", "debugLabel", "musicSlider", "virtualSlider")]
+[node name="Playground" type="Node" node_paths=PackedStringArray("scenario", "musicPlayer", "debugLabel", "musicSlider", "virtualSlider")]
 script = ExtResource("1_6h4qg")
 music = ExtResource("3_1sy8h")
 scenario = NodePath("HUD/Viewports Container/Game Viewport/Scenario")

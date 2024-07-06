@@ -17,13 +17,12 @@
 */
 
 
-using ClockBombGames.CircleBeats.Analyzers;
 using Godot;
 
 
 namespace ClockBombGames.CircleBeats
 {
-	public partial class Playground : Node3D
+	public partial class Playground : Node
 	{
 		[ExportCategory("Properties")]
 		[Export(PropertyHint.Range, "0, 1, 0.01")] float decibelsForce = 1f;
