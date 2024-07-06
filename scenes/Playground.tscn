@@ -75,6 +75,48 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
 [node name="Scenario" parent="HUD/Viewports Container/Game Viewport" node_paths=PackedStringArray("playground") instance=ExtResource("2_gy3sf")]
 playground = NodePath("../../../..")
 
+[node name="Inspector" type="VBoxContainer" parent="HUD"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -315.0
+offset_top = 11.0
+offset_right = -10.0
+offset_bottom = -82.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="Label Rot X" type="Label" parent="HUD/Inspector"]
+layout_mode = 2
+text = "Rotation X"
+
+[node name="Slider Rot X" type="HSlider" parent="HUD/Inspector"]
+layout_mode = 2
+
+[node name="Label Rot Y" type="Label" parent="HUD/Inspector"]
+layout_mode = 2
+text = "Rotation Y"
+
+[node name="Slider Rot Y" type="HSlider" parent="HUD/Inspector"]
+layout_mode = 2
+
+[node name="Label Rot Z" type="Label" parent="HUD/Inspector"]
+layout_mode = 2
+text = "Rotation Speed Z
+"
+
+[node name="Slider Rot Z" type="HSlider" parent="HUD/Inspector"]
+layout_mode = 2
+
+[node name="Label Decibels" type="Label" parent="HUD/Inspector"]
+layout_mode = 2
+text = "Decibels force"
+
+[node name="Slider Decibels" type="HSlider" parent="HUD/Inspector"]
+layout_mode = 2
+
 [node name="Debugger" type="RichTextLabel" parent="HUD"]
 layout_mode = 1
 anchors_preset = 15
@@ -82,8 +124,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 16.0
 offset_top = 8.0
-offset_right = -326.0
-offset_bottom = -90.0
+offset_right = -528.0
+offset_bottom = -322.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/normal_font_size = 35
