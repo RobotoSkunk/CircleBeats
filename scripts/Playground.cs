@@ -33,6 +33,7 @@ namespace ClockBombGames.CircleBeats
 		[Export] HSlider sliderRotationY;
 		[Export] HSlider sliderRotationSpeedZ;
 		[Export] HSlider sliderDecibelsForce;
+		[Export] HSlider sliderPlayerSpeed;
 
 		[ExportCategory("Components")]
 		[Export] Scenario scenario;
@@ -112,6 +113,7 @@ namespace ClockBombGames.CircleBeats
 			rotation.Z = rotationZ;
 
 			DecibelsForce = (float)sliderDecibelsForce.Value;
+			scenario.Player.Speed = (float)sliderPlayerSpeed.Value;
 
 			scenario.RotationDegrees = rotation;
 

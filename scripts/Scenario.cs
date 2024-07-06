@@ -18,7 +18,6 @@
 
 
 using System.Threading.Tasks;
-using ClockBombGames.CircleBeats.Analyzers;
 using Godot;
 
 
@@ -28,6 +27,7 @@ namespace ClockBombGames.CircleBeats
 	{
 		[ExportCategory("Components")]
 		[Export] Playground playground;
+		[Export] Player player;
 
 		[ExportCategory("Scenario Parts")]
 		[Export] PackedScene carrouselBarScene;
@@ -50,6 +50,14 @@ namespace ClockBombGames.CircleBeats
 			get
 			{
 				return spectrum;
+			}
+		}
+
+		public Player Player
+		{
+			get
+			{
+				return player;
 			}
 		}
 

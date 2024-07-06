@@ -24,9 +24,6 @@ namespace ClockBombGames.CircleBeats
 {
 	public partial class Player : CharacterBody3D
 	{
-		[ExportCategory("Properties")]
-		[Export] float speed;
-
 		[ExportCategory("Components")]
 		[Export] Node3D dart;
 
@@ -37,6 +34,8 @@ namespace ClockBombGames.CircleBeats
 
 		Vector2 move;
 
+		public float Speed { get; set; }
+
 
 		public override void _Process(double delta)
 		{
@@ -46,10 +45,10 @@ namespace ClockBombGames.CircleBeats
 
 		public override void _PhysicsProcess(double delta)
 		{
-			angle += horizontalAxis * speed * (float)delta;
+			angle += 360f * Speed * horizontalAxis * (float)delta;
 			RotationDegrees = Vector3.Forward * angle;
 
-			effect = Mathf.Lerp(effect, horizontalAxis * 25f, 0.2f);
+			effect = Mathf.Lerp(effect, horizontalAxis * 25f, 0.2f * Mathf.Clamp(Speed, 0f, 5f));
 			dart.RotationDegrees = Vector3.Forward * effect;
 		}
 	}
