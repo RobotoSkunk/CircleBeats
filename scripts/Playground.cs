@@ -23,7 +23,7 @@ using Godot;
 
 namespace ClockBombGames.CircleBeats
 {
-	public partial class Playground : Node
+	public partial class Playground : Control
 	{
 		[ExportCategory("Properties")]
 		[Export] AudioStream music;

@@ -3,7 +3,13 @@
 [ext_resource type="Script" path="res://scripts/Playground.cs" id="1_6h4qg"]
 [ext_resource type="PackedScene" uid="uid://blex4yt0sysmo" path="res://scenes/scenario_stuff/Scenario.tscn" id="2_gy3sf"]
 
-[node name="Playground" type="Node" node_paths=PackedStringArray("sliderMusicVolume", "sliderRotationX", "sliderRotationY", "sliderRotationSpeedZ", "sliderDecibelsForce", "sliderPlayerSpeed", "scenario", "musicPlayer", "debugLabel", "musicSlider", "virtualSlider")]
+[node name="Playground" type="Control" node_paths=PackedStringArray("sliderMusicVolume", "sliderRotationX", "sliderRotationY", "sliderRotationSpeedZ", "sliderDecibelsForce", "sliderPlayerSpeed", "scenario", "musicPlayer", "debugLabel", "musicSlider", "virtualSlider")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_6h4qg")
 sliderMusicVolume = NodePath("HUD/Inspector/Slider Music volume")
 sliderRotationX = NodePath("HUD/Inspector/Slider Rot X")
@@ -21,7 +27,7 @@ virtualSlider = NodePath("HUD/Virtual Slider")
 bus = &"Music"
 
 [node name="HUD" type="Control" parent="."]
-layout_mode = 3
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
