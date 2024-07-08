@@ -6,7 +6,7 @@
 [node name="Playground" type="Node" node_paths=PackedStringArray("sliderMusicVolume", "sliderRotationX", "sliderRotationY", "sliderRotationSpeedZ", "sliderDecibelsForce", "sliderPlayerSpeed", "scenario", "musicPlayer", "debugLabel", "musicSlider", "virtualSlider")]
 script = ExtResource("1_6h4qg")
 sliderMusicVolume = NodePath("HUD/Inspector/Slider Music volume")
-sliderRotationX = NodePath("HUD/Inspector/Slider Music volume")
+sliderRotationX = NodePath("HUD/Inspector/Slider Rot X")
 sliderRotationY = NodePath("HUD/Inspector/Slider Rot Y")
 sliderRotationSpeedZ = NodePath("HUD/Inspector/Slider Rot Z")
 sliderDecibelsForce = NodePath("HUD/Inspector/Slider Decibels")
@@ -102,11 +102,11 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="Label Rot X2" type="Label" parent="HUD/Inspector"]
+[node name="Label Rot X" type="Label" parent="HUD/Inspector"]
 layout_mode = 2
 text = "Rotation X"
 
-[node name="Slider Rot X2" type="HSlider" parent="HUD/Inspector"]
+[node name="Slider Rot X" type="HSlider" parent="HUD/Inspector"]
 layout_mode = 2
 min_value = -20.0
 max_value = 20.0
