@@ -29,6 +29,7 @@ namespace ClockBombGames.CircleBeats
 		[Export] AudioStream music;
 
 		[ExportCategory("Inspector Components")]
+		[Export] HSlider sliderMusicVolume;
 		[Export] HSlider sliderRotationX;
 		[Export] HSlider sliderRotationY;
 		[Export] HSlider sliderRotationSpeedZ;
@@ -111,6 +112,9 @@ namespace ClockBombGames.CircleBeats
 			rotation.X = (float)sliderRotationX.Value;
 			rotation.Y = (float)sliderRotationY.Value;
 			rotation.Z = rotationZ;
+
+			int busIndex = AudioServer.GetBusIndex("MusicOutput");
+			AudioServer.SetBusVolumeDb(busIndex, (float)Mathf.LinearToDb(sliderMusicVolume.Value));
 
 			DecibelsForce = (float)sliderDecibelsForce.Value;
 			scenario.Player.Speed = (float)sliderPlayerSpeed.Value;
