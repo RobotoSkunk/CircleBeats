@@ -24,17 +24,91 @@ namespace ClockBombGames.CircleBeats.Editor
 {
 	public partial class Editor : Control
 	{
-		[ExportGroup("UI Components")]
 		[Export] Playground playground;
 
-		[ExportSubgroup("Split containers")]
+		[ExportGroup("UI Components")]
+		[Export] HSlider timelineSlider;
+
+		[ExportSubgroup("Split Containers")]
 		[Export] HSplitContainer timelineHeader;
 		[Export] HSplitContainer timelineBody;
 
+		[ExportSubgroup("Playtest Controls")]
+		[Export] Button skipBackwardButton;
+		[Export] Button fastBackwardsButton;
+		[Export] Button playButton;
+		[Export] Button fastForwardButton;
+		[Export] Button skipForwardButton;
+
+		[ExportGroup("Resources")]
+		[ExportSubgroup("Play Button")]
+		[Export] CompressedTexture2D playSprite;
+		[Export] CompressedTexture2D pauseSprite;
+
+
+		AudioStreamPlayer musicPlayer;
+
+		double songPosition = 0f;
+		double songLength = 0f;
+
+
+		public override void _Ready()
+		{
+			// Load music info
+			musicPlayer = playground.MusicPlayer;
+			songLength = musicPlayer.Stream.GetLength();
+
+			// Set Controls listeners
+			skipBackwardButton.Pressed += () => SeekMusicPosition(0);
+			fastBackwardsButton.Pressed += DecreaseSongTempo;
+			playButton.Pressed += OnPlayPressed;
+			fastForwardButton.Pressed += IncreaseSongTempo;
+			skipForwardButton.Pressed += () => SeekMusicPosition(songLength);
+
+			timelineSlider.ValueChanged += SeekMusicPosition;
+		}
 
 		public override void _Process(double delta)
 		{
 			timelineHeader.SplitOffset = timelineBody.SplitOffset;
+
+			if (playground.MusicPlayer.Playing) {
+				songPosition = musicPlayer.GetPlaybackPosition();
+
+				timelineSlider.SetValueNoSignal(songPosition / songLength);
+			}
+		}
+
+
+		void OnPlayPressed()
+		{
+			musicPlayer.Playing = !musicPlayer.Playing;
+
+			if (musicPlayer.Playing) {
+				playButton.Icon = pauseSprite;
+
+				musicPlayer.Seek((float)songPosition);
+				return;
+			}
+
+			playButton.Icon = playSprite;
+		}
+
+		void SeekMusicPosition(double delta)
+		{
+			songPosition = delta * songLength;
+
+			musicPlayer.Seek((float)songPosition);
+		}
+
+		void IncreaseSongTempo()
+		{
+			musicPlayer.PitchScale++;
+		}
+
+		void DecreaseSongTempo()
+		{
+			musicPlayer.PitchScale--;
 		}
 	}
 }

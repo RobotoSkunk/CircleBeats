@@ -1,13 +1,14 @@
-[gd_scene load_steps=7 format=3 uid="uid://utps1w84iu0u"]
+[gd_scene load_steps=8 format=3 uid="uid://utps1w84iu0u"]
 
 [ext_resource type="Script" path="res://scripts/editor/Editor.cs" id="1_40f74"]
 [ext_resource type="Texture2D" uid="uid://vwcladgmfhn6" path="res://assets/sprites/symbols/skip-backward.svg" id="2_cujcb"]
+[ext_resource type="Texture2D" uid="uid://bq8313lmmorpc" path="res://assets/sprites/symbols/pause.svg" id="3_bneo7"]
 [ext_resource type="Texture2D" uid="uid://26scl5dq4vdr" path="res://assets/sprites/symbols/fast-backwards.svg" id="3_eyhc0"]
 [ext_resource type="Texture2D" uid="uid://cxbehkd6cf2px" path="res://assets/sprites/symbols/play.svg" id="4_prgs7"]
 [ext_resource type="Texture2D" uid="uid://1rmhkkdglt61" path="res://assets/sprites/symbols/fast-forward.svg" id="5_jvmqy"]
 [ext_resource type="Texture2D" uid="uid://dhp7aoq0wx5ia" path="res://assets/sprites/symbols/skip-forward.svg" id="6_2egb0"]
 
-[node name="Editor" type="Control" node_paths=PackedStringArray("timelineHeader", "timelineBody")]
+[node name="Editor" type="Control" node_paths=PackedStringArray("timelineSlider", "timelineHeader", "timelineBody", "skipBackwardButton", "fastBackwardsButton", "playButton", "fastForwardButton", "skipForwardButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,8 +16,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_40f74")
+timelineSlider = NodePath("Timeline/Timeline/Objects/Timeline Header Split/Timeline Slider")
 timelineHeader = NodePath("Timeline/Timeline/Objects/Timeline Header Split")
 timelineBody = NodePath("Timeline/Timeline/Objects/Timeline Body/Timeline Body Split")
+skipBackwardButton = NodePath("Timeline/Controls Panel/Controls/Skip Backward")
+fastBackwardsButton = NodePath("Timeline/Controls Panel/Controls/Fast Backwards")
+playButton = NodePath("Timeline/Controls Panel/Controls/Play - Pause")
+fastForwardButton = NodePath("Timeline/Controls Panel/Controls/Fast Forward")
+skipForwardButton = NodePath("Timeline/Controls Panel/Controls/Skip Forward")
+playSprite = ExtResource("4_prgs7")
+pauseSprite = ExtResource("3_bneo7")
 
 [node name="Timeline" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -65,7 +74,6 @@ expand_icon = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-toggle_mode = true
 icon = ExtResource("4_prgs7")
 icon_alignment = 1
 expand_icon = true
@@ -100,7 +108,7 @@ dragger_visibility = 1
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="HSlider" type="HSlider" parent="Timeline/Timeline/Objects/Timeline Header Split"]
+[node name="Timeline Slider" type="HSlider" parent="Timeline/Timeline/Objects/Timeline Header Split"]
 custom_minimum_size = Vector2(0, 15)
 layout_mode = 2
 size_flags_vertical = 1

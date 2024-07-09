@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=3 uid="uid://vgucmfperviw"]
 
 [ext_resource type="Script" path="res://scripts/Playground.cs" id="1_6h4qg"]
-[ext_resource type="PackedScene" uid="uid://blex4yt0sysmo" path="res://scenes/playground/Scenario.tscn" id="2_uo4g2"]
+[ext_resource type="PackedScene" uid="uid://blex4yt0sysmo" path="res://scenes/playground/Scenario.tscn" id="2_grsjh"]
 
-[node name="Playground" type="Control" node_paths=PackedStringArray("sliderMusicVolume", "sliderRotationX", "sliderRotationY", "sliderRotationSpeedZ", "sliderDecibelsForce", "sliderPlayerSpeed", "scenario", "musicPlayer", "debugLabel", "musicSlider", "virtualSlider")]
+[node name="Playground" type="Control" node_paths=PackedStringArray("scenario", "musicPlayer")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,22 +11,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_6h4qg")
-sliderMusicVolume = NodePath("HUD/Inspector/Slider Music volume")
-sliderRotationX = NodePath("HUD/Inspector/Slider Rot X")
-sliderRotationY = NodePath("HUD/Inspector/Slider Rot Y")
-sliderRotationSpeedZ = NodePath("HUD/Inspector/Slider Rot Z")
-sliderDecibelsForce = NodePath("HUD/Inspector/Slider Decibels")
-sliderPlayerSpeed = NodePath("HUD/Inspector/Slider Player Speed")
-scenario = NodePath("HUD/Viewports Container/Game Viewport/Scenario")
+scenario = NodePath("Game Container/Viewports Container/Game Viewport/Scenario")
 musicPlayer = NodePath("AudioStreamPlayer")
-debugLabel = NodePath("HUD/Debugger")
-musicSlider = NodePath("HUD/Music Slider")
-virtualSlider = NodePath("HUD/Virtual Slider")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 bus = &"Music"
 
-[node name="HUD" type="Control" parent="."]
+[node name="Game Container" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -34,7 +25,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Background Color" type="ColorRect" parent="HUD"]
+[node name="Background Color" type="ColorRect" parent="Game Container"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -43,7 +34,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.498039, 0.498039, 0.498039, 1)
 
-[node name="Viewports Container" type="SubViewportContainer" parent="HUD"]
+[node name="Viewports Container" type="SubViewportContainer" parent="Game Container"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -52,7 +43,7 @@ grow_horizontal = 2
 grow_vertical = 2
 stretch = true
 
-[node name="Background Viewport" type="SubViewport" parent="HUD/Viewports Container"]
+[node name="Background Viewport" type="SubViewport" parent="Game Container/Viewports Container"]
 own_world_3d = true
 transparent_bg = true
 handle_input_locally = false
@@ -62,13 +53,13 @@ audio_listener_enable_3d = true
 size = Vector2i(1270, 720)
 render_target_update_mode = 4
 
-[node name="Background Camera" type="Camera3D" parent="HUD/Viewports Container/Background Viewport"]
+[node name="Background Camera" type="Camera3D" parent="Game Container/Viewports Container/Background Viewport"]
 process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
 
-[node name="Content" type="Node3D" parent="HUD/Viewports Container/Background Viewport"]
+[node name="Content" type="Node3D" parent="Game Container/Viewports Container/Background Viewport"]
 
-[node name="Game Viewport" type="SubViewport" parent="HUD/Viewports Container"]
+[node name="Game Viewport" type="SubViewport" parent="Game Container/Viewports Container"]
 own_world_3d = true
 transparent_bg = true
 handle_input_locally = false
@@ -78,135 +69,9 @@ audio_listener_enable_3d = true
 size = Vector2i(1270, 720)
 render_target_update_mode = 4
 
-[node name="Game Camera" type="Camera3D" parent="HUD/Viewports Container/Game Viewport"]
+[node name="Game Camera" type="Camera3D" parent="Game Container/Viewports Container/Game Viewport"]
 process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
 
-[node name="Scenario" parent="HUD/Viewports Container/Game Viewport" node_paths=PackedStringArray("playground") instance=ExtResource("2_uo4g2")]
+[node name="Scenario" parent="Game Container/Viewports Container/Game Viewport" node_paths=PackedStringArray("playground") instance=ExtResource("2_grsjh")]
 playground = NodePath("../../../..")
-
-[node name="Inspector" type="VBoxContainer" parent="HUD"]
-visible = false
-layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -315.0
-offset_top = 11.0
-offset_right = -10.0
-offset_bottom = -82.0
-grow_horizontal = 0
-grow_vertical = 2
-
-[node name="Label Music volume" type="Label" parent="HUD/Inspector"]
-layout_mode = 2
-text = "Music volume"
-
-[node name="Slider Music volume" type="HSlider" parent="HUD/Inspector"]
-layout_mode = 2
-max_value = 1.0
-step = 0.01
-value = 1.0
-
-[node name="Label Rot X" type="Label" parent="HUD/Inspector"]
-layout_mode = 2
-text = "Rotation X"
-
-[node name="Slider Rot X" type="HSlider" parent="HUD/Inspector"]
-layout_mode = 2
-min_value = -20.0
-max_value = 20.0
-step = 0.01
-
-[node name="Label Rot Y" type="Label" parent="HUD/Inspector"]
-layout_mode = 2
-text = "Rotation Y"
-
-[node name="Slider Rot Y" type="HSlider" parent="HUD/Inspector"]
-layout_mode = 2
-min_value = -20.0
-max_value = 20.0
-step = 0.01
-
-[node name="Label Rot Z" type="Label" parent="HUD/Inspector"]
-layout_mode = 2
-text = "Rotation Speed Z
-"
-
-[node name="Slider Rot Z" type="HSlider" parent="HUD/Inspector"]
-layout_mode = 2
-min_value = -1080.0
-max_value = 1080.0
-step = 0.1
-
-[node name="Label Decibels" type="Label" parent="HUD/Inspector"]
-layout_mode = 2
-text = "Decibels Force"
-
-[node name="Slider Decibels" type="HSlider" parent="HUD/Inspector"]
-layout_mode = 2
-max_value = 1.0
-step = 0.01
-value = 1.0
-
-[node name="Label Player Speed" type="Label" parent="HUD/Inspector"]
-layout_mode = 2
-text = "Player Speed
-"
-
-[node name="Slider Player Speed" type="HSlider" parent="HUD/Inspector"]
-layout_mode = 2
-min_value = 0.1
-max_value = 10.0
-step = 0.01
-value = 1.0
-
-[node name="Debugger" type="RichTextLabel" parent="HUD"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = 8.0
-offset_right = -528.0
-offset_bottom = -322.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/normal_font_size = 35
-text = "asdasd"
-
-[node name="Music Slider" type="HSlider" parent="HUD"]
-visible = false
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 21.0
-offset_top = -38.0
-offset_right = -26.0
-offset_bottom = -22.0
-grow_horizontal = 2
-grow_vertical = 0
-max_value = 1.0
-step = 0.0
-
-[node name="Virtual Slider" type="HSlider" parent="HUD"]
-visible = false
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 21.0
-offset_top = -62.0
-offset_right = -26.0
-offset_bottom = -46.0
-grow_horizontal = 2
-grow_vertical = 0
-max_value = 1.0
-step = 0.0
-editable = false
-scrollable = false
