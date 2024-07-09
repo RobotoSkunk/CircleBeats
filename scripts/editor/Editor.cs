@@ -20,19 +20,19 @@
 using Godot;
 
 
-public partial class Editor : Control
+namespace ClockBombGames.CircleBeats.Editor
 {
-	[ExportGroup("UI Components")]
-	[ExportSubgroup("Split containers")]
-	[Export] HSplitContainer timelineHeader;
-	[Export] HSplitContainer timelineBody;
-
-
-	int lastVerticalScroll;
-
-
-	public override void _Process(double delta)
+	public partial class Editor : Control
 	{
-		timelineHeader.SplitOffset = timelineBody.SplitOffset;
+		[ExportGroup("UI Components")]
+		[ExportSubgroup("Split containers")]
+		[Export] HSplitContainer timelineHeader;
+		[Export] HSplitContainer timelineBody;
+
+
+		public override void _Process(double delta)
+		{
+			timelineHeader.SplitOffset = timelineBody.SplitOffset;
+		}
 	}
 }
