@@ -1,14 +1,14 @@
 [gd_scene load_steps=13 format=3 uid="uid://blex4yt0sysmo"]
 
-[ext_resource type="Script" path="res://scripts/Scenario.cs" id="1_qcnj4"]
-[ext_resource type="PackedScene" uid="uid://cda5akmjbhhb5" path="res://scenes/scenario_stuff/That Cool Spectrum Bar.tscn" id="3_3i72d"]
-[ext_resource type="Material" uid="uid://dsv5icqwvup3r" path="res://assets/materials/Background Material.tres" id="3_dfeag"]
-[ext_resource type="ArrayMesh" uid="uid://dy52yn0fjoiiq" path="res://assets/models/Circle.obj" id="4_mdrxw"]
-[ext_resource type="ArrayMesh" uid="uid://bu3kgsuvp1eic" path="res://assets/models/Scenario radial background part.obj" id="4_qi7tp"]
-[ext_resource type="Script" path="res://scripts/Player.cs" id="5_2a4ub"]
-[ext_resource type="Material" uid="uid://dwic4afdrfqyp" path="res://assets/materials/Shadow Material.tres" id="5_wx0g2"]
-[ext_resource type="Material" uid="uid://vdcctuf11pdd" path="res://assets/materials/Obstacles Material.tres" id="6_h573d"]
-[ext_resource type="ArrayMesh" uid="uid://b28o3mieaajx7" path="res://assets/models/Player.obj" id="6_ti46p"]
+[ext_resource type="Script" path="res://scripts/Scenario.cs" id="1_rgd5j"]
+[ext_resource type="PackedScene" uid="uid://cda5akmjbhhb5" path="res://scenes/playground/That Cool Spectrum Bar.tscn" id="2_ow84r"]
+[ext_resource type="Material" uid="uid://dsv5icqwvup3r" path="res://assets/materials/Background Material.tres" id="3_8ou2c"]
+[ext_resource type="ArrayMesh" uid="uid://bu3kgsuvp1eic" path="res://assets/models/Scenario radial background part.obj" id="4_ffmts"]
+[ext_resource type="Material" uid="uid://dwic4afdrfqyp" path="res://assets/materials/Shadow Material.tres" id="5_838cg"]
+[ext_resource type="ArrayMesh" uid="uid://dy52yn0fjoiiq" path="res://assets/models/Circle.obj" id="6_8jwf2"]
+[ext_resource type="Material" uid="uid://vdcctuf11pdd" path="res://assets/materials/Obstacles Material.tres" id="7_65bx1"]
+[ext_resource type="Script" path="res://scripts/Player.cs" id="8_fjbsx"]
+[ext_resource type="ArrayMesh" uid="uid://b28o3mieaajx7" path="res://assets/models/Player.obj" id="9_vuxo0"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_baa6n"]
 shading_mode = 0
@@ -23,9 +23,9 @@ size = Vector3(0.5, 0.75, 0.5)
 
 [node name="Scenario" type="Node3D" node_paths=PackedStringArray("player", "carrouselContainer", "radialParts")]
 transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 1, 0, 0, 0)
-script = ExtResource("1_qcnj4")
+script = ExtResource("1_rgd5j")
 player = NodePath("Content/Player")
-carrouselBarScene = ExtResource("3_3i72d")
+carrouselBarScene = ExtResource("2_ow84r")
 carrouselContainer = NodePath("Content/Circle/Carrousel Container")
 radialParts = [NodePath("Content/Background/Radial Part 1"), NodePath("Content/Background/Radial Part 2"), NodePath("Content/Background/Radial Part 3"), NodePath("Content/Background/Radial Part 4"), NodePath("Content/Background/Radial Part 5"), NodePath("Content/Background/Radial Part 6"), NodePath("Content/Background/Radial Part 7"), NodePath("Content/Background/Radial Part 8")]
 
@@ -35,51 +35,51 @@ radialParts = [NodePath("Content/Background/Radial Part 1"), NodePath("Content/B
 transform = Transform3D(1000, 0, 0, 0, 1000, 0, 0, 0, 1000, 0, 0, -0.5)
 
 [node name="Radial Part 1" type="MeshInstance3D" parent="Content/Background"]
-material_override = ExtResource("3_dfeag")
-mesh = ExtResource("4_qi7tp")
+material_override = ExtResource("3_8ou2c")
+mesh = ExtResource("4_ffmts")
 
 [node name="Radial Part 2" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0, 1, 0, 0, 0)
-material_override = ExtResource("3_dfeag")
-mesh = ExtResource("4_qi7tp")
+material_override = ExtResource("3_8ou2c")
+mesh = ExtResource("4_ffmts")
 
 [node name="Radial Part 3" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-material_override = ExtResource("3_dfeag")
-mesh = ExtResource("4_qi7tp")
+material_override = ExtResource("3_8ou2c")
+mesh = ExtResource("4_ffmts")
 
 [node name="Radial Part 4" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(-0.707107, 0.707107, 0, -0.707107, -0.707107, 0, 0, 0, 1, 0, 0, 0)
-material_override = ExtResource("3_dfeag")
-mesh = ExtResource("4_qi7tp")
+material_override = ExtResource("3_8ou2c")
+mesh = ExtResource("4_ffmts")
 
 [node name="Radial Part 5" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, 0, 0, 0)
-material_override = ExtResource("3_dfeag")
-mesh = ExtResource("4_qi7tp")
+material_override = ExtResource("3_8ou2c")
+mesh = ExtResource("4_ffmts")
 
 [node name="Radial Part 6" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(-0.707107, -0.707107, 0, 0.707107, -0.707107, 0, 0, 0, 1, 0, 0, 0)
-material_override = ExtResource("3_dfeag")
-mesh = ExtResource("4_qi7tp")
+material_override = ExtResource("3_8ou2c")
+mesh = ExtResource("4_ffmts")
 
 [node name="Radial Part 7" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(1.19249e-08, -1, 0, 1, 1.19249e-08, 0, 0, 0, 1, 0, 0, 0)
-material_override = ExtResource("3_dfeag")
-mesh = ExtResource("4_qi7tp")
+material_override = ExtResource("3_8ou2c")
+mesh = ExtResource("4_ffmts")
 
 [node name="Radial Part 8" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0, 0, 0)
-material_override = ExtResource("3_dfeag")
-mesh = ExtResource("4_qi7tp")
+material_override = ExtResource("3_8ou2c")
+mesh = ExtResource("4_ffmts")
 
 [node name="Circle" type="Node3D" parent="Content"]
 
 [node name="Shadow" type="MeshInstance3D" parent="Content/Circle"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, -0.24)
-material_override = ExtResource("5_wx0g2")
+material_override = ExtResource("5_838cg")
 cast_shadow = 0
-mesh = ExtResource("4_mdrxw")
+mesh = ExtResource("6_8jwf2")
 skeleton = NodePath("../../../../../..")
 
 [node name="Carrousel Container" type="Node3D" parent="Content/Circle"]
@@ -89,46 +89,46 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
 
 [node name="Ring" type="MeshInstance3D" parent="Content/Circle/Outer Circle"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
-material_override = ExtResource("6_h573d")
+material_override = ExtResource("7_65bx1")
 cast_shadow = 0
-mesh = ExtResource("4_mdrxw")
+mesh = ExtResource("6_8jwf2")
 
 [node name="Center" type="MeshInstance3D" parent="Content/Circle/Outer Circle"]
 transform = Transform3D(4.5, 0, 0, 0, 4.5, 0, 0, 0, 4.5, 0, 0, 0.01)
 material_override = SubResource("StandardMaterial3D_baa6n")
 cast_shadow = 0
-mesh = ExtResource("4_mdrxw")
+mesh = ExtResource("6_8jwf2")
 
 [node name="Inner Circle" type="Node3D" parent="Content/Circle"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
 
 [node name="Ring" type="MeshInstance3D" parent="Content/Circle/Inner Circle"]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
-material_override = ExtResource("6_h573d")
+material_override = ExtResource("7_65bx1")
 cast_shadow = 0
-mesh = ExtResource("4_mdrxw")
+mesh = ExtResource("6_8jwf2")
 
 [node name="Center" type="MeshInstance3D" parent="Content/Circle/Inner Circle"]
 transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0.01)
 material_override = SubResource("StandardMaterial3D_oemx5")
 cast_shadow = 0
-mesh = ExtResource("4_mdrxw")
+mesh = ExtResource("6_8jwf2")
 
 [node name="Player" type="CharacterBody3D" parent="Content" node_paths=PackedStringArray("dart")]
-script = ExtResource("5_2a4ub")
+script = ExtResource("8_fjbsx")
 dart = NodePath("Model")
 
 [node name="Model" type="MeshInstance3D" parent="Content/Player"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 6, 0)
-material_override = ExtResource("6_h573d")
+material_override = ExtResource("7_65bx1")
 cast_shadow = 0
-mesh = ExtResource("6_ti46p")
+mesh = ExtResource("9_vuxo0")
 
 [node name="Shadow" type="MeshInstance3D" parent="Content/Player/Model"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.48)
-material_override = ExtResource("5_wx0g2")
+material_override = ExtResource("5_838cg")
 cast_shadow = 0
-mesh = ExtResource("6_ti46p")
+mesh = ExtResource("9_vuxo0")
 
 [node name="Hitbox" type="CollisionShape3D" parent="Content/Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)

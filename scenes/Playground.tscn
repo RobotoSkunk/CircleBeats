@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://vgucmfperviw"]
 
 [ext_resource type="Script" path="res://scripts/Playground.cs" id="1_6h4qg"]
-[ext_resource type="PackedScene" uid="uid://blex4yt0sysmo" path="res://scenes/scenario_stuff/Scenario.tscn" id="2_gy3sf"]
+[ext_resource type="PackedScene" uid="uid://blex4yt0sysmo" path="res://scenes/playground/Scenario.tscn" id="2_uo4g2"]
 
 [node name="Playground" type="Control" node_paths=PackedStringArray("sliderMusicVolume", "sliderRotationX", "sliderRotationY", "sliderRotationSpeedZ", "sliderDecibelsForce", "sliderPlayerSpeed", "scenario", "musicPlayer", "debugLabel", "musicSlider", "virtualSlider")]
 layout_mode = 3
@@ -82,7 +82,7 @@ render_target_update_mode = 4
 process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
 
-[node name="Scenario" parent="HUD/Viewports Container/Game Viewport" node_paths=PackedStringArray("playground") instance=ExtResource("2_gy3sf")]
+[node name="Scenario" parent="HUD/Viewports Container/Game Viewport" node_paths=PackedStringArray("playground") instance=ExtResource("2_uo4g2")]
 playground = NodePath("../../../..")
 
 [node name="Inspector" type="VBoxContainer" parent="HUD"]
