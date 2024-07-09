@@ -25,6 +25,8 @@ namespace ClockBombGames.CircleBeats.Editor
 	public partial class Editor : Control
 	{
 		[ExportGroup("UI Components")]
+		[Export] Playground playground;
+
 		[ExportSubgroup("Split containers")]
 		[Export] HSplitContainer timelineHeader;
 		[Export] HSplitContainer timelineBody;
