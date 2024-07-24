@@ -66,7 +66,7 @@ namespace ClockBombGames.CircleBeats.Editor
 			fastBackwardsButton.Pressed += DecreaseSongTempo;
 			playButton.Pressed += OnPlayPressed;
 			fastForwardButton.Pressed += IncreaseSongTempo;
-			skipForwardButton.Pressed += () => SeekMusicPosition(songLength);
+			skipForwardButton.Pressed += () => SeekMusicPosition(songLength - 0.1f);
 
 			timelineSlider.ValueChanged += SeekMusicPosition;
 		}
@@ -110,8 +110,8 @@ namespace ClockBombGames.CircleBeats.Editor
 			songPosition = delta * songLength;
 			float desiredPosition = (float)songPosition;
 
-			if (!isPlaying) {
-				pausedPlaybackBuffer = 0.05f;
+			if (!isPlaying && desiredPosition < songLength - 0.1f) {
+				pausedPlaybackBuffer = 0.1f;
 				musicPlayer.Playing = true;
 			}
 
