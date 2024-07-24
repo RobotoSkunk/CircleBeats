@@ -50,6 +50,9 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		double songPosition = 0f;
 		double songLength = 0f;
+		double pausedPlaybackBuffer;
+
+		bool isPlaying = false;
 
 
 		public override void _Ready()
@@ -72,17 +75,25 @@ namespace ClockBombGames.CircleBeats.Editor
 		{
 			timelineHeader.SplitOffset = timelineBody.SplitOffset;
 
-			if (playground.MusicPlayer.Playing) {
+			if (isPlaying) {
 				songPosition = musicPlayer.GetPlaybackPosition();
 
 				timelineSlider.SetValueNoSignal(songPosition / songLength);
+
+			} else if (pausedPlaybackBuffer > 0f) {
+				pausedPlaybackBuffer -= delta;
+
+			} else if (musicPlayer.Playing) {
+				musicPlayer.Playing = false;
 			}
 		}
 
 
 		void OnPlayPressed()
 		{
-			musicPlayer.Playing = !musicPlayer.Playing;
+			isPlaying = !isPlaying;
+
+			musicPlayer.Playing = isPlaying;
 
 			if (musicPlayer.Playing) {
 				playButton.Icon = pauseSprite;
@@ -97,8 +108,14 @@ namespace ClockBombGames.CircleBeats.Editor
 		void SeekMusicPosition(double delta)
 		{
 			songPosition = delta * songLength;
+			float desiredPosition = (float)songPosition;
 
-			musicPlayer.Seek((float)songPosition);
+			if (!isPlaying) {
+				pausedPlaybackBuffer = 0.05f;
+				musicPlayer.Playing = true;
+			}
+
+			musicPlayer.Seek(desiredPosition);
 		}
 
 		void IncreaseSongTempo()
