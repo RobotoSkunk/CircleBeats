@@ -30,7 +30,11 @@ namespace ClockBombGames.CircleBeats
 
 		[ExportCategory("Components")]
 		[Export] Scenario scenario;
+		[Export] Control gameContainer;
 		[Export] AudioStreamPlayer musicPlayer;
+
+		[ExportCategory("Debugging")]
+		[Export] Label debugLabel;
 
 
 		AudioBusReader audioBusReader;
@@ -47,6 +51,8 @@ namespace ClockBombGames.CircleBeats
 		public AudioBusReaderOutput AudioReaderOutput => audioReaderOutput;
 
 		public float DecibelsForce { get; private set; }
+
+		public bool Playing { get; set; }
 
 
 		public static readonly int ticksPerSecond = ProjectSettings
@@ -92,16 +98,18 @@ namespace ClockBombGames.CircleBeats
 
 			// scenario.RotationDegrees = rotation;
 
+			gameContainer.ProcessMode = musicPlayer.Playing ? ProcessModeEnum.Inherit : ProcessModeEnum.Disabled;
 
 			double playbackPosition = musicPlayer.GetPlaybackPosition();
 			songTicks = TimeToTicks(playbackPosition);
 			// musicSlider.SetValueNoSignal(playbackPosition);
 
-			// debugLabel.Text = "FPS: " + Engine.GetFramesPerSecond() +
-			// 				"\nDraw Calls: " + Performance.GetMonitor(Performance.Monitor.RenderTotalDrawCallsInFrame) +
-			// 				"\nAverage Audio Data: " + audioReaderOutput.averageData +
-			// 				"\nDecibels: " + audioReaderOutput.decibels +
-			// 				"\nTicks: " + virtualTicks + " / " + songTicks;
+			debugLabel.Text = "FPS: " + Engine.GetFramesPerSecond() +
+							"\nDraw Calls: " + Performance.GetMonitor(Performance.Monitor.RenderTotalDrawCallsInFrame) +
+							"\nAverage Audio Data: " + audioReaderOutput.averageData +
+							"\nDecibels: " + audioReaderOutput.decibels +
+							"\nProcess Mode: " + (musicPlayer.Playing ? "Inherit" : "Disabled") +
+							"\nTicks: " + virtualTicks + " / " + songTicks;
 		}
 
 
