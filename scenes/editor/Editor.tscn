@@ -33,7 +33,7 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -243.0
+offset_top = -334.0
 grow_horizontal = 2
 grow_vertical = 0
 alignment = 2
@@ -63,6 +63,7 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="Fast Backwards" type="Button" parent="Timeline/Controls Panel/Controls"]
+visible = false
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -79,6 +80,7 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="Fast Forward" type="Button" parent="Timeline/Controls Panel/Controls"]
+visible = false
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 3
