@@ -81,40 +81,14 @@ namespace ClockBombGames.CircleBeats
 			musicPlayer.Stream = music;
 
 			DecibelsForce = 1f;
-
-			// virtualSlider.MaxValue = musicPlayer.Stream.GetLength();
-
-			// musicSlider.MaxValue = musicPlayer.Stream.GetLength();
-			// musicSlider.ValueChanged += (value) => {
-			// 	musicPlayer.Seek((float)value);
-
-			// 	virtualTicks = TimeToTicks(value);
-			// };
 		}
 
 		public override void _Process(double delta)
 		{
 			audioBusReader.CalculateOutput(ref audioReaderOutput);
 
-			// Vector3 rotation = scenario.RotationDegrees;
-
-			// rotationZ += (float)(sliderRotationSpeedZ.Value * delta);
-
-			// rotation.X = (float)sliderRotationX.Value;
-			// rotation.Y = (float)sliderRotationY.Value;
-			// rotation.Z = rotationZ;
-
-			// int busIndex = AudioServer.GetBusIndex("MusicOutput");
-			// AudioServer.SetBusVolumeDb(busIndex, (float)Mathf.LinearToDb(sliderMusicVolume.Value));
-
-			// DecibelsForce = (float)sliderDecibelsForce.Value;
-			// scenario.Player.Speed = (float)sliderPlayerSpeed.Value;
-
-			// scenario.RotationDegrees = rotation;
-
 			double playbackPosition = musicPlayer.GetPlaybackPosition();
 			songTicks = TimeToTicks(playbackPosition);
-			// musicSlider.SetValueNoSignal(playbackPosition);
 
 			debugLabel.Text = "FPS: " + Engine.GetFramesPerSecond() +
 							"\nDraw Calls: " + Performance.GetMonitor(Performance.Monitor.RenderTotalDrawCallsInFrame) +
@@ -132,7 +106,6 @@ namespace ClockBombGames.CircleBeats
 			}
 
 			virtualTime = TicksToTime(virtualTicks);
-			// virtualSlider.SetValueNoSignal(virtualTime);
 		}
 
 
