@@ -85,6 +85,7 @@ namespace ClockBombGames.CircleBeats.Editor
 
 			} else if (musicPlayer.Playing) {
 				musicPlayer.Playing = false;
+				playground.IsPlaying = false;
 			}
 		}
 
@@ -94,6 +95,7 @@ namespace ClockBombGames.CircleBeats.Editor
 			isPlaying = !isPlaying;
 
 			musicPlayer.Playing = isPlaying;
+			playground.IsPlaying = isPlaying;
 
 			if (musicPlayer.Playing) {
 				playButton.Icon = pauseSprite;
@@ -112,7 +114,9 @@ namespace ClockBombGames.CircleBeats.Editor
 
 			if (!isPlaying && desiredPosition < songLength - 0.1f) {
 				pausedPlaybackBuffer = 0.1f;
+
 				musicPlayer.Playing = true;
+				playground.IsPlaying = true;
 			}
 
 			musicPlayer.Seek(desiredPosition);

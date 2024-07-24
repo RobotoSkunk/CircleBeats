@@ -44,20 +44,34 @@ namespace ClockBombGames.CircleBeats
 		long virtualTicks;
 
 		double virtualTime;
+
 		float rotationZ;
+
+		bool _isPlaying;
 
 		public AudioStreamPlayer MusicPlayer => musicPlayer;
 		public AudioBusReader AudioBusReader => audioBusReader;
 		public AudioBusReaderOutput AudioReaderOutput => audioReaderOutput;
 
-		public float DecibelsForce { get; private set; }
-
-		public bool Playing { get; set; }
-
-
 		public static readonly int ticksPerSecond = ProjectSettings
 														.GetSetting("physics/common/physics_ticks_per_second")
 														.AsInt32();
+
+
+		public float DecibelsForce { get; private set; }
+
+		public bool IsPlaying
+		{
+			get
+			{
+				return _isPlaying;
+			}
+			set
+			{
+				_isPlaying = value;
+				gameContainer.ProcessMode = value ? ProcessModeEnum.Inherit : ProcessModeEnum.Disabled;
+			}
+		}
 
 
 		public override void _Ready()
@@ -98,8 +112,6 @@ namespace ClockBombGames.CircleBeats
 
 			// scenario.RotationDegrees = rotation;
 
-			gameContainer.ProcessMode = musicPlayer.Playing ? ProcessModeEnum.Inherit : ProcessModeEnum.Disabled;
-
 			double playbackPosition = musicPlayer.GetPlaybackPosition();
 			songTicks = TimeToTicks(playbackPosition);
 			// musicSlider.SetValueNoSignal(playbackPosition);
@@ -108,7 +120,7 @@ namespace ClockBombGames.CircleBeats
 							"\nDraw Calls: " + Performance.GetMonitor(Performance.Monitor.RenderTotalDrawCallsInFrame) +
 							"\nAverage Audio Data: " + audioReaderOutput.averageData +
 							"\nDecibels: " + audioReaderOutput.decibels +
-							"\nProcess Mode: " + (musicPlayer.Playing ? "Inherit" : "Disabled") +
+							"\nProcess Mode: " + (IsPlaying ? "Inherit" : "Disabled") +
 							"\nTicks: " + virtualTicks + " / " + songTicks;
 		}
 
