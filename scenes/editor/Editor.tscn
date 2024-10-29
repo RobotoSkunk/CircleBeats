@@ -40,8 +40,8 @@ alignment = 2
 
 [node name="Tabs Bar" type="TabBar" parent="Timeline"]
 layout_mode = 2
-tab_count = 3
 scrolling_enabled = false
+tab_count = 3
 tab_0/title = "Timeline"
 tab_1/title = "Effects"
 tab_2/title = "Background"
