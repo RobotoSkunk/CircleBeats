@@ -34,7 +34,7 @@ namespace ClockBombGames.CircleBeats
 
 		Vector2 move;
 
-		public float Speed { get; set; }
+		public float Speed { get; set; } = 1f;
 
 
 		public override void _Process(double delta)
