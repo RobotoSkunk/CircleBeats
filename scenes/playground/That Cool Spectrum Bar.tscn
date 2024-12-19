@@ -2,15 +2,15 @@
 
 [ext_resource type="ArrayMesh" uid="uid://ddant82bpb4vd" path="res://assets/models/Square.obj" id="1_7m7d3"]
 [ext_resource type="Script" path="res://scripts/CarrouselBar.cs" id="1_ryknt"]
+[ext_resource type="Material" uid="uid://vdcctuf11pdd" path="res://assets/materials/Obstacles Material.tres" id="2_f776d"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pgd6t"]
-shading_mode = 0
-
-[node name="That Cool Spectrum Bar" type="Node3D"]
+[node name="That Cool Spectrum Bar" type="Node3D" node_paths=PackedStringArray("mesh")]
 script = ExtResource("1_ryknt")
+mesh = NodePath("Renderer")
 
 [node name="Renderer" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.5, 0, 0, 0, 0.15, 0, 0, 0, 1, 0.5, 0, 0)
-material_override = SubResource("StandardMaterial3D_pgd6t")
+material_override = ExtResource("2_f776d")
 transparency = 0.85
+cast_shadow = 0
 mesh = ExtResource("1_7m7d3")

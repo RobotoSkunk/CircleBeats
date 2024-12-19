@@ -25,6 +25,8 @@ namespace ClockBombGames.CircleBeats
 {
 	public partial class CarrouselBar : Node3D
 	{
+		[Export] MeshInstance3D mesh;
+
 		int carrouselIndex;
 
 		float size;
@@ -81,6 +83,8 @@ namespace ClockBombGames.CircleBeats
 					size = 0f;
 				}
 			}
+
+			mesh.Visible = size > 0.01f;
 		}
 	}
 }

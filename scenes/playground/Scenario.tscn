@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/Scenario.cs" id="1_u08g0"]
 [ext_resource type="PackedScene" uid="uid://cda5akmjbhhb5" path="res://scenes/playground/That Cool Spectrum Bar.tscn" id="2_sqrsd"]
 [ext_resource type="Material" uid="uid://dsv5icqwvup3r" path="res://assets/materials/Background Material.tres" id="3_dc8xj"]
-[ext_resource type="ArrayMesh" uid="uid://bu3kgsuvp1eic" path="res://assets/models/Scenario radial background part.obj" id="4_ao4uh"]
+[ext_resource type="ArrayMesh" uid="uid://buqotk83l576o" path="res://assets/models/Scenario Radial Background Part.obj" id="4_q1brg"]
 [ext_resource type="Material" uid="uid://dwic4afdrfqyp" path="res://assets/materials/Shadow Material.tres" id="5_p0yvl"]
 [ext_resource type="ArrayMesh" uid="uid://dy52yn0fjoiiq" path="res://assets/models/Circle.obj" id="6_0im0l"]
 [ext_resource type="Material" uid="uid://vdcctuf11pdd" path="res://assets/materials/Obstacles Material.tres" id="7_elus6"]
@@ -36,42 +36,42 @@ transform = Transform3D(1000, 0, 0, 0, 1000, 0, 0, 0, 1000, 0, 0, -0.5)
 
 [node name="Radial Part 1" type="MeshInstance3D" parent="Content/Background"]
 material_override = ExtResource("3_dc8xj")
-mesh = ExtResource("4_ao4uh")
+mesh = ExtResource("4_q1brg")
 
 [node name="Radial Part 2" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0, 1, 0, 0, 0)
 material_override = ExtResource("3_dc8xj")
-mesh = ExtResource("4_ao4uh")
+mesh = ExtResource("4_q1brg")
 
 [node name="Radial Part 3" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 material_override = ExtResource("3_dc8xj")
-mesh = ExtResource("4_ao4uh")
+mesh = ExtResource("4_q1brg")
 
 [node name="Radial Part 4" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(-0.707107, 0.707107, 0, -0.707107, -0.707107, 0, 0, 0, 1, 0, 0, 0)
 material_override = ExtResource("3_dc8xj")
-mesh = ExtResource("4_ao4uh")
+mesh = ExtResource("4_q1brg")
 
 [node name="Radial Part 5" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, 0, 0, 0)
 material_override = ExtResource("3_dc8xj")
-mesh = ExtResource("4_ao4uh")
+mesh = ExtResource("4_q1brg")
 
 [node name="Radial Part 6" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(-0.707107, -0.707107, 0, 0.707107, -0.707107, 0, 0, 0, 1, 0, 0, 0)
 material_override = ExtResource("3_dc8xj")
-mesh = ExtResource("4_ao4uh")
+mesh = ExtResource("4_q1brg")
 
 [node name="Radial Part 7" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(1.19249e-08, -1, 0, 1, 1.19249e-08, 0, 0, 0, 1, 0, 0, 0)
 material_override = ExtResource("3_dc8xj")
-mesh = ExtResource("4_ao4uh")
+mesh = ExtResource("4_q1brg")
 
 [node name="Radial Part 8" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0, 0, 0)
 material_override = ExtResource("3_dc8xj")
-mesh = ExtResource("4_ao4uh")
+mesh = ExtResource("4_q1brg")
 
 [node name="Circle" type="Node3D" parent="Content"]
 
