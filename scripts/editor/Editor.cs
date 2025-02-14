@@ -17,6 +17,7 @@
 */
 
 
+using System;
 using Godot;
 
 
@@ -27,7 +28,10 @@ namespace ClockBombGames.CircleBeats.Editor
 		[Export] Playground playground;
 
 		[ExportGroup("UI Components")]
-		[Export] HSlider timelineSlider;
+		// [Export] HSlider timelineSlider;
+		[Export] TimelineSlider timelineSlider;
+		[Export] RichTextLabel songTimeLabel;
+		[Export] ColorRect timelineSeeker;
 
 		[ExportSubgroup("Split Containers")]
 		[Export] HSplitContainer timelineHeader;
@@ -35,10 +39,7 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		[ExportSubgroup("Playtest Controls")]
 		[Export] Button skipBackwardButton;
-		[Export] Button fastBackwardsButton;
 		[Export] Button playButton;
-		[Export] Button fastForwardButton;
-		[Export] Button skipForwardButton;
 
 		[ExportGroup("Resources")]
 		[ExportSubgroup("Play Button")]
@@ -63,12 +64,9 @@ namespace ClockBombGames.CircleBeats.Editor
 
 			// Set Controls listeners
 			skipBackwardButton.Pressed += () => SeekMusicPosition(0);
-			fastBackwardsButton.Pressed += DecreaseSongTempo;
 			playButton.Pressed += OnPlayPressed;
-			fastForwardButton.Pressed += IncreaseSongTempo;
-			skipForwardButton.Pressed += () => SeekMusicPosition(songLength - 0.1f);
 
-			timelineSlider.ValueChanged += SeekMusicPosition;
+			timelineSlider.OnValueChange += SeekMusicPosition;
 		}
 
 		public override void _Process(double delta)
@@ -78,7 +76,7 @@ namespace ClockBombGames.CircleBeats.Editor
 			if (isPlaying) {
 				songPosition = musicPlayer.GetPlaybackPosition();
 
-				timelineSlider.SetValueNoSignal(songPosition / songLength);
+				timelineSlider.SetValue((float)(songPosition / songLength));
 
 			} else if (pausedPlaybackBuffer > 0f) {
 				pausedPlaybackBuffer -= delta;
@@ -87,6 +85,28 @@ namespace ClockBombGames.CircleBeats.Editor
 				musicPlayer.Playing = false;
 				playground.IsPlaying = false;
 			}
+
+
+			// Song time label
+			songTimeLabel.Text = string.Concat("[center]", ParseSeconds(songPosition), " / ", ParseSeconds(songLength));
+
+			// Timeline Seeker
+			Vector2 seekerPosition = timelineSeeker.GlobalPosition;
+
+			seekerPosition.Y = timelineSlider.GlobalPosition.Y;
+			seekerPosition.X = timelineSlider.GlobalPosition.X + (float)(songPosition / songLength) * timelineSlider.Size.X;
+
+			timelineSeeker.GlobalPosition = seekerPosition;
+		}
+
+
+		string ParseSeconds(double time)
+		{
+			int seconds = (int)time % 60;
+			int minutes = (int)time / 60;
+			int decimals = (int)(time % 1 * 100);
+
+			return string.Concat(minutes.ToString("00"), ":", seconds.ToString("00"), ".", decimals.ToString("00"));
 		}
 
 
@@ -107,7 +127,7 @@ namespace ClockBombGames.CircleBeats.Editor
 			playButton.Icon = playSprite;
 		}
 
-		void SeekMusicPosition(double delta)
+		void SeekMusicPosition(float delta)
 		{
 			songPosition = delta * songLength;
 			float desiredPosition = (float)songPosition;
@@ -120,16 +140,6 @@ namespace ClockBombGames.CircleBeats.Editor
 			}
 
 			musicPlayer.Seek(desiredPosition);
-		}
-
-		void IncreaseSongTempo()
-		{
-			musicPlayer.PitchScale++;
-		}
-
-		void DecreaseSongTempo()
-		{
-			musicPlayer.PitchScale--;
 		}
 	}
 }
