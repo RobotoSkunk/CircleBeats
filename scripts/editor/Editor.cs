@@ -61,8 +61,8 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		bool isPlaying = false;
 		bool finishedReadingMp3 = false;
-		bool renderedWaveform = false;
-		bool renderWaveformImage = false;
+		bool renderingWaveform = false;
+		bool applyWaveform = false;
 
 		float lastWaveformRatio = 0f;
 
@@ -140,22 +140,25 @@ namespace ClockBombGames.CircleBeats.Editor
 			int width = (int)waveformRect.Size.X;
 			int height = (int)waveformRect.Size.Y;
 
-			if (finishedReadingMp3 && lastWaveformRatio != width / height) {
+			if (finishedReadingMp3 && !renderingWaveform && lastWaveformRatio != width / height) {
 				mp3Reader.ClearImage(Colors.Transparent);
+				renderingWaveform = true;
 
 				Task.Run(async () =>
 				{
 					await mp3Reader.RenderWaveformImage(width, height, Colors.Transparent, Colors.Gold * 0.8f);
-					renderWaveformImage = true;
+
+					renderingWaveform = false;
+					applyWaveform = true;
 				});
 
 				lastWaveformRatio = width / height;
 			}
 
-			if (renderWaveformImage) {
+			if (applyWaveform) {
 				mp3Reader.ApplyImage();
 
-				renderWaveformImage = false;
+				applyWaveform = false;
 			}
 		}
 
