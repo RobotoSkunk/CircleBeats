@@ -33,7 +33,10 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		bool isFocused;
 		bool isChangingValue;
+
+		float value;
 		float prevMouseX;
+		float sizeRatio = 0f;
 
 
 		public override void _Ready()
@@ -50,7 +53,7 @@ namespace ClockBombGames.CircleBeats.Editor
 				float mouseX = GetLocalMousePosition().X;
 
 				if (mouseX != prevMouseX) {
-					float value = Mathf.Clamp(mouseX / Size.X, 0, 1);
+					value = Mathf.Clamp(mouseX / Size.X, 0, 1);
 
 					SetValue(value);
 					OnValueChange(value);
@@ -59,6 +62,11 @@ namespace ClockBombGames.CircleBeats.Editor
 				isChangingValue = true;
 				
 				prevMouseX = mouseX;
+			}
+
+			if (sizeRatio != Size.X / Size.Y) {
+				sizeRatio = Size.X / Size.Y;
+				SetValue(value);
 			}
 
 			if (!buttonPressed) {
@@ -71,6 +79,7 @@ namespace ClockBombGames.CircleBeats.Editor
 		{
 			Vector2 handlerPos = handlerRect.Position;
 
+			this.value = value;
 			handlerPos.X = value * Size.X;
 
 			handlerRect.Position = handlerPos;
