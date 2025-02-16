@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cxbehkd6cf2px" path="res://assets/sprites/symbols/play.svg" id="4_prgs7"]
 [ext_resource type="Script" path="res://scripts/editor/TimelineSlider.cs" id="5_pg18s"]
 
-[node name="Editor" type="Control" node_paths=PackedStringArray("timelineSlider", "songTimeLabel", "timelineSeeker", "timelineHeader", "timelineBody", "skipBackwardButton", "playButton")]
+[node name="Editor" type="Control" node_paths=PackedStringArray("timelineSlider", "songTimeLabel", "timelineSeeker", "waveformWidthRef", "waveformHeightRef", "waveformRect", "timelineHeader", "timelineBody", "skipBackwardButton", "playButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,6 +17,9 @@ script = ExtResource("1_40f74")
 timelineSlider = NodePath("Timeline/Timeline/Objects/Timeline Header Split/Timeline Slider")
 songTimeLabel = NodePath("Timeline/Timeline/Objects/Timeline Header Split/Song Time")
 timelineSeeker = NodePath("Timeline/Timeline/Objects/Timeline Body/Timeline Body Split/Horizontal Scroll/Layers/Timeline Seeker")
+waveformWidthRef = NodePath("Timeline/Timeline/Objects/Timeline Body/Timeline Body Split/Horizontal Scroll")
+waveformHeightRef = NodePath("Timeline/Timeline/Objects/Timeline Body")
+waveformRect = NodePath("Timeline/Timeline/TextureRect")
 timelineHeader = NodePath("Timeline/Timeline/Objects/Timeline Header Split")
 timelineBody = NodePath("Timeline/Timeline/Objects/Timeline Body/Timeline Body Split")
 skipBackwardButton = NodePath("Timeline/Controls Panel/Controls/Skip Backward")
@@ -70,6 +73,10 @@ expand_icon = true
 [node name="Timeline" type="PanelContainer" parent="Timeline"]
 layout_mode = 2
 
+[node name="TextureRect" type="TextureRect" parent="Timeline/Timeline"]
+layout_mode = 2
+expand_mode = 1
+
 [node name="Objects" type="VBoxContainer" parent="Timeline/Timeline"]
 layout_mode = 2
 
@@ -77,13 +84,12 @@ layout_mode = 2
 layout_mode = 2
 dragger_visibility = 1
 
-[node name="Song Time" type="RichTextLabel" parent="Timeline/Timeline/Objects/Timeline Header Split"]
+[node name="Song Time" type="Label" parent="Timeline/Timeline/Objects/Timeline Header Split"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-bbcode_enabled = true
-text = "[center]1:00:00.00 / 1:00:00.00"
-scroll_active = false
-autowrap_mode = 0
+text = "1:00:00.00 / 1:00:00.00"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Timeline Slider Old" type="HSlider" parent="Timeline/Timeline/Objects/Timeline Header Split"]
 visible = false
@@ -128,6 +134,7 @@ vertical_scroll_mode = 3
 custom_minimum_size = Vector2(0, 250)
 layout_mode = 2
 size_flags_horizontal = 3
+dragger_visibility = 1
 
 [node name="Layers Controls" type="VBoxContainer" parent="Timeline/Timeline/Objects/Timeline Body/Timeline Body Split"]
 custom_minimum_size = Vector2(200, 0)

@@ -17,7 +17,8 @@
 */
 
 
-using System;
+using System.Threading.Tasks;
+using ClockBombGames.CircleBeats.Analyzers;
 using Godot;
 
 
@@ -28,10 +29,14 @@ namespace ClockBombGames.CircleBeats.Editor
 		[Export] Playground playground;
 
 		[ExportGroup("UI Components")]
-		// [Export] HSlider timelineSlider;
 		[Export] TimelineSlider timelineSlider;
-		[Export] RichTextLabel songTimeLabel;
+		[Export] Label songTimeLabel;
 		[Export] ColorRect timelineSeeker;
+
+		[ExportSubgroup("Waveform")]
+		[Export] Control waveformWidthRef;
+		[Export] Control waveformHeightRef;
+		[Export] TextureRect waveformRect;
 
 		[ExportSubgroup("Split Containers")]
 		[Export] HSplitContainer timelineHeader;
@@ -48,12 +53,18 @@ namespace ClockBombGames.CircleBeats.Editor
 
 
 		AudioStreamPlayer musicPlayer;
+		MP3Reader mp3Reader = new();
 
 		double songPosition = 0f;
 		double songLength = 0f;
 		double pausedPlaybackBuffer;
 
 		bool isPlaying = false;
+		bool finishedReadingMp3 = false;
+		bool renderedWaveform = false;
+		bool renderWaveformImage = false;
+
+		float lastWaveformRatio = 0f;
 
 
 		public override void _Ready()
@@ -67,6 +78,22 @@ namespace ClockBombGames.CircleBeats.Editor
 			playButton.Pressed += OnPlayPressed;
 
 			timelineSlider.OnValueChange += SeekMusicPosition;
+
+			// Read mp3 stream
+			if (musicPlayer.Stream is AudioStreamMP3 audioStream) {
+				mp3Reader.ReadAudioStream(audioStream);
+
+				Task.Run(async () =>
+				{
+					await mp3Reader.ReadWaveformData();
+					finishedReadingMp3 = true;
+				});
+			} else {
+				GD.PrintErr("Only MP3 files are allowed.");
+			}
+
+			waveformRect.Texture = mp3Reader.WaveformImageTexture;
+
 		}
 
 		public override void _Process(double delta)
@@ -88,7 +115,7 @@ namespace ClockBombGames.CircleBeats.Editor
 
 
 			// Song time label
-			songTimeLabel.Text = string.Concat("[center]", ParseSeconds(songPosition), " / ", ParseSeconds(songLength));
+			songTimeLabel.Text = string.Concat(ParseSeconds(songPosition), " / ", ParseSeconds(songLength));
 
 			// Timeline Seeker
 			Vector2 seekerPosition = timelineSeeker.GlobalPosition;
@@ -97,6 +124,39 @@ namespace ClockBombGames.CircleBeats.Editor
 			seekerPosition.X = timelineSlider.GlobalPosition.X + (float)(songPosition / songLength) * timelineSlider.Size.X;
 
 			timelineSeeker.GlobalPosition = seekerPosition;
+
+
+			// Waveform renderer
+			waveformRect.GlobalPosition = new(
+				waveformWidthRef.GlobalPosition.X,
+				waveformHeightRef.GlobalPosition.Y
+			);
+
+			waveformRect.Size = new(
+				waveformWidthRef.Size.X,
+				waveformHeightRef.Size.Y
+			);
+
+			int width = (int)waveformRect.Size.X;
+			int height = (int)waveformRect.Size.Y;
+
+			if (finishedReadingMp3 && lastWaveformRatio != width / height) {
+				mp3Reader.ClearImage(Colors.Transparent);
+
+				Task.Run(async () =>
+				{
+					await mp3Reader.RenderWaveformImage(width, height, Colors.Transparent, Colors.Gold * 0.8f);
+					renderWaveformImage = true;
+				});
+
+				lastWaveformRatio = width / height;
+			}
+
+			if (renderWaveformImage) {
+				mp3Reader.ApplyImage();
+
+				renderWaveformImage = false;
+			}
 		}
 
 
