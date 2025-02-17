@@ -18,6 +18,7 @@
 
 
 using System.Threading.Tasks;
+using ClockBombGames.CircleBeats.Analyzers;
 using Godot;
 
 
@@ -113,7 +114,7 @@ namespace ClockBombGames.CircleBeats
 			#region Spectrum and carousel
 
 			if (playground.MusicPlayer.Playing) {
-				playground.AudioBusReader.GetSpectrum(ref spectrum, 16000);
+				playground.AudioBusReader.GetSpectrum(ref spectrum);
 
 				// Spin carrousel
 				carrouselTickTime += delta;

@@ -56,6 +56,18 @@ namespace ClockBombGames.CircleBeats.Analyzers
 		float decibels = -160f;
 		float averageData = 0f;
 
+		private const int MAX_FREQ = 20000;
+		private const int MIN_DB = 60;
+
+		public enum FFTWindow {
+			Rectangular,
+			Triangle,
+			Hamming,
+			Hanning,
+			Blackman,
+			BlackmanHarris,
+		}
+
 
 		public AudioBusReader(string bus) {
 			busIndex = AudioServer.GetBusIndex(bus);
@@ -129,32 +141,23 @@ namespace ClockBombGames.CircleBeats.Analyzers
 			output.averageData = averageData;
 		}
 
-		public void GetSpectrum(ref float[] spectrum, float maxFrequency)
+		public void GetSpectrum(ref float[] spectrum)
 		{
 			if (spectrumAnalyzer == null) {
 				return;
 			}
 
+			int N = spectrum.Length;
 			float prevHz = 0f;
 
 			for (int i = 0; i < spectrum.Length; i++) {
-				float hz = (i + 1) * maxFrequency / spectrum.Length;
+				float hz = (i + 1) * MAX_FREQ / N;
 
-				Vector2 rangeAvg = spectrumAnalyzer.GetMagnitudeForFrequencyRange(
-					prevHz,
-					hz,
-					AudioEffectSpectrumAnalyzerInstance.MagnitudeMode.Average
-				);
+				Vector2 maxFreq = spectrumAnalyzer.GetMagnitudeForFrequencyRange(prevHz, hz, 0); // 0 is Average Mode
+				float energy = maxFreq.Length();
+				// float window = 0.5f * (1f - Mathf.Cos(2.0f * Mathf.Pi * i / N));
 
-				Vector2 rangeMax = spectrumAnalyzer.GetMagnitudeForFrequencyRange(
-					prevHz,
-					hz,
-					AudioEffectSpectrumAnalyzerInstance.MagnitudeMode.Max
-				);
-
-				Vector2 range = (rangeAvg + rangeMax) / 2f;
-
-				spectrum[i] = Mathf.Max(range.X, range.Y) * 10f;
+				spectrum[i] = (MIN_DB + Mathf.LinearToDb(energy)) / MIN_DB * (energy * 10f);
 				prevHz = hz;
 			}
 		}
