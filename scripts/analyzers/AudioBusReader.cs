@@ -56,7 +56,8 @@ namespace ClockBombGames.CircleBeats.Analyzers
 		float decibels = -160f;
 		float averageData = 0f;
 
-		private const int MAX_FREQ = 20000;
+		private const int MIN_FREQ = 20;
+		private const int MAX_FREQ = 14000;
 		private const int MIN_DB = 60;
 
 		public enum FFTWindow {
@@ -148,14 +149,13 @@ namespace ClockBombGames.CircleBeats.Analyzers
 			}
 
 			int N = spectrum.Length;
-			float prevHz = 0f;
+			float prevHz = MIN_FREQ;
 
 			for (int i = 0; i < spectrum.Length; i++) {
-				float hz = (i + 1) * MAX_FREQ / N;
+				float hz = (N - i) * (MAX_FREQ - MIN_FREQ) / N;
 
 				Vector2 maxFreq = spectrumAnalyzer.GetMagnitudeForFrequencyRange(prevHz, hz, 0); // 0 is Average Mode
-				float energy = maxFreq.Length();
-				// float window = 0.5f * (1f - Mathf.Cos(2.0f * Mathf.Pi * i / N));
+				float energy = Mathf.Max(maxFreq.X, maxFreq.Y);
 
 				spectrum[i] = (MIN_DB + Mathf.LinearToDb(energy)) / MIN_DB * (energy * 10f);
 				prevHz = hz;

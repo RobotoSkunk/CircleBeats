@@ -170,13 +170,11 @@ namespace ClockBombGames.CircleBeats.Analyzers
 					int heightCenter = channelHeight / 2 + (channelHeight * channel);
 					int peakHeight = (int)(samplesBuffer[channel][x] * (channelHeight / 2));
 
-					if (peakHeight == 0) {
-						peakHeight = 1;
-					}
+					peakHeight = Mathf.Clamp(peakHeight, 1, channelHeight / 2);
 
 					for (int y = 0; y < peakHeight; y++) {
-						imageBuffer.SetPixel(x, Mathf.Clamp(heightCenter + y, 1, height - 1), wavesColor * new Color(0.8f, 0.8f, 0.8f, 1f));
-						imageBuffer.SetPixel(x, Mathf.Clamp(heightCenter - y, 1, height - 1), wavesColor);
+						imageBuffer.SetPixel(x, heightCenter + y, wavesColor * new Color(0.8f, 0.8f, 0.8f, 1f));
+						imageBuffer.SetPixel(x, heightCenter - y, wavesColor);
 					}
 				}
 			});
