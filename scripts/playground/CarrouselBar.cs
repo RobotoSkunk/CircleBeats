@@ -21,7 +21,7 @@ using ClockBombGames.CircleBeats.Utils;
 using Godot;
 
 
-namespace ClockBombGames.CircleBeats
+namespace ClockBombGames.CircleBeats.Playground
 {
 	public partial class CarrouselBar : Node3D
 	{

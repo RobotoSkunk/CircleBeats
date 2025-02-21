@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://utps1w84iu0u"]
+[gd_scene load_steps=8 format=3 uid="uid://utps1w84iu0u"]
 
 [ext_resource type="Script" path="res://scripts/editor/Editor.cs" id="1_40f74"]
 [ext_resource type="Texture2D" uid="uid://vwcladgmfhn6" path="res://assets/sprites/symbols/skip-backward.svg" id="2_cujcb"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cxbehkd6cf2px" path="res://assets/sprites/symbols/play.svg" id="4_prgs7"]
 [ext_resource type="Script" path="res://scripts/editor/TimelineSlider.cs" id="5_pg18s"]
 [ext_resource type="Texture2D" uid="uid://cv7teiouquiyp" path="res://assets/sprites/symbols/music-position.svg" id="6_l15l2"]
+[ext_resource type="Script" path="res://scripts/editor/TimelineHorizontalScroll.cs" id="7_pmkyn"]
 
 [node name="Editor" type="Control" node_paths=PackedStringArray("timelineSlider", "songTimeLabel", "timelineSeeker", "zoomSlider", "waveformWidthRef", "waveformHeightRef", "waveformRect", "timerUpdateWaveform", "timelineHeader", "timelineBody", "skipBackwardButton", "playButton")]
 layout_mode = 3
@@ -253,8 +254,9 @@ size_flags_vertical = 4
 [node name="Timeline Horizontal Scroll" type="Panel" parent="Timeline/Timeline/Content/Footer"]
 clip_children = 2
 layout_mode = 2
+script = ExtResource("7_pmkyn")
 
-[node name="Control" type="Control" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll"]
+[node name="Handler Bar" type="Control" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -262,7 +264,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Min Handler" type="ColorRect" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll/Control"]
+[node name="Min Handler" type="ColorRect" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll/Handler Bar"]
 custom_minimum_size = Vector2(15, 0)
 layout_mode = 1
 anchors_preset = 9
@@ -271,7 +273,7 @@ offset_right = 15.0
 grow_vertical = 2
 mouse_default_cursor_shape = 15
 
-[node name="Handler Bar" type="ColorRect" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll/Control"]
+[node name="Scroll Handler" type="ColorRect" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll/Handler Bar"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -283,7 +285,7 @@ grow_vertical = 2
 mouse_default_cursor_shape = 6
 color = Color(0, 0, 0, 0.329412)
 
-[node name="Max Handler" type="ColorRect" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll/Control"]
+[node name="Max Handler" type="ColorRect" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll/Handler Bar"]
 custom_minimum_size = Vector2(15, 0)
 layout_mode = 1
 anchors_preset = 11

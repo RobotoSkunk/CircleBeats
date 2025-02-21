@@ -1,13 +1,13 @@
 [gd_scene load_steps=13 format=3 uid="uid://blex4yt0sysmo"]
 
-[ext_resource type="Script" path="res://scripts/Scenario.cs" id="1_u08g0"]
+[ext_resource type="Script" path="res://scripts/gameplay/Scenario.cs" id="1_u08g0"]
 [ext_resource type="PackedScene" uid="uid://cda5akmjbhhb5" path="res://scenes/playground/That Cool Spectrum Bar.tscn" id="2_sqrsd"]
 [ext_resource type="Material" uid="uid://dsv5icqwvup3r" path="res://assets/materials/Background Material.tres" id="3_dc8xj"]
 [ext_resource type="ArrayMesh" uid="uid://buqotk83l576o" path="res://assets/models/Scenario Radial Background Part.obj" id="4_q1brg"]
 [ext_resource type="Material" uid="uid://dwic4afdrfqyp" path="res://assets/materials/Shadow Material.tres" id="5_p0yvl"]
 [ext_resource type="ArrayMesh" uid="uid://dy52yn0fjoiiq" path="res://assets/models/Circle.obj" id="6_0im0l"]
 [ext_resource type="Material" uid="uid://vdcctuf11pdd" path="res://assets/materials/Obstacles Material.tres" id="7_elus6"]
-[ext_resource type="Script" path="res://scripts/Player.cs" id="8_txxep"]
+[ext_resource type="Script" path="res://scripts/gameplay/Player.cs" id="8_txxep"]
 [ext_resource type="ArrayMesh" uid="uid://b28o3mieaajx7" path="res://assets/models/Player.obj" id="9_jby3v"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_baa6n"]

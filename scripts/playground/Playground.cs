@@ -18,10 +18,11 @@
 
 
 using ClockBombGames.CircleBeats.Analyzers;
+
 using Godot;
 
 
-namespace ClockBombGames.CircleBeats
+namespace ClockBombGames.CircleBeats.Playground
 {
 	public partial class Playground : Control
 	{

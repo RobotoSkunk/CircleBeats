@@ -20,7 +20,7 @@
 using Godot;
 
 
-namespace ClockBombGames.CircleBeats
+namespace ClockBombGames.CircleBeats.Playground
 {
 	public partial class Player : CharacterBody3D
 	{
