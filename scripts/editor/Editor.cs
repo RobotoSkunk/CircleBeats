@@ -18,7 +18,9 @@
 
 
 using System.Threading.Tasks;
+
 using ClockBombGames.CircleBeats.Analyzers;
+
 using Godot;
 
 
@@ -26,7 +28,7 @@ namespace ClockBombGames.CircleBeats.Editor
 {
 	public partial class Editor : Control
 	{
-		[Export] Playground playground;
+		[Export] Playground.Playground playground;
 
 		[ExportGroup("UI Components")]
 		[Export] TimelineSlider timelineSlider;
