@@ -71,6 +71,8 @@ namespace ClockBombGames.CircleBeats.Editor
 			if (@event is InputEventMouseButton mouseEvent && mouseEvent.ButtonIndex == MouseButton.Left) {
 				if (mouseEvent.Pressed && isFocused){
 					isChangingValue = true;
+
+					HandleChange();
 				}
 
 				if (!mouseEvent.Pressed) {
@@ -78,17 +80,22 @@ namespace ClockBombGames.CircleBeats.Editor
 				}
 
 			} else if (@event is InputEventMouseMotion && isChangingValue) {
-				float mouseX = GetLocalMousePosition().X;
-
-				if (mouseX != prevMouseX) {
-					value = MinValue + (Mathf.Clamp(mouseX / Size.X, 0, 1) * (MaxValue - MinValue));
-
-					SetValue(value);
-					OnValueChange(value);
-				}
-
-				prevMouseX = mouseX;
+				HandleChange();
 			}
+		}
+
+		private void HandleChange()
+		{
+			float mouseX = GetLocalMousePosition().X;
+
+			if (mouseX != prevMouseX) {
+				value = MinValue + (Mathf.Clamp(mouseX / Size.X, 0, 1) * (MaxValue - MinValue));
+
+				SetValue(value);
+				OnValueChange(value);
+			}
+
+			prevMouseX = mouseX;
 		}
 
 
