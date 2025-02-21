@@ -104,12 +104,13 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		public override void _Process(double delta)
 		{
-			timelineHeader.SplitOffset = timelineBody.SplitOffset;
+			// timelineHeader.SplitOffset = timelineBody.SplitOffset;
+			timelineSlider.MaxValue = (float)(songLength * zoom);
 
 			if (isPlaying) {
 				songPosition = musicPlayer.GetPlaybackPosition();
 
-				timelineSlider.SetValue((float)(songPosition / songLength));
+				timelineSlider.SetValue((float)songPosition);
 
 			} else if (pausedPlaybackBuffer > 0f) {
 				pausedPlaybackBuffer -= delta;
@@ -127,7 +128,7 @@ namespace ClockBombGames.CircleBeats.Editor
 			Vector2 seekerPosition = timelineSeeker.GlobalPosition;
 
 			seekerPosition.Y = timelineSlider.GlobalPosition.Y;
-			seekerPosition.X = timelineSlider.GlobalPosition.X + (float)(songPosition / songLength) * timelineSlider.Size.X;
+			seekerPosition.X = timelineSlider.GlobalPosition.X + timelineSlider.HandlerPosition.X;
 
 			timelineSeeker.GlobalPosition = seekerPosition;
 
@@ -189,17 +190,16 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		void SeekMusicPosition(float delta)
 		{
-			songPosition = delta * songLength;
-			float desiredPosition = (float)songPosition;
+			songPosition = delta;
 
-			if (!isPlaying && desiredPosition < songLength - 0.1f) {
+			if (!isPlaying && songPosition < songLength - 0.1f) {
 				pausedPlaybackBuffer = 0.1f;
 
 				musicPlayer.Playing = true;
 				playground.IsPlaying = true;
 			}
 
-			musicPlayer.Seek(desiredPosition);
+			musicPlayer.Seek((float)songPosition);
 		}
 
 		void SetZoom(double zoom)
@@ -218,7 +218,7 @@ namespace ClockBombGames.CircleBeats.Editor
 				await mp3Reader.RenderWaveformImage(
 					0, (int)(mp3Reader.DataLength * zoom),
 					width, height,
-					Colors.Transparent, Colors.Gold * new Color(1f, 1f, 1f, 0.7f)
+					Colors.Transparent, new Color(1f, 1f, 1f, 0.3f)
 				);
 
 				Callable.From(() => mp3Reader.ApplyImage()).CallDeferred();

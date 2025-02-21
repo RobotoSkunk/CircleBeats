@@ -22,21 +22,32 @@ using Godot;
 
 namespace ClockBombGames.CircleBeats.Editor
 {
-	public partial class TimelineSlider : Panel
+	public partial class TimelineSlider : Control
 	{
 		[Signal]
 		public delegate void ValueEventHandler(float value);
 
-		[Export] TextureRect handlerRect;
+		[Export] Control handlerRect;
 
 		public event ValueEventHandler OnValueChange = delegate { };
+
+		public float MinValue { get; set; }
+		public float MaxValue { get; set; }
 
 		bool isFocused;
 		bool isChangingValue;
 
 		float value;
 		float prevMouseX;
-		float sizeRatio = 0f;
+		float lastHandlerPosSeed = 0f;
+
+
+		public Vector2 HandlerPosition
+		{
+			get {
+				return handlerRect.Position;
+			}
+		}
 
 
 		public override void _Ready()
@@ -47,40 +58,46 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		public override void _Process(double delta)
 		{
-			bool buttonPressed = Input.IsMouseButtonPressed(MouseButton.Left);
+			float handlerPosSeed = Size.X + MinValue + MaxValue;
 
-			if ((isFocused && buttonPressed) || isChangingValue) {
+			if (lastHandlerPosSeed != handlerPosSeed) {
+				lastHandlerPosSeed = handlerPosSeed;
+				SetValue(value);
+			}
+		}
+
+		public override void _Input(InputEvent @event)
+		{
+			if (@event is InputEventMouseButton mouseEvent && mouseEvent.ButtonIndex == MouseButton.Left) {
+				if (mouseEvent.Pressed && isFocused){
+					isChangingValue = true;
+				}
+
+				if (!mouseEvent.Pressed) {
+					isChangingValue = false;
+				}
+
+			} else if (@event is InputEventMouseMotion && isChangingValue) {
 				float mouseX = GetLocalMousePosition().X;
 
 				if (mouseX != prevMouseX) {
-					value = Mathf.Clamp(mouseX / Size.X, 0, 1);
+					value = MinValue + (Mathf.Clamp(mouseX / Size.X, 0, 1) * (MaxValue - MinValue));
 
 					SetValue(value);
 					OnValueChange(value);
 				}
 
-				isChangingValue = true;
-				
 				prevMouseX = mouseX;
-			}
-
-			if (sizeRatio != Size.X / Size.Y) {
-				sizeRatio = Size.X / Size.Y;
-				SetValue(value);
-			}
-
-			if (!buttonPressed) {
-				isChangingValue = false;
 			}
 		}
 
 
 		public void SetValue(float value)
 		{
-			Vector2 handlerPos = handlerRect.Position;
-
 			this.value = value;
-			handlerPos.X = value * Size.X;
+
+			Vector2 handlerPos = handlerRect.Position;
+			handlerPos.X = (value - MinValue) / (MaxValue - MinValue) * Size.X;
 
 			handlerRect.Position = handlerPos;
 		}
