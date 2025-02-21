@@ -60,15 +60,6 @@ namespace ClockBombGames.CircleBeats.Analyzers
 		private const int MAX_FREQ = 14000;
 		private const int MIN_DB = 60;
 
-		public enum FFTWindow {
-			Rectangular,
-			Triangle,
-			Hamming,
-			Hanning,
-			Blackman,
-			BlackmanHarris,
-		}
-
 
 		public AudioBusReader(string bus) {
 			busIndex = AudioServer.GetBusIndex(bus);

@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cxbehkd6cf2px" path="res://assets/sprites/symbols/play.svg" id="4_prgs7"]
 [ext_resource type="Script" path="res://scripts/editor/TimelineSlider.cs" id="5_pg18s"]
 
-[node name="Editor" type="Control" node_paths=PackedStringArray("timelineSlider", "songTimeLabel", "timelineSeeker", "waveformWidthRef", "waveformHeightRef", "waveformRect", "timelineHeader", "timelineBody", "skipBackwardButton", "playButton")]
+[node name="Editor" type="Control" node_paths=PackedStringArray("timelineSlider", "songTimeLabel", "timelineSeeker", "zoomSlider", "waveformWidthRef", "waveformHeightRef", "waveformRect", "timerUpdateWaveform", "timelineHeader", "timelineBody", "skipBackwardButton", "playButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,9 +17,11 @@ script = ExtResource("1_40f74")
 timelineSlider = NodePath("Timeline/Timeline/Objects/Timeline Header Split/Timeline Slider")
 songTimeLabel = NodePath("Timeline/Timeline/Objects/Timeline Header Split/Song Time")
 timelineSeeker = NodePath("Timeline/Timeline/Objects/Timeline Body/Timeline Body Split/Horizontal Scroll/Layers/Timeline Seeker")
+zoomSlider = NodePath("Timeline/Controls Panel/Controls/HSlider")
 waveformWidthRef = NodePath("Timeline/Timeline/Objects/Timeline Body/Timeline Body Split/Horizontal Scroll")
 waveformHeightRef = NodePath("Timeline/Timeline/Objects/Timeline Body")
 waveformRect = NodePath("Timeline/Timeline/TextureRect")
+timerUpdateWaveform = NodePath("Timers/Update Waveform Timer")
 timelineHeader = NodePath("Timeline/Timeline/Objects/Timeline Header Split")
 timelineBody = NodePath("Timeline/Timeline/Objects/Timeline Body/Timeline Body Split")
 skipBackwardButton = NodePath("Timeline/Controls Panel/Controls/Skip Backward")
@@ -53,6 +55,7 @@ layout_mode = 2
 [node name="Controls" type="HBoxContainer" parent="Timeline/Controls Panel"]
 layout_mode = 2
 size_flags_horizontal = 0
+alignment = 1
 
 [node name="Skip Backward" type="Button" parent="Timeline/Controls Panel/Controls"]
 custom_minimum_size = Vector2(50, 0)
@@ -69,6 +72,16 @@ size_flags_horizontal = 3
 icon = ExtResource("4_prgs7")
 icon_alignment = 1
 expand_icon = true
+
+[node name="HSlider" type="HSlider" parent="Timeline/Controls Panel/Controls"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+min_value = 0.01
+max_value = 1.0
+step = 0.0
+value = 1.0
 
 [node name="Timeline" type="PanelContainer" parent="Timeline"]
 layout_mode = 2
@@ -210,3 +223,9 @@ layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 mouse_filter = 2
+
+[node name="Timers" type="Node" parent="."]
+
+[node name="Update Waveform Timer" type="Timer" parent="Timers"]
+wait_time = 0.5
+one_shot = true

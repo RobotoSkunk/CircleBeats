@@ -32,11 +32,13 @@ namespace ClockBombGames.CircleBeats.Editor
 		[Export] TimelineSlider timelineSlider;
 		[Export] Label songTimeLabel;
 		[Export] ColorRect timelineSeeker;
+		[Export] HSlider zoomSlider;
 
 		[ExportSubgroup("Waveform")]
 		[Export] Control waveformWidthRef;
 		[Export] Control waveformHeightRef;
 		[Export] TextureRect waveformRect;
+		[Export] Timer timerUpdateWaveform;
 
 		[ExportSubgroup("Split Containers")]
 		[Export] HSplitContainer timelineHeader;
@@ -58,13 +60,13 @@ namespace ClockBombGames.CircleBeats.Editor
 		double songPosition = 0f;
 		double songLength = 0f;
 		double pausedPlaybackBuffer;
+		double updateWaveformBuffer;
+		double zoom = 1d;
 
 		bool isPlaying = false;
 		bool finishedReadingMp3 = false;
-		bool renderingWaveform = false;
-		bool applyWaveform = false;
 
-		float lastWaveformRatio = 0f;
+		float lastWaveformSeed = 0f;
 
 
 		public override void _Ready()
@@ -78,6 +80,11 @@ namespace ClockBombGames.CircleBeats.Editor
 			playButton.Pressed += OnPlayPressed;
 
 			timelineSlider.OnValueChange += SeekMusicPosition;
+			zoomSlider.ValueChanged += SetZoom;
+
+			// Set timers
+			timerUpdateWaveform.Timeout += UpdateWaveform;
+
 
 			// Read mp3 stream
 			if (musicPlayer.Stream is AudioStreamMP3 audioStream) {
@@ -93,7 +100,6 @@ namespace ClockBombGames.CircleBeats.Editor
 			}
 
 			waveformRect.Texture = mp3Reader.WaveformImageTexture;
-
 		}
 
 		public override void _Process(double delta)
@@ -137,33 +143,24 @@ namespace ClockBombGames.CircleBeats.Editor
 				waveformHeightRef.Size.Y
 			);
 
-			int width = (int)waveformRect.Size.X;
-			int height = (int)waveformRect.Size.Y;
 
-			if (finishedReadingMp3 && !renderingWaveform && lastWaveformRatio != width / height) {
-				mp3Reader.ClearImage(Colors.Transparent);
-				renderingWaveform = true;
+			if (finishedReadingMp3) {
+				float waveformSeed = (float)(waveformRect.Size.LengthSquared() * zoom);
 
-				Task.Run(async () =>
-				{
-					await mp3Reader.RenderWaveformImage(width, height, Colors.Transparent, Colors.Gold * 0.8f);
+				// Check for any changes to update the waveform
+				if (lastWaveformSeed != waveformSeed) {
+					mp3Reader.ClearImage(Colors.Transparent);
 
-					renderingWaveform = false;
-					applyWaveform = true;
-				});
+					timerUpdateWaveform.Stop();
+					timerUpdateWaveform.Start();
 
-				lastWaveformRatio = width / height;
-			}
-
-			if (applyWaveform) {
-				mp3Reader.ApplyImage();
-
-				applyWaveform = false;
+					lastWaveformSeed = waveformSeed;
+				}
 			}
 		}
 
 
-		string ParseSeconds(double time)
+		static string ParseSeconds(double time)
 		{
 			int seconds = (int)time % 60;
 			int minutes = (int)time / 60;
@@ -203,6 +200,29 @@ namespace ClockBombGames.CircleBeats.Editor
 			}
 
 			musicPlayer.Seek(desiredPosition);
+		}
+
+		void SetZoom(double zoom)
+		{
+			this.zoom = zoom;
+		}
+
+
+		void UpdateWaveform()
+		{
+			int width = (int)waveformRect.Size.X;
+			int height = (int)waveformRect.Size.Y;
+
+			Task.Run(async () =>
+			{
+				await mp3Reader.RenderWaveformImage(
+					0, (int)(mp3Reader.DataLength * zoom),
+					width, height,
+					Colors.Transparent, Colors.Gold * new Color(1f, 1f, 1f, 0.7f)
+				);
+
+				Callable.From(() => mp3Reader.ApplyImage()).CallDeferred();
+			});
 		}
 	}
 }
