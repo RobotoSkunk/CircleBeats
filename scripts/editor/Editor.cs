@@ -35,13 +35,13 @@ namespace ClockBombGames.CircleBeats.Editor
 		[Export] TimelineSlider timelineSlider;
 		[Export] Label songTimeLabel;
 		[Export] ColorRect timelineSeeker;
-		[Export] HSlider zoomSlider;
+		[Export] TimelineHorizontalScroll horizontalScroll;
+		[Export] Label infoLabel;
 
 		[ExportSubgroup("Waveform")]
 		[Export] Control waveformWidthRef;
 		[Export] Control waveformHeightRef;
 		[Export] TextureRect waveformRect;
-		// [Export] Timer timerUpdateWaveform;
 
 		[ExportSubgroup("Split Containers")]
 		[Export] HSplitContainer timelineHeader;
@@ -69,13 +69,19 @@ namespace ClockBombGames.CircleBeats.Editor
 		double songLength = 0f;
 		double pausedPlaybackBuffer;
 		double updateWaveformBuffer;
-		double zoom = 1d;
 
 		bool isPlaying = false;
 		bool finishedReadingMp3 = false;
 		bool canUpdateWaveform = true;
 
 		float lastWaveformSeed = 0f;
+
+		float Zoom
+		{
+			get {
+				return horizontalScroll.MaxValue - horizontalScroll.MinValue;
+			}
+		}
 
 
 		public override void _Ready()
@@ -89,10 +95,14 @@ namespace ClockBombGames.CircleBeats.Editor
 			if (musicPlayer.Stream is AudioStreamMP3 audioStream) {
 				mp3Reader.ReadAudioStream(audioStream);
 
+				infoLabel.Text = "Reading audio samples...";
+
 				Task.Run(async () =>
 				{
 					await mp3Reader.ReadWaveformData();
 					finishedReadingMp3 = true;
+
+					Callable.From(() => infoLabel.Text = "").CallDeferred();
 				});
 			} else {
 				GD.PrintErr("Only MP3 files are allowed.");
@@ -108,10 +118,6 @@ namespace ClockBombGames.CircleBeats.Editor
 			playButton.Pressed += OnPlayPressed;
 
 			timelineSlider.OnValueChange += SeekMusicPosition;
-			zoomSlider.ValueChanged += SetZoom;
-
-			// Set timers
-			// timerUpdateWaveform.Timeout += UpdateWaveform;
 		}
 
 
@@ -121,16 +127,13 @@ namespace ClockBombGames.CircleBeats.Editor
 			playButton.Pressed -= OnPlayPressed;
 
 			timelineSlider.OnValueChange -= SeekMusicPosition;
-			zoomSlider.ValueChanged -= SetZoom;
-
-			// timerUpdateWaveform.Timeout -= UpdateWaveform;
 		}
 
 
 		public override void _Process(double delta)
 		{
-			// timelineHeader.SplitOffset = timelineBody.SplitOffset;
-			timelineSlider.MaxValue = (float)(songLength * zoom);
+			timelineSlider.MinValue = (float)(songLength * horizontalScroll.MinValue);
+			timelineSlider.MaxValue = (float)(songLength * horizontalScroll.MaxValue);
 
 			if (isPlaying) {
 				songPosition = musicPlayer.GetPlaybackPosition();
@@ -171,15 +174,10 @@ namespace ClockBombGames.CircleBeats.Editor
 
 
 			if (finishedReadingMp3) {
-				float waveformSeed = (float)(waveformRect.Size.LengthSquared() * zoom);
+				float waveformSeed = waveformRect.Size.LengthSquared() + timelineSlider.MinValue + timelineSlider.MaxValue;
 
 				// Check for any changes to update the waveform
 				if (canUpdateWaveform && lastWaveformSeed != waveformSeed) {
-					// mp3Reader.ClearImage(Colors.Transparent);
-
-					// timerUpdateWaveform.Stop();
-					// timerUpdateWaveform.Start();
-
 					UpdateWaveform();
 					lastWaveformSeed = waveformSeed;
 				}
@@ -228,11 +226,6 @@ namespace ClockBombGames.CircleBeats.Editor
 			musicPlayer.Seek((float)songPosition);
 		}
 
-		void SetZoom(double zoom)
-		{
-			this.zoom = zoom;
-		}
-
 
 		void UpdateWaveform()
 		{
@@ -253,8 +246,13 @@ namespace ClockBombGames.CircleBeats.Editor
 
 			Task.Run(async () =>
 			{
+				float zoom = timelineSlider.MaxValue - timelineSlider.MinValue;
+
+				int minIndex = (int)(mp3Reader.SampleRate * timelineSlider.MinValue);
+				int maxIndex = minIndex + (int)(mp3Reader.SampleRate * zoom);
+
 				await mp3Reader.RenderWaveformImage(
-					0, (int)(mp3Reader.DataLength * zoom),
+					minIndex, maxIndex,
 					waveformImage,
 					Colors.Transparent, new Color(1f, 1f, 1f, 0.3f)
 				);

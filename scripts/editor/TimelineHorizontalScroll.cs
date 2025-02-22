@@ -24,6 +24,108 @@ namespace ClockBombGames.CircleBeats.Editor
 {
 	public partial class TimelineHorizontalScroll : Panel
 	{
-		
+		[Export] Control handlerBar;
+
+		[ExportCategory("Handlers")]
+		[Export] TimelineHorizontalScrollHandler minHandler;
+		[Export] TimelineHorizontalScrollHandler scrollHandler;
+		[Export] TimelineHorizontalScrollHandler maxHandler;
+
+
+		private readonly float minZoom = 0.025f;
+
+		public float MinValue { get; private set; } = 0f;
+		public float MaxValue { get; private set; } = 1f;
+
+		float lastHandlerPosSeed = 0f;
+
+
+		public override void _EnterTree()
+		{
+			minHandler.OnMotionEvent += MinHandlerCallback;
+			scrollHandler.OnMotionEvent += ScrollHandlerCallback;
+			maxHandler.OnMotionEvent += MaxHandlerCallback;
+		}
+
+		public override void _ExitTree()
+		{
+			minHandler.OnMotionEvent -= MinHandlerCallback;
+			scrollHandler.OnMotionEvent -= ScrollHandlerCallback;
+			maxHandler.OnMotionEvent -= MaxHandlerCallback;
+		}
+
+		public override void _Process(double delta)
+		{
+			float handlerPosSeed = Size.X + MinValue + MaxValue;
+
+			if (lastHandlerPosSeed != handlerPosSeed) {
+				lastHandlerPosSeed = handlerPosSeed;
+				CalculateValues();
+			}
+		}
+
+		void CalculateValues()
+		{
+			if (MinValue < 0f) {
+				MinValue = 0f;
+			}
+
+			MaxValue = Mathf.Clamp(MaxValue, MinValue + minZoom, 1f);
+
+			Vector2 size = Size;
+
+			Vector2 handlerSize = handlerBar.Size;
+			Vector2 handlerPos = handlerBar.Position;
+
+			handlerSize.X = size.X * (MaxValue - MinValue);
+			handlerPos.X = size.X * MinValue;
+
+			handlerBar.Size = handlerSize;
+			handlerBar.Position = handlerPos;
+		}
+
+		float TranslateVelocity(float x)
+		{
+			return x / Size.X;
+		}
+
+
+		void MinHandlerCallback(Vector2 pointer)
+		{
+			float relativePos = TranslateVelocity(pointer.X);
+
+			if (MinValue + relativePos > MaxValue - minZoom) {
+				return;
+			}
+
+			MinValue += relativePos;
+			CalculateValues();
+		}
+
+		void ScrollHandlerCallback(Vector2 pointer)
+		{
+			float relativePos = TranslateVelocity(pointer.X);
+
+			if (MinValue + relativePos < 0f ||MaxValue + relativePos > 1f) {
+				return;
+			}
+
+			MinValue += relativePos;
+			MaxValue += relativePos;
+
+			CalculateValues();
+		}
+
+		void MaxHandlerCallback(Vector2 pointer)
+		{
+			float relativePos = TranslateVelocity(pointer.X);
+
+			if (MaxValue + relativePos < MinValue + minZoom) {
+				return;
+			}
+
+			MaxValue += relativePos;
+			CalculateValues();
+		}
 	}
 }

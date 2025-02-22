@@ -17,12 +17,14 @@
 */
 
 
+using ClockBombGames.CircleBeats.Editor.Base;
+
 using Godot;
 
 
 namespace ClockBombGames.CircleBeats.Editor
 {
-	public partial class TimelineSlider : Control
+	public partial class TimelineSlider : DragHandler
 	{
 		[Signal]
 		public delegate void ValueEventHandler(float value);
@@ -50,18 +52,6 @@ namespace ClockBombGames.CircleBeats.Editor
 		}
 
 
-		public override void _EnterTree()
-		{
-			MouseEntered += OnMouseEnter;
-			MouseExited += OnMouseExit;
-		}
-
-		public override void _ExitTree()
-		{
-			MouseEntered -= OnMouseEnter;
-			MouseExited -= OnMouseExit;
-		}
-
 		public override void _Process(double delta)
 		{
 			float handlerPosSeed = Size.X + MinValue + MaxValue;
@@ -72,23 +62,16 @@ namespace ClockBombGames.CircleBeats.Editor
 			}
 		}
 
-		public override void _Input(InputEvent @event)
+		protected override void OnDragStart(InputEventMouseButton _)
 		{
-			if (@event is InputEventMouseButton mouseEvent && mouseEvent.ButtonIndex == MouseButton.Left) {
-				if (mouseEvent.Pressed && isFocused){
-					isChangingValue = true;
-
-					HandleChange();
-				}
-
-				if (!mouseEvent.Pressed) {
-					isChangingValue = false;
-				}
-
-			} else if (@event is InputEventMouseMotion && isChangingValue) {
-				HandleChange();
-			}
+			HandleChange();
 		}
+
+		protected override void OnDrag(InputEventMouseMotion _)
+		{
+			HandleChange();
+		}
+
 
 		private void HandleChange()
 		{
@@ -104,7 +87,6 @@ namespace ClockBombGames.CircleBeats.Editor
 			prevMouseX = mouseX;
 		}
 
-
 		public void SetValue(float value)
 		{
 			this.value = value;
@@ -113,16 +95,6 @@ namespace ClockBombGames.CircleBeats.Editor
 			handlerPos.X = (value - MinValue) / (MaxValue - MinValue) * Size.X;
 
 			handlerRect.Position = handlerPos;
-		}
-
-		protected void OnMouseEnter()
-		{
-			isFocused = true;
-		}
-
-		protected void OnMouseExit()
-		{
-			isFocused = new Rect2(Vector2.Zero, Size).HasPoint(GetLocalMousePosition());
 		}
 	}
 }

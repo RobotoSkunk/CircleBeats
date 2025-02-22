@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://utps1w84iu0u"]
+[gd_scene load_steps=9 format=3 uid="uid://utps1w84iu0u"]
 
 [ext_resource type="Script" path="res://scripts/editor/Editor.cs" id="1_40f74"]
 [ext_resource type="Texture2D" uid="uid://vwcladgmfhn6" path="res://assets/sprites/symbols/skip-backward.svg" id="2_cujcb"]
@@ -7,8 +7,9 @@
 [ext_resource type="Script" path="res://scripts/editor/TimelineSlider.cs" id="5_pg18s"]
 [ext_resource type="Texture2D" uid="uid://cv7teiouquiyp" path="res://assets/sprites/symbols/music-position.svg" id="6_l15l2"]
 [ext_resource type="Script" path="res://scripts/editor/TimelineHorizontalScroll.cs" id="7_pmkyn"]
+[ext_resource type="Script" path="res://scripts/editor/TimelineHorizontalScrollHandler.cs" id="8_jjcwb"]
 
-[node name="Editor" type="Control" node_paths=PackedStringArray("timelineSlider", "songTimeLabel", "timelineSeeker", "zoomSlider", "waveformWidthRef", "waveformHeightRef", "waveformRect", "timelineHeader", "timelineBody", "skipBackwardButton", "playButton")]
+[node name="Editor" type="Control" node_paths=PackedStringArray("timelineSlider", "songTimeLabel", "timelineSeeker", "horizontalScroll", "infoLabel", "waveformWidthRef", "waveformHeightRef", "waveformRect", "timelineHeader", "timelineBody", "skipBackwardButton", "playButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,7 +20,8 @@ script = ExtResource("1_40f74")
 timelineSlider = NodePath("Timeline/Timeline/Content/Timeline Header Split/Timeline Slider")
 songTimeLabel = NodePath("Timeline/Timeline/Content/Timeline Header Split/Song Time")
 timelineSeeker = NodePath("Timeline/Timeline/Content/Timeline Body/Timeline Scroller/Timeline Body Split/Layers/Timeline Seeker")
-zoomSlider = NodePath("Timeline/Timeline/Content/Controls/HSlider")
+horizontalScroll = NodePath("Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll")
+infoLabel = NodePath("Timeline/Timeline/Content/Panel/Info Label")
 waveformWidthRef = NodePath("Timeline/Timeline/Content/Timeline Header Split/Timeline Slider")
 waveformHeightRef = NodePath("Timeline/Timeline/Content/Timeline Body")
 waveformRect = NodePath("Timeline/Timeline/Content/Timeline Body/Waveform Texture")
@@ -82,16 +84,6 @@ icon = ExtResource("4_prgs7")
 icon_alignment = 1
 expand_icon = true
 
-[node name="HSlider" type="HSlider" parent="Timeline/Timeline/Content/Controls"]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-min_value = 0.01
-max_value = 1.0
-step = 0.0
-value = 1.0
-
 [node name="Timeline Header Split" type="HSplitContainer" parent="Timeline/Timeline/Content"]
 layout_mode = 2
 dragger_visibility = 1
@@ -102,15 +94,6 @@ layout_mode = 2
 text = "1:00:00.00 / 1:00:00.00"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="Timeline Slider Old" type="HSlider" parent="Timeline/Timeline/Content/Timeline Header Split"]
-visible = false
-custom_minimum_size = Vector2(0, 15)
-layout_mode = 2
-size_flags_vertical = 1
-max_value = 1.0
-step = 0.0
-scrollable = false
 
 [node name="Timeline Slider" type="Panel" parent="Timeline/Timeline/Content/Timeline Header Split" node_paths=PackedStringArray("handlerRect")]
 clip_children = 2
@@ -250,12 +233,16 @@ custom_minimum_size = Vector2(200, 20)
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="Timeline Horizontal Scroll" type="Panel" parent="Timeline/Timeline/Content/Footer"]
-clip_children = 2
+[node name="Timeline Horizontal Scroll" type="Panel" parent="Timeline/Timeline/Content/Footer" node_paths=PackedStringArray("handlerBar", "minHandler", "scrollHandler", "maxHandler")]
 layout_mode = 2
 script = ExtResource("7_pmkyn")
+handlerBar = NodePath("Handler Bar")
+minHandler = NodePath("Handler Bar/Min Handler")
+scrollHandler = NodePath("Handler Bar/Scroll Handler")
+maxHandler = NodePath("Handler Bar/Max Handler")
 
-[node name="Handler Bar" type="Control" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll"]
+[node name="Handler Bar" type="Panel" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll"]
+clip_children = 1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -264,43 +251,44 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Min Handler" type="ColorRect" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll/Handler Bar"]
-custom_minimum_size = Vector2(15, 0)
+custom_minimum_size = Vector2(8, 0)
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_right = 15.0
 grow_vertical = 2
 mouse_default_cursor_shape = 15
+script = ExtResource("8_jjcwb")
 
 [node name="Scroll Handler" type="ColorRect" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll/Handler Bar"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 15.0
-offset_right = -15.0
+offset_left = 8.0
+offset_right = -8.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_default_cursor_shape = 6
-color = Color(0, 0, 0, 0.329412)
+color = Color(0.359375, 0.359375, 0.359375, 1)
+script = ExtResource("8_jjcwb")
 
 [node name="Max Handler" type="ColorRect" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll/Handler Bar"]
-custom_minimum_size = Vector2(15, 0)
+custom_minimum_size = Vector2(8, 0)
 layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -15.0
 grow_horizontal = 0
 grow_vertical = 2
 mouse_default_cursor_shape = 15
+script = ExtResource("8_jjcwb")
 
 [node name="Panel" type="Panel" parent="Timeline/Timeline/Content"]
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Timeline/Timeline/Content/Panel"]
+[node name="Info Label" type="Label" parent="Timeline/Timeline/Content/Panel"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -310,9 +298,3 @@ offset_right = -15.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Some tooltips over here!"
-
-[node name="Timers" type="Node" parent="."]
-
-[node name="Update Waveform Timer" type="Timer" parent="Timers"]
-wait_time = 0.1
-one_shot = true
