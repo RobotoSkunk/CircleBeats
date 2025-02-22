@@ -25,7 +25,7 @@ using Godot;
 
 using NLayer;
 using System;
-using System.Diagnostics;
+using System.Linq;
 
 
 namespace ClockBombGames.CircleBeats.Analyzers
@@ -132,37 +132,28 @@ namespace ClockBombGames.CircleBeats.Analyzers
 
 			// Resample waveform
 			int dataLength = samples[0].Length;
-			int ratio = dataLength / width + 1;
+			int chunkSize = dataLength / width + 1;
 
 			await Parallel.ForAsync(0, width, async (i, value) =>
 			{
 				await Task.Yield();
 
-				int waveformIndex = i * ratio;
-				int endWaveformIndex = Mathf.Min((i + 1) * ratio, dataLength);
+				int waveformIndex = i * chunkSize;
+				int endWaveformIndex = Mathf.Min(waveformIndex + chunkSize, dataLength);
 
 				for (int channel = 0; channel < Channels; channel++) {
-					// Final formula: (averagePeak + maxPeak) / 2;
-					float sum = 0f;
-					float maxPeak = 0f;
+					float peak = 0f;
 
-					// Jumps are double to decrease the loop length
-					for (int j = waveformIndex; j < endWaveformIndex; j += 2) {
-						if (j + 1 < samples[channel].Length) {
-							float peak1 = Mathf.Abs(samples[channel][j]);
-							float peak2 = Mathf.Abs(samples[channel][j + 1]);
+					try {
+						float[] chunk = samples[channel][waveformIndex .. endWaveformIndex];
 
-							sum += peak1 + peak2;
-							maxPeak = Mathf.Max(maxPeak, Mathf.Max(peak1, peak2));
-						} else {
-							float peak = Mathf.Abs(samples[channel][j]);
+						float avgPeak = chunk.Average();
+						float maxPeak = chunk.Max();
 
-							sum += peak;
-							maxPeak = Mathf.Max(maxPeak, peak);
-						}
-					}
+						peak = (avgPeak + maxPeak) / 2f;
+					} catch (Exception) { }
 
-					body(channel, i, ((sum / ratio) + maxPeak) / 2f);
+					body(channel, i, peak);
 				}
 			});
 		}

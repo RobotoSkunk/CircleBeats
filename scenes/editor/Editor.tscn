@@ -9,7 +9,7 @@
 [ext_resource type="Script" path="res://scripts/editor/TimelineHorizontalScroll.cs" id="7_pmkyn"]
 [ext_resource type="Script" path="res://scripts/editor/TimelineHorizontalScrollHandler.cs" id="8_jjcwb"]
 
-[node name="Editor" type="Control" node_paths=PackedStringArray("timelineSlider", "songTimeLabel", "timelineSeeker", "infoLabel", "horizontalScrollSeeker", "horizontalScroll", "waveformWidthRef", "waveformHeightRef", "waveformRect", "timelineHeader", "timelineBody", "skipBackwardButton", "playButton")]
+[node name="Editor" type="Control" node_paths=PackedStringArray("songTimeLabel", "timelineSeeker", "timelineSlider", "infoLabel", "horizontalScrollSeeker", "horizontalScroll", "waveformWidthRef", "waveformHeightRef", "waveformRect", "timerWaveformSync", "timelineHeader", "timelineBody", "skipBackwardButton", "playButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,15 +17,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_40f74")
-timelineSlider = NodePath("Timeline/Timeline/Content/Timeline Header Split/Timeline Slider")
 songTimeLabel = NodePath("Timeline/Timeline/Content/Timeline Header Split/Song Time")
 timelineSeeker = NodePath("Timeline/Timeline/Content/Timeline Body/Timeline Scroller/Timeline Body Split/Layers/Timeline Seeker")
+timelineSlider = NodePath("Timeline/Timeline/Content/Timeline Header Split/Timeline Slider")
 infoLabel = NodePath("Timeline/Timeline/Content/Panel/Info Label")
 horizontalScrollSeeker = NodePath("Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll/Horizontal Scroll Seeker")
 horizontalScroll = NodePath("Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll")
 waveformWidthRef = NodePath("Timeline/Timeline/Content/Timeline Header Split/Timeline Slider")
 waveformHeightRef = NodePath("Timeline/Timeline/Content/Timeline Body")
 waveformRect = NodePath("Timeline/Timeline/Content/Timeline Body/Waveform Texture")
+timerWaveformSync = NodePath("Node/Sync Waveform")
 timelineHeader = NodePath("Timeline/Timeline/Content/Timeline Header Split")
 timelineBody = NodePath("Timeline/Timeline/Content/Timeline Body/Timeline Scroller/Timeline Body Split")
 skipBackwardButton = NodePath("Timeline/Timeline/Content/Controls/Skip Backward")
@@ -129,6 +130,7 @@ layout_mode = 2
 color = Color(0.0507812, 0.0507812, 0.0507812, 0.203922)
 
 [node name="Waveform Texture" type="TextureRect" parent="Timeline/Timeline/Content/Timeline Body"]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 offset_top = -29.0
 offset_right = 1270.0
@@ -312,3 +314,9 @@ offset_right = -15.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Some tooltips over here!"
+
+[node name="Node" type="Node" parent="."]
+
+[node name="Sync Waveform" type="Timer" parent="Node"]
+wait_time = 0.05
+one_shot = true

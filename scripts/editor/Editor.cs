@@ -32,19 +32,20 @@ namespace ClockBombGames.CircleBeats.Editor
 		[Export] Playground.Playground playground;
 
 		[ExportGroup("UI Components")]
-		[Export] TimelineSlider timelineSlider;
 		[Export] Label songTimeLabel;
 		[Export] ColorRect timelineSeeker;
+		[Export] TimelineSlider timelineSlider;
 
 		[ExportCategory("Footer")]
 		[Export] Label infoLabel;
 		[Export] ColorRect horizontalScrollSeeker;
 		[Export] TimelineHorizontalScroll horizontalScroll;
 
-		[ExportSubgroup("Waveform")]
+		[ExportGroup("Waveform")]
 		[Export] Control waveformWidthRef;
 		[Export] Control waveformHeightRef;
 		[Export] TextureRect waveformRect;
+		[Export] Timer timerWaveformSync;
 
 		[ExportSubgroup("Split Containers")]
 		[Export] HSplitContainer timelineHeader;
@@ -121,7 +122,8 @@ namespace ClockBombGames.CircleBeats.Editor
 			playButton.Pressed += OnPlayPressed;
 
 			timelineSlider.OnValueChange += SeekMusicPosition;
-			horizontalScroll.OnDragging += UpdateWaveform;
+			horizontalScroll.OnDragging += LazyUpdateWaveform;
+			timerWaveformSync.Timeout += WaveformSyncLoop;
 		}
 
 
@@ -131,7 +133,8 @@ namespace ClockBombGames.CircleBeats.Editor
 			playButton.Pressed -= OnPlayPressed;
 
 			timelineSlider.OnValueChange -= SeekMusicPosition;
-			horizontalScroll.OnDragging -= UpdateWaveform;
+			horizontalScroll.OnDragging -= LazyUpdateWaveform;
+			timerWaveformSync.Timeout -= WaveformSyncLoop;
 		}
 
 
@@ -239,6 +242,29 @@ namespace ClockBombGames.CircleBeats.Editor
 			musicPlayer.Seek((float)songPosition);
 		}
 
+
+		void LazyUpdateWaveform()
+		{
+			if (!finishedReadingMp3) {
+				return;
+			}
+
+			UpdateWaveform();
+
+			timerWaveformSync.Stop();
+			timerWaveformSync.Start();
+		}
+
+		void WaveformSyncLoop()
+		{
+			// Wait until the current waveform update thread finishes
+			if (!canUpdateWaveform) {
+				timerWaveformSync.Start();
+				return;
+			}
+
+			UpdateWaveform();
+		}
 
 		void UpdateWaveform()
 		{

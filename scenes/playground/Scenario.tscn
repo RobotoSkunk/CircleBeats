@@ -115,6 +115,7 @@ cast_shadow = 0
 mesh = ExtResource("6_0im0l")
 
 [node name="Player" type="CharacterBody3D" parent="Content" node_paths=PackedStringArray("dart")]
+process_mode = 3
 script = ExtResource("8_2yai6")
 dart = NodePath("Model")
 
