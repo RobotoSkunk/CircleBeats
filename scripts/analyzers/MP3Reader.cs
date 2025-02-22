@@ -164,8 +164,9 @@ namespace ClockBombGames.CircleBeats.Analyzers
 					}
 
 					body(channel, i, ((sum / ratio) + maxPeak) / 2f);
-					await Task.Yield();
 				}
+
+				await Task.Yield();
 			});
 		}
 
