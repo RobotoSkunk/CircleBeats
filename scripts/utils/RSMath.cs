@@ -27,5 +27,31 @@ namespace ClockBombGames.CircleBeats.Utils
 		{
 			return (float)(delta / (1f / targetFPS));
 		}
+
+		public static float Clamp01(float x)
+		{
+			if (x < 0f) {
+				return 0f;
+			}
+
+			if (x > 1f) {
+				return 1f;
+			}
+
+			return x;
+		}
+
+		public static double Clamp01(double x)
+		{
+			if (x < 0d) {
+				return 0d;
+			}
+
+			if (x > 1d) {
+				return 1d;
+			}
+
+			return x;
+		}
 	}
 }

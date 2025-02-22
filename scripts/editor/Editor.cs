@@ -17,6 +17,7 @@
 */
 
 
+using System;
 using System.Threading.Tasks;
 
 using ClockBombGames.CircleBeats.Analyzers;
@@ -57,7 +58,9 @@ namespace ClockBombGames.CircleBeats.Editor
 
 
 		AudioStreamPlayer musicPlayer;
-		MP3Reader mp3Reader = new();
+		readonly MP3Reader mp3Reader = new();
+
+		private Action skipBackwardAction;
 
 		double songPosition = 0f;
 		double songLength = 0f;
@@ -77,16 +80,6 @@ namespace ClockBombGames.CircleBeats.Editor
 			musicPlayer = playground.MusicPlayer;
 			songLength = musicPlayer.Stream.GetLength();
 
-			// Set Controls listeners
-			skipBackwardButton.Pressed += () => SeekMusicPosition(0);
-			playButton.Pressed += OnPlayPressed;
-
-			timelineSlider.OnValueChange += SeekMusicPosition;
-			zoomSlider.ValueChanged += SetZoom;
-
-			// Set timers
-			timerUpdateWaveform.Timeout += UpdateWaveform;
-
 
 			// Read mp3 stream
 			if (musicPlayer.Stream is AudioStreamMP3 audioStream) {
@@ -103,6 +96,34 @@ namespace ClockBombGames.CircleBeats.Editor
 
 			waveformRect.Texture = mp3Reader.WaveformImageTexture;
 		}
+
+		public override void _EnterTree()
+		{
+			skipBackwardAction = () => SeekMusicPosition(0);
+
+			// Set Controls listeners
+			skipBackwardButton.Pressed += skipBackwardAction;
+			playButton.Pressed += OnPlayPressed;
+
+			timelineSlider.OnValueChange += SeekMusicPosition;
+			zoomSlider.ValueChanged += SetZoom;
+
+			// Set timers
+			timerUpdateWaveform.Timeout += UpdateWaveform;
+		}
+
+
+		public override void _ExitTree()
+		{
+			skipBackwardButton.Pressed -= skipBackwardAction;
+			playButton.Pressed -= OnPlayPressed;
+
+			timelineSlider.OnValueChange -= SeekMusicPosition;
+			zoomSlider.ValueChanged -= SetZoom;
+
+			timerUpdateWaveform.Timeout -= UpdateWaveform;
+		}
+
 
 		public override void _Process(double delta)
 		{

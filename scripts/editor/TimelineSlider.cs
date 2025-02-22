@@ -50,10 +50,16 @@ namespace ClockBombGames.CircleBeats.Editor
 		}
 
 
-		public override void _Ready()
+		public override void _EnterTree()
 		{
 			MouseEntered += OnMouseEnter;
 			MouseExited += OnMouseExit;
+		}
+
+		public override void _ExitTree()
+		{
+			MouseEntered -= OnMouseEnter;
+			MouseExited -= OnMouseExit;
 		}
 
 		public override void _Process(double delta)

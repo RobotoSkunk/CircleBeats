@@ -47,24 +47,49 @@ namespace ClockBombGames.CircleBeats.Utils
 
 		public Vector2 GetTime(float t)
 		{
-			t = Mathf.Clamp(t, 0, 1);
+			t = RSMath.Clamp01(t);
 
 			// We don't need to process anything if the curve is linear.
 			if (p1 == Vector2.Zero && p2 == Vector2.One) {
 				return new Vector2(t, t);
 			}
 
-			Vector2 p0 = Vector2.Zero;
-			Vector2 p3 = Vector2.One;
+			// Vector2 p0 = Vector2.Zero;
+			// Vector2 p3 = Vector2.One;
 
 			float t2 = t * t;
 			float t3 = t2 * t;
 
 			float u = 1 - t;
 			float u2 = u * u;
-			float u3 = u2 * u;
+			// float u3 = u2 * u;
 
-			return u3 * p0 + 3 * u2 * t * p1 + 3 * u * t2 * p2 + t3 * p3;
+			// return u3 * p0 + 3 * u2 * t * p1 + 3 * u * t2 * p2 + t3 * p3;
+			return 3 * u2 * t * p1 + 3 * u * t2 * p2 + new Vector2(t3, t3);
+		}
+
+		public float GetTimeYDimension(float t)
+		{
+			t = RSMath.Clamp01(t);
+
+			// We don't need to process anything if the curve is linear.
+			if (p1 == Vector2.Zero && p2 == Vector2.One) {
+				return t;
+			}
+
+			return Mathf.BezierInterpolate(0f, p1.Y, p2.Y, 1f, t);
+		}
+
+		public float GetTimeXDimension(float t)
+		{
+			t = RSMath.Clamp01(t);
+
+			// We don't need to process anything if the curve is linear.
+			if (p1 == Vector2.Zero && p2 == Vector2.One) {
+				return t;
+			}
+
+			return Mathf.BezierInterpolate(0f, p1.X, p2.X, 1f, t);
 		}
 
 		public static BezierCurve Linear => new(0, 0, 1, 1);
