@@ -25,6 +25,7 @@ using Godot;
 
 using NLayer;
 using System;
+using System.Diagnostics;
 
 
 namespace ClockBombGames.CircleBeats.Analyzers
@@ -36,12 +37,9 @@ namespace ClockBombGames.CircleBeats.Analyzers
 		public int SampleRate { get; private set; }
 		public int Channels   { get; private set; }
 		public int DataLength { get; private set; }
-		public ImageTexture WaveformImageTexture { get; private set; } = new();
 
 		MemoryStream audioMemoryStream;
 		readonly List<float[]> waveformData = new();
-
-		Image imageBuffer = new();
 
 
 		public void ReadAudioStream(AudioStreamMP3 audioStream)
@@ -52,7 +50,6 @@ namespace ClockBombGames.CircleBeats.Analyzers
 			SampleRate = audioFileReader.SampleRate;
 			Channels = audioFileReader.Channels;
 
-			ClearImage(Colors.Transparent);
 			DataLength = 0;
 		}
 
@@ -75,26 +72,27 @@ namespace ClockBombGames.CircleBeats.Analyzers
 			MpegFile mpegFile = new(audioMemoryStream);
 
 			int samplesRead;
-			while ((samplesRead = mpegFile.ReadSamples(buffer, 0, buffer.Length)) > 0) {
 
-				if (Channels == 2) {
-					for (int i = 0; i < samplesRead; i += 2) {
-						waveformChannels[0].Add(buffer[i]);
-						waveformChannels[1].Add(buffer[i + 1]);
+			await Task.Run(() =>
+			{
+				while ((samplesRead = mpegFile.ReadSamples(buffer, 0, buffer.Length)) > 0) {
+
+					if (Channels == 2) {
+						for (int i = 0; i < samplesRead; i += 2) {
+							waveformChannels[0].Add(buffer[i]);
+							waveformChannels[1].Add(buffer[i + 1]);
+						}
+					} else {
+						waveformChannels[0].AddRange(buffer);
 					}
-				} else {
-					waveformChannels[0].AddRange(buffer);
 				}
-
-				await Task.Yield();
-			}
-
+			});
 
 			waveformData.Add(waveformChannels[0].ToArray());
 			DataLength = waveformChannels[0].Count;
 
 			if (waveformChannels[1].Count > 0) {
-				waveformData.Add(waveformChannels[1].ToArray());
+				waveformData.Add([.. waveformChannels[1]]);
 			}
 		}
 
@@ -136,9 +134,10 @@ namespace ClockBombGames.CircleBeats.Analyzers
 			int dataLength = samples[0].Length;
 			int ratio = dataLength / width + 1;
 
-
 			await Parallel.ForAsync(0, width, async (i, value) =>
 			{
+				await Task.Yield();
+
 				int waveformIndex = i * ratio;
 				int endWaveformIndex = Mathf.Min((i + 1) * ratio, dataLength);
 
@@ -165,26 +164,24 @@ namespace ClockBombGames.CircleBeats.Analyzers
 
 					body(channel, i, ((sum / ratio) + maxPeak) / 2f);
 				}
-
-				await Task.Yield();
 			});
 		}
 
 
-		public async Task RenderWaveformImage(int startIndex, int endIndex, int width, int height, Color backgroundColor, Color wavesColor)
+		public async Task RenderWaveformImage(int startIndex, int endIndex, Image image, Color backgroundColor, Color wavesColor)
 		{
 			if (waveformData.Count == 0) {
 				GD.PrintErr("Waveform data hasn't been read.");
 				return;
 			}
 
-			imageBuffer = Image.CreateEmpty(width, height, false, Image.Format.Rgba8);
-			imageBuffer.Fill(backgroundColor);
+			Vector2I size = image.GetSize();
+			image.Fill(backgroundColor);
 
 
-			int channelHeight = height / Channels;
+			int channelHeight = size.Y / Channels;
 
-			await ResampleWaveform(startIndex, endIndex, width, (channel, x, sample) =>
+			await ResampleWaveform(startIndex, endIndex, size.X, (channel, x, sample) =>
 			{
 				int heightCenter = channelHeight / 2 + (channelHeight * channel);
 				int peakHeight = (int)(sample * (channelHeight / 2));
@@ -192,34 +189,20 @@ namespace ClockBombGames.CircleBeats.Analyzers
 				peakHeight = Mathf.Clamp(peakHeight, 1, channelHeight / 2);
 
 				for (int y = 0; y < peakHeight; y++) {
-					imageBuffer.SetPixel(x, heightCenter + y, wavesColor * new Color(0.8f, 0.8f, 0.8f, 1f));
-					imageBuffer.SetPixel(x, heightCenter - y, wavesColor);
+					image.SetPixel(x, heightCenter + y, wavesColor * new Color(0.8f, 0.8f, 0.8f, 1f));
+					image.SetPixel(x, heightCenter - y, wavesColor);
 				}
 			});
 		}
 
-		public async Task RenderWaveformImage(int width, int height, Color backgroundColor, Color wavesColor)
+		public async Task RenderWaveformImage(Image image, Color backgroundColor, Color wavesColor)
 		{
-			await RenderWaveformImage(0, DataLength, width, height, backgroundColor, wavesColor);
+			await RenderWaveformImage(0, DataLength, image, backgroundColor, wavesColor);
 		}
 
-		public async Task RenderWaveformImage(int width, int height)
+		public async Task RenderWaveformImage(Image image)
 		{
-			await RenderWaveformImage(width, height, Colors.Black, Colors.Gold);
-		}
-
-
-		public void ClearImage(Color backgroundColor)
-		{
-			imageBuffer = Image.CreateEmpty(100, 100, false, Image.Format.Rgba8);
-			imageBuffer.Fill(backgroundColor);
-
-			ApplyImage();
-		}
-
-		public void ApplyImage()
-		{
-			WaveformImageTexture.SetImage(imageBuffer);
+			await RenderWaveformImage(image, Colors.Black, Colors.Gold);
 		}
 	}
 }

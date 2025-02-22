@@ -41,7 +41,7 @@ namespace ClockBombGames.CircleBeats.Editor
 		[Export] Control waveformWidthRef;
 		[Export] Control waveformHeightRef;
 		[Export] TextureRect waveformRect;
-		[Export] Timer timerUpdateWaveform;
+		// [Export] Timer timerUpdateWaveform;
 
 		[ExportSubgroup("Split Containers")]
 		[Export] HSplitContainer timelineHeader;
@@ -55,6 +55,9 @@ namespace ClockBombGames.CircleBeats.Editor
 		[ExportSubgroup("Play Button")]
 		[Export] CompressedTexture2D playSprite;
 		[Export] CompressedTexture2D pauseSprite;
+
+		Image waveformImage;
+		readonly ImageTexture waveformImageTexture = new();
 
 
 		AudioStreamPlayer musicPlayer;
@@ -70,6 +73,7 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		bool isPlaying = false;
 		bool finishedReadingMp3 = false;
+		bool canUpdateWaveform = true;
 
 		float lastWaveformSeed = 0f;
 
@@ -93,8 +97,6 @@ namespace ClockBombGames.CircleBeats.Editor
 			} else {
 				GD.PrintErr("Only MP3 files are allowed.");
 			}
-
-			waveformRect.Texture = mp3Reader.WaveformImageTexture;
 		}
 
 		public override void _EnterTree()
@@ -109,7 +111,7 @@ namespace ClockBombGames.CircleBeats.Editor
 			zoomSlider.ValueChanged += SetZoom;
 
 			// Set timers
-			timerUpdateWaveform.Timeout += UpdateWaveform;
+			// timerUpdateWaveform.Timeout += UpdateWaveform;
 		}
 
 
@@ -121,7 +123,7 @@ namespace ClockBombGames.CircleBeats.Editor
 			timelineSlider.OnValueChange -= SeekMusicPosition;
 			zoomSlider.ValueChanged -= SetZoom;
 
-			timerUpdateWaveform.Timeout -= UpdateWaveform;
+			// timerUpdateWaveform.Timeout -= UpdateWaveform;
 		}
 
 
@@ -172,12 +174,13 @@ namespace ClockBombGames.CircleBeats.Editor
 				float waveformSeed = (float)(waveformRect.Size.LengthSquared() * zoom);
 
 				// Check for any changes to update the waveform
-				if (lastWaveformSeed != waveformSeed) {
-					mp3Reader.ClearImage(Colors.Transparent);
+				if (canUpdateWaveform && lastWaveformSeed != waveformSeed) {
+					// mp3Reader.ClearImage(Colors.Transparent);
 
-					timerUpdateWaveform.Stop();
-					timerUpdateWaveform.Start();
+					// timerUpdateWaveform.Stop();
+					// timerUpdateWaveform.Start();
 
+					UpdateWaveform();
 					lastWaveformSeed = waveformSeed;
 				}
 			}
@@ -233,18 +236,33 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		void UpdateWaveform()
 		{
-			int width = (int)waveformRect.Size.X;
-			int height = (int)waveformRect.Size.Y;
+			if (!canUpdateWaveform) {
+				return;
+			}
+
+			Vector2I size = new((int)waveformRect.Size.X, (int)waveformRect.Size.Y);
+
+			if (waveformImage == null || waveformImage.GetSize() != size) {
+				waveformImage = Image.CreateEmpty(size.X, size.Y, false, Image.Format.Rgba8);
+
+				waveformImageTexture.SetImage(waveformImage);
+				waveformRect.Texture ??= waveformImageTexture;
+			}
+
+			canUpdateWaveform = false;
 
 			Task.Run(async () =>
 			{
 				await mp3Reader.RenderWaveformImage(
 					0, (int)(mp3Reader.DataLength * zoom),
-					width, height,
+					waveformImage,
 					Colors.Transparent, new Color(1f, 1f, 1f, 0.3f)
 				);
 
-				Callable.From(() => mp3Reader.ApplyImage()).CallDeferred();
+				Callable.From(() => {
+					waveformImageTexture.Update(waveformImage);
+					canUpdateWaveform = true;
+				}).CallDeferred();
 			});
 		}
 	}

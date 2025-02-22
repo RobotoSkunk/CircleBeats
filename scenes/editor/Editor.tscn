@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://cv7teiouquiyp" path="res://assets/sprites/symbols/music-position.svg" id="6_l15l2"]
 [ext_resource type="Script" path="res://scripts/editor/TimelineHorizontalScroll.cs" id="7_pmkyn"]
 
-[node name="Editor" type="Control" node_paths=PackedStringArray("timelineSlider", "songTimeLabel", "timelineSeeker", "zoomSlider", "waveformWidthRef", "waveformHeightRef", "waveformRect", "timerUpdateWaveform", "timelineHeader", "timelineBody", "skipBackwardButton", "playButton")]
+[node name="Editor" type="Control" node_paths=PackedStringArray("timelineSlider", "songTimeLabel", "timelineSeeker", "zoomSlider", "waveformWidthRef", "waveformHeightRef", "waveformRect", "timelineHeader", "timelineBody", "skipBackwardButton", "playButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,7 +23,6 @@ zoomSlider = NodePath("Timeline/Timeline/Content/Controls/HSlider")
 waveformWidthRef = NodePath("Timeline/Timeline/Content/Timeline Header Split/Timeline Slider")
 waveformHeightRef = NodePath("Timeline/Timeline/Content/Timeline Body")
 waveformRect = NodePath("Timeline/Timeline/Content/Timeline Body/Waveform Texture")
-timerUpdateWaveform = NodePath("Timers/Update Waveform Timer")
 timelineHeader = NodePath("Timeline/Timeline/Content/Timeline Header Split")
 timelineBody = NodePath("Timeline/Timeline/Content/Timeline Body/Timeline Scroller/Timeline Body Split")
 skipBackwardButton = NodePath("Timeline/Timeline/Content/Controls/Skip Backward")
@@ -315,5 +314,5 @@ text = "Some tooltips over here!"
 [node name="Timers" type="Node" parent="."]
 
 [node name="Update Waveform Timer" type="Timer" parent="Timers"]
-wait_time = 0.5
+wait_time = 0.1
 one_shot = true
