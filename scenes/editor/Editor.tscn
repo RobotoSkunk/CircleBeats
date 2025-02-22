@@ -9,7 +9,7 @@
 [ext_resource type="Script" path="res://scripts/editor/TimelineHorizontalScroll.cs" id="7_pmkyn"]
 [ext_resource type="Script" path="res://scripts/editor/TimelineHorizontalScrollHandler.cs" id="8_jjcwb"]
 
-[node name="Editor" type="Control" node_paths=PackedStringArray("timelineSlider", "songTimeLabel", "timelineSeeker", "horizontalScroll", "infoLabel", "waveformWidthRef", "waveformHeightRef", "waveformRect", "timelineHeader", "timelineBody", "skipBackwardButton", "playButton")]
+[node name="Editor" type="Control" node_paths=PackedStringArray("timelineSlider", "songTimeLabel", "timelineSeeker", "infoLabel", "horizontalScrollSeeker", "horizontalScroll", "waveformWidthRef", "waveformHeightRef", "waveformRect", "timelineHeader", "timelineBody", "skipBackwardButton", "playButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -20,8 +20,9 @@ script = ExtResource("1_40f74")
 timelineSlider = NodePath("Timeline/Timeline/Content/Timeline Header Split/Timeline Slider")
 songTimeLabel = NodePath("Timeline/Timeline/Content/Timeline Header Split/Song Time")
 timelineSeeker = NodePath("Timeline/Timeline/Content/Timeline Body/Timeline Scroller/Timeline Body Split/Layers/Timeline Seeker")
-horizontalScroll = NodePath("Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll")
 infoLabel = NodePath("Timeline/Timeline/Content/Panel/Info Label")
+horizontalScrollSeeker = NodePath("Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll/Horizontal Scroll Seeker")
+horizontalScroll = NodePath("Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll")
 waveformWidthRef = NodePath("Timeline/Timeline/Content/Timeline Header Split/Timeline Slider")
 waveformHeightRef = NodePath("Timeline/Timeline/Content/Timeline Body")
 waveformRect = NodePath("Timeline/Timeline/Content/Timeline Body/Waveform Texture")
@@ -283,6 +284,19 @@ grow_horizontal = 0
 grow_vertical = 2
 mouse_default_cursor_shape = 15
 script = ExtResource("8_jjcwb")
+
+[node name="Horizontal Scroll Seeker" type="ColorRect" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+mouse_filter = 2
 
 [node name="Panel" type="Panel" parent="Timeline/Timeline/Content"]
 custom_minimum_size = Vector2(0, 25)

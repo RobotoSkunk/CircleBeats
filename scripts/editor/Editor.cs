@@ -35,8 +35,9 @@ namespace ClockBombGames.CircleBeats.Editor
 		[Export] TimelineSlider timelineSlider;
 		[Export] Label songTimeLabel;
 		[Export] ColorRect timelineSeeker;
-		[Export] TimelineHorizontalScroll horizontalScroll;
 		[Export] Label infoLabel;
+		[Export] ColorRect horizontalScrollSeeker;
+		[Export] TimelineHorizontalScroll horizontalScroll;
 
 		[ExportSubgroup("Waveform")]
 		[Export] Control waveformWidthRef;
@@ -159,6 +160,14 @@ namespace ClockBombGames.CircleBeats.Editor
 			seekerPosition.X = timelineSlider.GlobalPosition.X + timelineSlider.HandlerPosition.X;
 
 			timelineSeeker.GlobalPosition = seekerPosition;
+
+			// Horizontal Scroll Seeker
+			seekerPosition = horizontalScrollSeeker.GlobalPosition;
+
+			float relativeMusicPos = (float)(songPosition / songLength);
+			seekerPosition.X = horizontalScroll.GlobalPosition.X + horizontalScroll.Size.X * relativeMusicPos;
+
+			horizontalScrollSeeker.GlobalPosition = seekerPosition;
 
 
 			// Waveform renderer
