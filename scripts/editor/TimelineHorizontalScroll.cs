@@ -24,12 +24,17 @@ namespace ClockBombGames.CircleBeats.Editor
 {
 	public partial class TimelineHorizontalScroll : Panel
 	{
+		[Signal]
+		public delegate void DragEventHandler();
+
 		[Export] Control handlerBar;
 
 		[ExportCategory("Handlers")]
 		[Export] TimelineHorizontalScrollHandler minHandler;
 		[Export] TimelineHorizontalScrollHandler scrollHandler;
 		[Export] TimelineHorizontalScrollHandler maxHandler;
+
+		public event DragEventHandler OnDragging = delegate { };
 
 
 		private readonly float minZoom = 0.025f;
@@ -100,6 +105,8 @@ namespace ClockBombGames.CircleBeats.Editor
 
 			MinValue += relativePos;
 			CalculateValues();
+
+			OnDragging.Invoke();
 		}
 
 		void ScrollHandlerCallback(Vector2 pointer)
@@ -114,6 +121,8 @@ namespace ClockBombGames.CircleBeats.Editor
 			MaxValue += relativePos;
 
 			CalculateValues();
+
+			OnDragging.Invoke();
 		}
 
 		void MaxHandlerCallback(Vector2 pointer)
@@ -126,6 +135,8 @@ namespace ClockBombGames.CircleBeats.Editor
 
 			MaxValue += relativePos;
 			CalculateValues();
+
+			OnDragging.Invoke();
 		}
 	}
 }

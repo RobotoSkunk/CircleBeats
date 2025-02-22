@@ -35,6 +35,8 @@ namespace ClockBombGames.CircleBeats.Editor
 		[Export] TimelineSlider timelineSlider;
 		[Export] Label songTimeLabel;
 		[Export] ColorRect timelineSeeker;
+
+		[ExportCategory("Footer")]
 		[Export] Label infoLabel;
 		[Export] ColorRect horizontalScrollSeeker;
 		[Export] TimelineHorizontalScroll horizontalScroll;
@@ -119,6 +121,7 @@ namespace ClockBombGames.CircleBeats.Editor
 			playButton.Pressed += OnPlayPressed;
 
 			timelineSlider.OnValueChange += SeekMusicPosition;
+			horizontalScroll.OnDragging += UpdateWaveform;
 		}
 
 
@@ -128,6 +131,7 @@ namespace ClockBombGames.CircleBeats.Editor
 			playButton.Pressed -= OnPlayPressed;
 
 			timelineSlider.OnValueChange -= SeekMusicPosition;
+			horizontalScroll.OnDragging -= UpdateWaveform;
 		}
 
 
@@ -183,7 +187,7 @@ namespace ClockBombGames.CircleBeats.Editor
 
 
 			if (finishedReadingMp3) {
-				float waveformSeed = waveformRect.Size.LengthSquared() + timelineSlider.MinValue + timelineSlider.MaxValue;
+				float waveformSeed = waveformRect.Size.LengthSquared();
 
 				// Check for any changes to update the waveform
 				if (canUpdateWaveform && lastWaveformSeed != waveformSeed) {
