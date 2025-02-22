@@ -24,6 +24,7 @@ using System.IO;
 using Godot;
 
 using NLayer;
+using System;
 
 
 namespace ClockBombGames.CircleBeats.Analyzers
@@ -40,7 +41,6 @@ namespace ClockBombGames.CircleBeats.Analyzers
 		MemoryStream audioMemoryStream;
 		readonly List<float[]> waveformData = new();
 
-		readonly List<float[]> samplesBuffer = new();
 		Image imageBuffer = new();
 
 
@@ -99,7 +99,16 @@ namespace ClockBombGames.CircleBeats.Analyzers
 		}
 
 
-		public async Task ResampleWaveform(int startIndex, int endIndex, int width, List<float[]> newSamples)
+		/// <summary>
+		/// Resamples the waveform and executes an action on each iteration.
+		/// </summary>
+		/// <param name="startIndex">The start index of the sample array.</param>
+		/// <param name="endIndex">The end index of the sample array.</param>
+		/// <param name="width">The new length of the resampled waveform.</param>
+		/// <param name="body">
+		/// 	The function that will be executed on each iteration (int channel, int index, float sampleValue).
+		/// </param>
+		public async Task ResampleWaveform(int startIndex, int endIndex, int width, Action<int, int, float> body)
 		{
 			if (waveformData.Count == 0) {
 				GD.PrintErr("Waveform data hasn't been read.");
@@ -116,12 +125,10 @@ namespace ClockBombGames.CircleBeats.Analyzers
 
 
 			// Prepare waveform lists
-			List<float[]> samples = new();
-			newSamples.Clear();
+			List<float[]> samples = [];
 
 			for (int i = 0; i < Channels; i++) {
 				samples.Add(waveformData[i][startIndex..endIndex]);
-				newSamples.Add(new float[width]);
 			}
 
 
@@ -129,10 +136,9 @@ namespace ClockBombGames.CircleBeats.Analyzers
 			int dataLength = samples[0].Length;
 			int ratio = dataLength / width + 1;
 
-			int yieldBuffer = 0;
 
-
-			for (int i = 0; i < width; i++) {
+			await Parallel.ForAsync(0, width, async (i, value) =>
+			{
 				int waveformIndex = i * ratio;
 				int endWaveformIndex = Mathf.Min((i + 1) * ratio, dataLength);
 
@@ -157,14 +163,10 @@ namespace ClockBombGames.CircleBeats.Analyzers
 						}
 					}
 
-					newSamples[channel][i] = ((sum / ratio) + maxPeak) / 2f;
-
-
-					if (++yieldBuffer > SampleRate * Channels) {
-						await Task.Yield();
-					}
+					body(channel, i, ((sum / ratio) + maxPeak) / 2f);
+					await Task.Yield();
 				}
-			}
+			});
 		}
 
 
@@ -175,26 +177,22 @@ namespace ClockBombGames.CircleBeats.Analyzers
 				return;
 			}
 
-			await ResampleWaveform(startIndex, endIndex, width, samplesBuffer);
-
 			imageBuffer = Image.CreateEmpty(width, height, false, Image.Format.Rgba8);
 			imageBuffer.Fill(backgroundColor);
 
 
 			int channelHeight = height / Channels;
 
-			Parallel.For(0, width, x =>
+			await ResampleWaveform(startIndex, endIndex, width, (channel, x, sample) =>
 			{
-				for (int channel = 0; channel < Channels; channel ++) {
-					int heightCenter = channelHeight / 2 + (channelHeight * channel);
-					int peakHeight = (int)(samplesBuffer[channel][x] * (channelHeight / 2));
+				int heightCenter = channelHeight / 2 + (channelHeight * channel);
+				int peakHeight = (int)(sample * (channelHeight / 2));
 
-					peakHeight = Mathf.Clamp(peakHeight, 1, channelHeight / 2);
+				peakHeight = Mathf.Clamp(peakHeight, 1, channelHeight / 2);
 
-					for (int y = 0; y < peakHeight; y++) {
-						imageBuffer.SetPixel(x, heightCenter + y, wavesColor * new Color(0.8f, 0.8f, 0.8f, 1f));
-						imageBuffer.SetPixel(x, heightCenter - y, wavesColor);
-					}
+				for (int y = 0; y < peakHeight; y++) {
+					imageBuffer.SetPixel(x, heightCenter + y, wavesColor * new Color(0.8f, 0.8f, 0.8f, 1f));
+					imageBuffer.SetPixel(x, heightCenter - y, wavesColor);
 				}
 			});
 		}
