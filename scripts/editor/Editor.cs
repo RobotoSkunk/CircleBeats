@@ -297,16 +297,23 @@ namespace ClockBombGames.CircleBeats.Editor
 				int minIndex = (int)(mp3Reader.SampleRate * timelineSlider.MinValue);
 				int maxIndex = minIndex + (int)(mp3Reader.SampleRate * zoom);
 
-				await mp3Reader.RenderWaveformImage(
-					minIndex, maxIndex,
-					waveformImage,
-					Colors.Transparent, new Color(1f, 1f, 1f, 0.3f)
-				);
+				try {
+					await mp3Reader.RenderWaveformImage(
+						minIndex, maxIndex,
+						waveformImage,
+						Colors.Transparent, new Color(1f, 1f, 1f, 0.3f)
+					);
 
-				Callable.From(() => {
-					waveformImageTexture.Update(waveformImage);
+					Callable.From(() => {
+						waveformImageTexture.Update(waveformImage);
+						canUpdateWaveform = true;
+					}).CallDeferred();
+				} catch (Exception e) {
+					GD.PrintErr(e.Message);
+					GD.PrintErr(e.StackTrace);
+
 					canUpdateWaveform = true;
-				}).CallDeferred();
+				}
 			});
 		}
 	}

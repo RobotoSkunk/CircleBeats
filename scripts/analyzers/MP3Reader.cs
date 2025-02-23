@@ -33,14 +33,18 @@ namespace ClockBombGames.CircleBeats.Analyzers
 	public class MP3Reader
 	{
 		const int BUFFER_SECONDS = 30;
+		const int MIPMAP_MAX_LEVEL = 12;
 
 		public int SampleRate { get; private set; }
 		public int Channels   { get; private set; }
 		public int DataLength { get; private set; }
 		public bool Ready { get; private set; }
 
+
+		// [MipMap level] [Channel] [Samples]
+		byte[][][] waveformData = new byte[MIPMAP_MAX_LEVEL][][];
+
 		MemoryStream audioMemoryStream;
-		readonly byte[][] waveformData = new byte[2][];
 
 
 		public void ReadAudioStream(AudioStreamMP3 audioStream)
@@ -54,14 +58,13 @@ namespace ClockBombGames.CircleBeats.Analyzers
 			DataLength = 0;
 			Ready = false;
 
-			waveformData[0] = null;
-			waveformData[1] = null;
+			waveformData = new byte[MIPMAP_MAX_LEVEL][][];
 		}
 
 
 		public async Task ReadWaveformData()
 		{
-			if (waveformData[0] != null) {
+			if (Ready) {
 				return;
 			}
 
@@ -96,8 +99,37 @@ namespace ClockBombGames.CircleBeats.Analyzers
 
 			DataLength = waveformChannels[0].Count;
 
-			waveformData[0] = [.. waveformChannels[0]];
-			waveformData[1] = [.. waveformChannels[1]];
+			waveformData[0] = new byte[2][];
+			waveformData[0][0] = [.. waveformChannels[0]];
+			waveformData[0][1] = [.. waveformChannels[1]];
+
+
+			int availableThreads = System.Environment.ProcessorCount;
+
+			// Mipmap samples
+			int jumps = Mathf.CeilToInt((float)MIPMAP_MAX_LEVEL / availableThreads);
+
+			for (int m = 0; m < jumps; m++) {
+				int from = availableThreads * m;
+				int to = Mathf.Min(from + availableThreads, MIPMAP_MAX_LEVEL - 1);
+
+				await Parallel.ForAsync(from, to, async (i, token) =>
+				{
+					int maxSamples = 2 + i;
+					int sampleLength = DataLength / maxSamples;
+
+					int fixedIndex = i + 1;
+
+					waveformData[fixedIndex] = new byte[2][];
+					waveformData[fixedIndex][0] = new byte[sampleLength];
+					waveformData[fixedIndex][1] = new byte[sampleLength];
+
+					await ResampleWaveformImpl(0, DataLength, sampleLength, waveformData[0], (channel, i, peak) =>
+					{
+						waveformData[fixedIndex][channel][i] = peak;
+					});
+				});
+			}
 
 			Ready = true;
 		}
@@ -114,11 +146,21 @@ namespace ClockBombGames.CircleBeats.Analyzers
 		/// </param>
 		public async Task ResampleWaveform(int startIndex, int endIndex, int width, Action<int, int, float> body)
 		{
-			if (waveformData[0] == null) {
-				GD.PrintErr("Waveform data hasn't been read.");
-				return;
-			}
+			float zoom = (endIndex - startIndex) / (float)DataLength;
 
+			int mipmapLevel = Mathf.Clamp(Mathf.FloorToInt(zoom * MIPMAP_MAX_LEVEL), 0, MIPMAP_MAX_LEVEL - 1);
+
+			startIndex /= mipmapLevel + 1;
+			endIndex /= mipmapLevel + 1;
+
+			await ResampleWaveformImpl(startIndex, endIndex, width, waveformData[mipmapLevel], (channel, i, peak) =>
+			{
+				body(channel, i, peak / 255f);
+			});
+		}
+
+		public async Task ResampleWaveformImpl(int startIndex, int endIndex, int width, byte[][] samples, Action<int, int, byte> body)
+		{
 			if (startIndex < 0) {
 				startIndex = 0;
 			}
@@ -126,34 +168,34 @@ namespace ClockBombGames.CircleBeats.Analyzers
 			// Resample waveform
 			int chunkSize = Mathf.FloorToInt(endIndex - startIndex) / width;
 
-			await Parallel.ForAsync(0, width, async (i, value) => {
-				await Task.Run(() =>
-				{
+			await Task.Run(() =>
+			{
+				for(int i = 0; i < width; i++) {
 					int waveformIndex = startIndex + i * chunkSize;
 					int endWaveformIndex = waveformIndex + chunkSize;
-					int maxIteration = Mathf.Min(endWaveformIndex, DataLength);
+					int maxIteration = Mathf.Min(endWaveformIndex, samples[0].Length);
 
 					for (int channel = 0; channel < Channels; channel++) {
 						byte maxPeak = 0;
 
 						for (int j = waveformIndex; j < maxIteration; j++) {
-							byte sample = waveformData[channel][j];
+							byte sample = samples[channel][j];
 
 							if (sample > maxPeak) {
 								maxPeak = sample;
 							}
 						};
 
-						body(channel, i, maxPeak / 255f);
+						body(channel, i, maxPeak);
 					}
-				}, value);
+				}
 			});
 		}
 
 
 		public async Task RenderWaveformImage(int startIndex, int endIndex, Image image, Color backgroundColor, Color wavesColor)
 		{
-			if (waveformData[0] == null) {
+			if (!Ready) {
 				GD.PrintErr("Waveform data hasn't been read.");
 				return;
 			}
