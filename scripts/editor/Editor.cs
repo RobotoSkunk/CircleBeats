@@ -75,7 +75,6 @@ namespace ClockBombGames.CircleBeats.Editor
 		double updateWaveformBuffer;
 
 		bool isPlaying = false;
-		bool finishedReadingMp3 = false;
 		bool canUpdateWaveform = true;
 
 		float lastWaveformSeed = 0f;
@@ -103,8 +102,16 @@ namespace ClockBombGames.CircleBeats.Editor
 
 				Task.Run(async () =>
 				{
-					await mp3Reader.ReadWaveformData();
-					finishedReadingMp3 = true;
+					try {
+						await mp3Reader.ReadWaveformData();
+					} catch (Exception e) {
+						GD.PrintErr(e.Message);
+						GD.PrintErr(e.StackTrace);
+
+						Callable.From(() => infoLabel.Text = "Something went wrong...").CallDeferred();
+
+						return;
+					}
 
 					Callable.From(() => infoLabel.Text = "").CallDeferred();
 				});
@@ -189,7 +196,7 @@ namespace ClockBombGames.CircleBeats.Editor
 			);
 
 
-			if (finishedReadingMp3) {
+			if (mp3Reader.Ready) {
 				float waveformSeed = waveformRect.Size.LengthSquared();
 
 				// Check for any changes to update the waveform
@@ -245,7 +252,7 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		void LazyUpdateWaveform()
 		{
-			if (!finishedReadingMp3) {
+			if (!mp3Reader.Ready) {
 				return;
 			}
 
