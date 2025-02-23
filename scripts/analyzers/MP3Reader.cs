@@ -25,7 +25,6 @@ using Godot;
 
 using NLayer;
 using System;
-using System.Linq;
 
 
 namespace ClockBombGames.CircleBeats.Analyzers
@@ -33,7 +32,7 @@ namespace ClockBombGames.CircleBeats.Analyzers
 	public class MP3Reader
 	{
 		const int BUFFER_SECONDS = 30;
-		const int MIPMAP_MAX_LEVEL = 12;
+		const int IDEAL_BUFFER_LENGTH = 1 << 20;
 
 		public int SampleRate { get; private set; }
 		public int Channels   { get; private set; }
@@ -42,7 +41,8 @@ namespace ClockBombGames.CircleBeats.Analyzers
 
 
 		// [MipMap level] [Channel] [Samples]
-		byte[][][] waveformData = new byte[MIPMAP_MAX_LEVEL][][];
+		byte[][][] waveformData;
+		int mipmapMaxLevel;
 
 		MemoryStream audioMemoryStream;
 
@@ -57,8 +57,6 @@ namespace ClockBombGames.CircleBeats.Analyzers
 
 			DataLength = 0;
 			Ready = false;
-
-			waveformData = new byte[MIPMAP_MAX_LEVEL][][];
 		}
 
 
@@ -99,19 +97,23 @@ namespace ClockBombGames.CircleBeats.Analyzers
 
 			DataLength = waveformChannels[0].Count;
 
+			mipmapMaxLevel = Mathf.CeilToInt((float)DataLength / IDEAL_BUFFER_LENGTH);
+			waveformData = new byte[mipmapMaxLevel][][];
+
+			GD.Print(mipmapMaxLevel);
+
 			waveformData[0] = new byte[2][];
 			waveformData[0][0] = [.. waveformChannels[0]];
 			waveformData[0][1] = [.. waveformChannels[1]];
 
 
-			int availableThreads = System.Environment.ProcessorCount;
-
 			// Mipmap samples
-			int jumps = Mathf.CeilToInt((float)MIPMAP_MAX_LEVEL / availableThreads);
+			int availableThreads = System.Environment.ProcessorCount - 2; // Exclude main and physics threads
+			int jumps = Mathf.CeilToInt((float)mipmapMaxLevel / availableThreads);
 
 			for (int m = 0; m < jumps; m++) {
 				int from = availableThreads * m;
-				int to = Mathf.Min(from + availableThreads, MIPMAP_MAX_LEVEL - 1);
+				int to = Mathf.Min(from + availableThreads, mipmapMaxLevel - 1);
 
 				await Parallel.ForAsync(from, to, async (i, token) =>
 				{
@@ -148,7 +150,7 @@ namespace ClockBombGames.CircleBeats.Analyzers
 		{
 			float zoom = (endIndex - startIndex) / (float)DataLength;
 
-			int mipmapLevel = Mathf.Clamp(Mathf.FloorToInt(zoom * MIPMAP_MAX_LEVEL), 0, MIPMAP_MAX_LEVEL - 1);
+			int mipmapLevel = Mathf.Clamp(Mathf.FloorToInt(zoom * mipmapMaxLevel), 0, mipmapMaxLevel - 1);
 
 			startIndex /= mipmapLevel + 1;
 			endIndex /= mipmapLevel + 1;
@@ -175,18 +177,39 @@ namespace ClockBombGames.CircleBeats.Analyzers
 					int endWaveformIndex = waveformIndex + chunkSize;
 					int maxIteration = Mathf.Min(endWaveformIndex, samples[0].Length);
 
-					for (int channel = 0; channel < Channels; channel++) {
-						byte maxPeak = 0;
+					if (Channels == 2) {
+						byte maxPeak1 = 0; // Channel 0
+						byte maxPeak2 = 0; // Channel 1
 
 						for (int j = waveformIndex; j < maxIteration; j++) {
-							byte sample = samples[channel][j];
+							byte sample1 = samples[0][j];
+							byte sample2 = samples[1][j];
+
+							// Channel 0
+							if (sample1 > maxPeak1) {
+								maxPeak1 = sample1;
+							}
+
+							// Channel 1
+							if (sample2 > maxPeak2) {
+								maxPeak2 = sample2;
+							}
+						};
+
+						body(0, i, maxPeak1); // Channel 0
+						body(1, i, maxPeak2); // Channel 1
+					} else {
+						byte maxPeak = 0; // Channel 0
+
+						for (int j = waveformIndex; j < maxIteration; j++) {
+							byte sample = samples[0][j];
 
 							if (sample > maxPeak) {
 								maxPeak = sample;
 							}
 						};
 
-						body(channel, i, maxPeak);
+						body(0, i, maxPeak); // Channel 0
 					}
 				}
 			});
