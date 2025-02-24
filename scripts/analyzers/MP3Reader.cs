@@ -100,8 +100,6 @@ namespace ClockBombGames.CircleBeats.Analyzers
 			mipmapMaxLevel = Mathf.CeilToInt((float)DataLength / IDEAL_BUFFER_LENGTH);
 			waveformData = new byte[mipmapMaxLevel][][];
 
-			GD.Print(mipmapMaxLevel);
-
 			waveformData[0] = new byte[2][];
 			waveformData[0][0] = [.. waveformChannels[0]];
 			waveformData[0][1] = [.. waveformChannels[1]];
@@ -150,7 +148,7 @@ namespace ClockBombGames.CircleBeats.Analyzers
 		{
 			float zoom = (endIndex - startIndex) / (float)DataLength;
 
-			int mipmapLevel = Mathf.Clamp(Mathf.FloorToInt(zoom * mipmapMaxLevel), 0, mipmapMaxLevel - 1);
+			int mipmapLevel = Mathf.Clamp((int)(zoom * mipmapMaxLevel), 0, mipmapMaxLevel - 1);
 
 			startIndex /= mipmapLevel + 1;
 			endIndex /= mipmapLevel + 1;
@@ -168,13 +166,13 @@ namespace ClockBombGames.CircleBeats.Analyzers
 			}
 
 			// Resample waveform
-			int chunkSize = Mathf.FloorToInt(endIndex - startIndex) / width;
+			float chunkSize = (float)(endIndex - startIndex) / width;
 
 			await Task.Run(() =>
 			{
 				for(int i = 0; i < width; i++) {
-					int waveformIndex = startIndex + i * chunkSize;
-					int endWaveformIndex = waveformIndex + chunkSize;
+					int waveformIndex = Mathf.RoundToInt(startIndex + i * chunkSize);
+					int endWaveformIndex = Mathf.RoundToInt(waveformIndex + chunkSize);
 					int maxIteration = Mathf.Min(endWaveformIndex, samples[0].Length);
 
 					if (Channels == 2) {
