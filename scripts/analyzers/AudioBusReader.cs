@@ -17,48 +17,22 @@
 */
 
 
-using System;
 using Godot;
 
 
 namespace ClockBombGames.CircleBeats.Analyzers
 {
-	public class AudioBusReaderOutput
-	{
-		public float decibels;
-		public float averageData;
-
-
-		public AudioBusReaderOutput()
-		{
-			decibels = 0f;
-			averageData = 0f;
-		}
-
-		public AudioBusReaderOutput(float decibels, float averageData)
-		{
-			this.decibels = decibels;
-			this.averageData = averageData;
-		}
-
-		public override string ToString()
-		{
-			return $"Decibels: {decibels}, Average: {averageData}";
-		}
-	}
-
 	public class AudioBusReader
 	{
 		readonly int busIndex = -1;
 		readonly AudioEffectCapture capture;
 		readonly AudioEffectSpectrumAnalyzerInstance spectrumAnalyzer;
 
-		float decibels = -160f;
-		float averageData = 0f;
-
 		private const int MIN_FREQ = 20;
 		private const int MAX_FREQ = 14000;
 		private const int MIN_DB = 60;
+
+		float averageSample = 0f;
 
 
 		public AudioBusReader(string bus) {
@@ -83,59 +57,38 @@ namespace ClockBombGames.CircleBeats.Analyzers
 			}
 		}
 
-		public void CalculateOutput(ref AudioBusReaderOutput output)
+		public float GetAverageSample()
 		{
 			if (capture == null) {
-				int busChannels = AudioServer.GetBusChannels(busIndex);
-				float db = 0f;
+				GD.PrintErr("The selected audio bus requires a AudioEffectCapture effect.");
 
-				if (busChannels > 0) {
-					for (int i = 0; i < busChannels; i++) {
-						db += AudioServer.GetBusPeakVolumeLeftDb(busIndex, i);
-						db += AudioServer.GetBusPeakVolumeRightDb(busIndex, i);
-					}
-
-					db /= busChannels * 2;
-				}
-
-				decibels = db;
-				averageData = Mathf.Abs(decibels) / 200f;
-
-			} else {
-				int qSamples = capture.GetFramesAvailable();
-
-				if (qSamples > 0) {
-					Vector2[] buffer = capture.GetBuffer(qSamples);
-
-					float sum = 0;
-					averageData = 0;
-
-					for (int i = 0; i < buffer.Length; i++) {
-						Vector2 sample = buffer[i];
-
-						sum += sample.X * sample.X + sample.Y * sample.Y;
-						averageData += Mathf.Abs(sample.X) + Mathf.Abs(sample.Y);
-					}
-
-					float rms = Mathf.Sqrt(sum / qSamples);
-					averageData /= qSamples;
-
-					decibels = 20f * MathF.Log10(rms / 0.1f);
-				}
-
-
-				if (decibels < -160f) {
-					decibels = -160f;
-				}
+				return 0f;
 			}
 
-			output.decibels = decibels;
-			output.averageData = averageData;
+			int qSamples = capture.GetFramesAvailable();
+
+			if (qSamples > 0) {
+				Vector2[] buffer = capture.GetBuffer(qSamples);
+
+				averageSample = 0;
+
+				for (int i = 0; i < buffer.Length; i++) {
+					Vector2 sample = buffer[i];
+
+					averageSample += Mathf.Abs(sample.X) + Mathf.Abs(sample.Y);
+				}
+
+				averageSample /= qSamples * 2f;
+			}
+
+			return averageSample;
 		}
 
 		public void GetSpectrum(ref float[] spectrum)
 		{
 			if (spectrumAnalyzer == null) {
+				GD.PrintErr("The selected audio bus requires a AudioEffectSpectrumAnalyzer effect.");
+
 				return;
 			}
 

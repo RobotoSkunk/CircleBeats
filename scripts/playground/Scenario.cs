@@ -103,7 +103,7 @@ namespace ClockBombGames.CircleBeats.Playground
 		{
 			float decibelsForce = playground.DecibelsForce;
 
-			float bump = 1f - 0.2f * decibelsForce + 0.5f * playground.AudioReaderOutput.averageData * decibelsForce;
+			float bump = 1f - 0.2f * decibelsForce + playground.AverageSample * decibelsForce;
 
 
 			scale = Mathf.Lerp(scale, bump, 0.75f);

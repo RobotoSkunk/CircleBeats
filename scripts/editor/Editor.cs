@@ -292,10 +292,8 @@ namespace ClockBombGames.CircleBeats.Editor
 
 			Task.Run(async () =>
 			{
-				float zoom = timelineSlider.MaxValue - timelineSlider.MinValue;
-
 				int minIndex = (int)(mp3Reader.SampleRate * timelineSlider.MinValue);
-				int maxIndex = minIndex + (int)(mp3Reader.SampleRate * zoom);
+				int maxIndex = (int)(mp3Reader.SampleRate * timelineSlider.MaxValue);
 
 				try {
 					await mp3Reader.RenderWaveformImage(

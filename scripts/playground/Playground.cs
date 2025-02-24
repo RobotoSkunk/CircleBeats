@@ -38,9 +38,6 @@ namespace ClockBombGames.CircleBeats.Playground
 		[Export] Label debugLabel;
 
 
-		AudioBusReader audioBusReader;
-		AudioBusReaderOutput audioReaderOutput = new();
-
 		long songTicks;
 		long virtualTicks;
 
@@ -51,8 +48,9 @@ namespace ClockBombGames.CircleBeats.Playground
 		bool _isPlaying;
 
 		public AudioStreamPlayer MusicPlayer => musicPlayer;
-		public AudioBusReader AudioBusReader => audioBusReader;
-		public AudioBusReaderOutput AudioReaderOutput => audioReaderOutput;
+		public AudioBusReader AudioBusReader { get; private set; }
+
+		public float AverageSample { get; private set; }
 
 		public static readonly int ticksPerSecond = ProjectSettings
 														.GetSetting("physics/common/physics_ticks_per_second")
@@ -77,7 +75,7 @@ namespace ClockBombGames.CircleBeats.Playground
 
 		public override void _Ready()
 		{
-			audioBusReader = new AudioBusReader(musicPlayer.Bus);
+			AudioBusReader = new AudioBusReader(musicPlayer.Bus);
 
 			musicPlayer.Stream = music;
 
@@ -86,15 +84,12 @@ namespace ClockBombGames.CircleBeats.Playground
 
 		public override void _Process(double delta)
 		{
-			audioBusReader.CalculateOutput(ref audioReaderOutput);
-
 			double playbackPosition = musicPlayer.GetPlaybackPosition();
 			songTicks = TimeToTicks(playbackPosition);
 
 			debugLabel.Text = "FPS: " + Engine.GetFramesPerSecond() +
 							"\nDraw Calls: " + Performance.GetMonitor(Performance.Monitor.RenderTotalDrawCallsInFrame) +
-							"\nAverage Audio Data: " + audioReaderOutput.averageData +
-							"\nDecibels: " + audioReaderOutput.decibels +
+							"\nAverage Audio Data: " + AverageSample +
 							"\nProcess Mode: " + (IsPlaying ? "Inherit" : "Disabled") +
 							"\nTicks: " + virtualTicks + " / " + songTicks;
 		}
@@ -102,6 +97,8 @@ namespace ClockBombGames.CircleBeats.Playground
 
 		public override void _PhysicsProcess(double delta)
 		{
+			AverageSample = AudioBusReader.GetAverageSample();
+
 			while (songTicks > virtualTicks) {
 				virtualTicks++;
 			}
