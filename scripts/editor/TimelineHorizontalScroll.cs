@@ -37,7 +37,7 @@ namespace ClockBombGames.CircleBeats.Editor
 		public event DragEventHandler OnDragging = delegate { };
 
 
-		private readonly float minZoom = 0.025f;
+		private readonly float minZoom = 0.001f;
 
 		public float MinValue { get; private set; } = 0f;
 		public float MaxValue { get; private set; } = 1f;
@@ -84,6 +84,10 @@ namespace ClockBombGames.CircleBeats.Editor
 
 			handlerSize.X = size.X * (MaxValue - MinValue);
 			handlerPos.X = size.X * MinValue;
+
+			if (handlerSize.X < 24) {
+				handlerSize.X = 24;
+			}
 
 			handlerBar.Size = handlerSize;
 			handlerBar.Position = handlerPos;
