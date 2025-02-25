@@ -18,12 +18,12 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_40f74")
 songTimeLabel = NodePath("Timeline/Timeline/Content/Header/Song Time")
-timelineSeeker = NodePath("Timeline/Timeline/Content/Timeline/Content Draw Canvas/Timeline Seeker")
+timelineSeeker = NodePath("Timeline/Timeline/Content/Body/Overlapping Content/Timeline Seeker")
 timelineSlider = NodePath("Timeline/Timeline/Content/Header/Timeline Slider")
 infoLabel = NodePath("Timeline/Timeline/Content/Info Panel/Info Label")
 horizontalScrollSeeker = NodePath("Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll/Horizontal Scroll Seeker")
 horizontalScroll = NodePath("Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll")
-waveformRect = NodePath("Timeline/Timeline/Content/Timeline/Waveform Texture")
+waveformRect = NodePath("Timeline/Timeline/Content/Body/Waveform Texture")
 timerWaveformSync = NodePath("Node/Sync Waveform")
 skipBackwardButton = NodePath("Timeline/Timeline/Content/Controls/Skip Backward")
 playButton = NodePath("Timeline/Timeline/Content/Controls/Play - Pause")
@@ -39,6 +39,7 @@ anchor_bottom = 1.0
 offset_top = -334.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_constants/separation = 0
 alignment = 2
 
 [node name="Tabs Bar" type="TabBar" parent="Timeline"]
@@ -54,6 +55,7 @@ layout_mode = 2
 
 [node name="Content" type="VBoxContainer" parent="Timeline/Timeline"]
 layout_mode = 2
+theme_override_constants/separation = 0
 
 [node name="Controls" type="HBoxContainer" parent="Timeline/Timeline/Content"]
 custom_minimum_size = Vector2(0, 25)
@@ -126,11 +128,11 @@ texture = ExtResource("6_l15l2")
 expand_mode = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="Timeline" type="Control" parent="Timeline/Timeline/Content"]
+[node name="Body" type="Control" parent="Timeline/Timeline/Content"]
 custom_minimum_size = Vector2(0, 250)
 layout_mode = 2
 
-[node name="Waveform Texture" type="TextureRect" parent="Timeline/Timeline/Content/Timeline"]
+[node name="Waveform Texture" type="TextureRect" parent="Timeline/Timeline/Content/Body"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -140,7 +142,16 @@ grow_horizontal = 2
 grow_vertical = 2
 expand_mode = 1
 
-[node name="Body" type="ColorRect" parent="Timeline/Timeline/Content/Timeline"]
+[node name="Background" type="ColorRect" parent="Timeline/Timeline/Content/Body"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.160784)
+
+[node name="Content" type="ColorRect" parent="Timeline/Timeline/Content/Body"]
 clip_children = 1
 layout_mode = 1
 anchors_preset = 15
@@ -148,149 +159,55 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+color = Color(1, 0, 0, 1)
 
-[node name="Background" type="ColorRect" parent="Timeline/Timeline/Content/Timeline/Body"]
+[node name="Layers Backgrounds" type="VBoxContainer" parent="Timeline/Timeline/Content/Body/Content"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.372549)
-
-[node name="Layers" type="VBoxContainer" parent="Timeline/Timeline/Content/Timeline/Body"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-grow_horizontal = 2
 theme_override_constants/separation = 0
 
-[node name="Layer" type="ColorRect" parent="Timeline/Timeline/Content/Timeline/Body/Layers"]
+[node name="Layer" type="ColorRect" parent="Timeline/Timeline/Content/Body/Content/Layers Backgrounds"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
-color = Color(1, 1, 1, 0.137255)
+color = Color(0, 0, 0, 0.137255)
 
-[node name="Content" type="Control" parent="Timeline/Timeline/Content/Timeline/Body/Layers/Layer"]
+[node name="Layer2" type="ColorRect" parent="Timeline/Timeline/Content/Body/Content/Layers Backgrounds"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+color = Color(0, 0, 0, 0.184314)
+
+[node name="Timeline Content" type="Control" parent="Timeline/Timeline/Content/Body/Content"]
 layout_mode = 1
-anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 200.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Controls" type="ColorRect" parent="Timeline/Timeline/Content/Timeline/Body/Layers/Layer"]
-custom_minimum_size = Vector2(200, 0)
+[node name="Layers Controllers" type="VBoxContainer" parent="Timeline/Timeline/Content/Body/Content"]
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
+offset_right = 200.0
 grow_vertical = 2
-color = Color(0.121569, 0.121569, 0.121569, 1)
+theme_override_constants/separation = 0
 
-[node name="Layer2" type="ColorRect" parent="Timeline/Timeline/Content/Timeline/Body/Layers"]
-custom_minimum_size = Vector2(0, 40)
+[node name="Controls" type="ColorRect" parent="Timeline/Timeline/Content/Body/Content/Layers Controllers"]
+custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
-color = Color(1, 1, 1, 0.278431)
-
-[node name="Content" type="Control" parent="Timeline/Timeline/Content/Timeline/Body/Layers/Layer2"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Control" type="ColorRect" parent="Timeline/Timeline/Content/Timeline/Body/Layers/Layer2"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 1
-anchors_preset = 9
-anchor_bottom = 1.0
-grow_vertical = 2
 color = Color(0.121569, 0.121569, 0.121569, 1)
 
-[node name="Timeline Scroller" type="ScrollContainer" parent="Timeline/Timeline/Content/Timeline"]
+[node name="Control" type="ColorRect" parent="Timeline/Timeline/Content/Body/Content/Layers Controllers"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+color = Color(0.121569, 0.121569, 0.121569, 1)
+
+[node name="Overlapping Content" type="ColorRect" parent="Timeline/Timeline/Content/Body"]
 visible = false
-custom_minimum_size = Vector2(0, 250)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-horizontal_scroll_mode = 0
-vertical_scroll_mode = 3
-
-[node name="Timeline Body Split" type="HSplitContainer" parent="Timeline/Timeline/Content/Timeline/Timeline Scroller"]
-custom_minimum_size = Vector2(0, 250)
-layout_mode = 2
-size_flags_horizontal = 3
-dragger_visibility = 1
-
-[node name="Layers Controls" type="VBoxContainer" parent="Timeline/Timeline/Content/Timeline/Timeline Scroller/Timeline Body Split"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="Timeline/Timeline/Content/Timeline/Timeline Scroller/Timeline Body Split/Layers Controls"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="PanelContainer2" type="PanelContainer" parent="Timeline/Timeline/Content/Timeline/Timeline Scroller/Timeline Body Split/Layers Controls"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="PanelContainer3" type="PanelContainer" parent="Timeline/Timeline/Content/Timeline/Timeline Scroller/Timeline Body Split/Layers Controls"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="PanelContainer4" type="PanelContainer" parent="Timeline/Timeline/Content/Timeline/Timeline Scroller/Timeline Body Split/Layers Controls"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="PanelContainer5" type="PanelContainer" parent="Timeline/Timeline/Content/Timeline/Timeline Scroller/Timeline Body Split/Layers Controls"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="PanelContainer6" type="PanelContainer" parent="Timeline/Timeline/Content/Timeline/Timeline Scroller/Timeline Body Split/Layers Controls"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="PanelContainer7" type="PanelContainer" parent="Timeline/Timeline/Content/Timeline/Timeline Scroller/Timeline Body Split/Layers Controls"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="Layers" type="VBoxContainer" parent="Timeline/Timeline/Content/Timeline/Timeline Scroller/Timeline Body Split"]
-clip_children = 1
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="PanelContainer" type="PanelContainer" parent="Timeline/Timeline/Content/Timeline/Timeline Scroller/Timeline Body Split/Layers"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="PanelContainer2" type="PanelContainer" parent="Timeline/Timeline/Content/Timeline/Timeline Scroller/Timeline Body Split/Layers"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="PanelContainer3" type="PanelContainer" parent="Timeline/Timeline/Content/Timeline/Timeline Scroller/Timeline Body Split/Layers"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="PanelContainer4" type="PanelContainer" parent="Timeline/Timeline/Content/Timeline/Timeline Scroller/Timeline Body Split/Layers"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="PanelContainer5" type="PanelContainer" parent="Timeline/Timeline/Content/Timeline/Timeline Scroller/Timeline Body Split/Layers"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="PanelContainer6" type="PanelContainer" parent="Timeline/Timeline/Content/Timeline/Timeline Scroller/Timeline Body Split/Layers"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="PanelContainer7" type="PanelContainer" parent="Timeline/Timeline/Content/Timeline/Timeline Scroller/Timeline Body Split/Layers"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="Content Draw Canvas" type="ColorRect" parent="Timeline/Timeline/Content/Timeline"]
 clip_children = 1
 layout_mode = 1
 anchors_preset = -1
@@ -301,7 +218,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Timeline Seeker" type="ColorRect" parent="Timeline/Timeline/Content/Timeline/Content Draw Canvas"]
+[node name="Timeline Seeker" type="ColorRect" parent="Timeline/Timeline/Content/Body/Overlapping Content"]
 custom_minimum_size = Vector2(1, 300)
 layout_mode = 2
 offset_left = -212.0
