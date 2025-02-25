@@ -31,32 +31,38 @@ namespace ClockBombGames.CircleBeats.Editor
 	{
 		[Export] Playground.Playground playground;
 
-		[ExportGroup("UI Components")]
+		#region Timeline variables
+		[ExportGroup("Timeline")]
+
+		[ExportSubgroup("Controls")]
+		[Export] Button skipBackwardButton;
+		[Export] Button playButton;
+
+		[ExportSubgroup("Header")]
 		[Export] Label songTimeLabel;
 		[Export] ColorRect timelineSeeker;
 		[Export] TimelineSlider timelineSlider;
 
-		[ExportCategory("Footer")]
+		[ExportSubgroup("Body")]
+		[Export] TextureRect waveformTextureRect;
+
+		[ExportSubgroup("Footer")]
 		[Export] Label infoLabel;
 		[Export] ColorRect horizontalScrollSeeker;
 		[Export] TimelineHorizontalScroll horizontalScroll;
+		#endregion
 
-		[ExportGroup("Waveform")]
-		[Export] TextureRect waveformRect;
-		[Export] Timer timerWaveformSync;
-
-		// [ExportSubgroup("Split Containers")]
-		// [Export] HSplitContainer timelineHeader;
-		// [Export] HSplitContainer timelineBody;
-
-		[ExportSubgroup("Playtest Controls")]
-		[Export] Button skipBackwardButton;
-		[Export] Button playButton;
-
+		#region Resources variables
 		[ExportGroup("Resources")]
+
 		[ExportSubgroup("Play Button")]
 		[Export] CompressedTexture2D playSprite;
 		[Export] CompressedTexture2D pauseSprite;
+
+		[ExportSubgroup("Timers")]
+		[Export] Timer timerWaveformSync;
+		#endregion
+
 
 		Image waveformImage;
 		readonly ImageTexture waveformImageTexture = new();
@@ -67,6 +73,8 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		private Action skipBackwardAction;
 
+		Vector2 waveformSize;
+
 		double songPosition = 0f;
 		double songLength = 0f;
 		double pausedPlaybackBuffer;
@@ -74,8 +82,6 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		bool isPlaying = false;
 		bool canUpdateWaveform = true;
-
-		float lastWaveformSeed = 0f;
 
 		float Zoom
 		{
@@ -183,24 +189,14 @@ namespace ClockBombGames.CircleBeats.Editor
 
 
 			// Waveform renderer
-			// waveformRect.GlobalPosition = new(
-			// 	waveformWidthRef.GlobalPosition.X,
-			// 	waveformHeightRef.GlobalPosition.Y
-			// );
-
-			// waveformRect.Size = new(
-			// 	waveformWidthRef.Size.X,
-			// 	waveformHeightRef.Size.Y
-			// );
-
-
 			if (mp3Reader.Ready) {
-				float waveformSeed = waveformRect.Size.LengthSquared();
+				Vector2 currentWaveformSize = waveformTextureRect.Size;
 
 				// Check for any changes to update the waveform
-				if (canUpdateWaveform && lastWaveformSeed != waveformSeed) {
+				if (canUpdateWaveform && waveformSize != currentWaveformSize) {
+					waveformSize = currentWaveformSize;
+
 					UpdateWaveform();
-					lastWaveformSeed = waveformSeed;
 				}
 			}
 		}
@@ -277,13 +273,13 @@ namespace ClockBombGames.CircleBeats.Editor
 				return;
 			}
 
-			Vector2I size = new((int)waveformRect.Size.X, (int)waveformRect.Size.Y);
+			Vector2I size = new((int)waveformSize.X, (int)waveformSize.Y);
 
 			if (waveformImage == null || waveformImage.GetSize() != size) {
 				waveformImage = Image.CreateEmpty(size.X, size.Y, false, Image.Format.Rgba8);
 
 				waveformImageTexture.SetImage(waveformImage);
-				waveformRect.Texture ??= waveformImageTexture;
+				waveformTextureRect.Texture ??= waveformImageTexture;
 			}
 
 			canUpdateWaveform = false;

@@ -9,7 +9,7 @@
 [ext_resource type="Script" path="res://scripts/editor/TimelineHorizontalScroll.cs" id="7_pmkyn"]
 [ext_resource type="Script" path="res://scripts/editor/TimelineHorizontalScrollHandler.cs" id="8_jjcwb"]
 
-[node name="Editor" type="Control" node_paths=PackedStringArray("songTimeLabel", "timelineSeeker", "timelineSlider", "infoLabel", "horizontalScrollSeeker", "horizontalScroll", "waveformRect", "timerWaveformSync", "skipBackwardButton", "playButton")]
+[node name="Editor" type="Control" node_paths=PackedStringArray("skipBackwardButton", "playButton", "songTimeLabel", "timelineSeeker", "timelineSlider", "waveformTextureRect", "infoLabel", "horizontalScrollSeeker", "horizontalScroll", "timerWaveformSync")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,18 +17,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_40f74")
+skipBackwardButton = NodePath("Timeline/Timeline/Content/Controls/Skip Backward")
+playButton = NodePath("Timeline/Timeline/Content/Controls/Play - Pause")
 songTimeLabel = NodePath("Timeline/Timeline/Content/Header/Song Time")
 timelineSeeker = NodePath("Timeline/Timeline/Content/Body/Overlapping Content/Timeline Seeker")
 timelineSlider = NodePath("Timeline/Timeline/Content/Header/Timeline Slider")
+waveformTextureRect = NodePath("Timeline/Timeline/Content/Body/Waveform Texture")
 infoLabel = NodePath("Timeline/Timeline/Content/Info Panel/Info Label")
 horizontalScrollSeeker = NodePath("Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll/Horizontal Scroll Seeker")
 horizontalScroll = NodePath("Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll")
-waveformRect = NodePath("Timeline/Timeline/Content/Body/Waveform Texture")
-timerWaveformSync = NodePath("Node/Sync Waveform")
-skipBackwardButton = NodePath("Timeline/Timeline/Content/Controls/Skip Backward")
-playButton = NodePath("Timeline/Timeline/Content/Controls/Play - Pause")
 playSprite = ExtResource("4_prgs7")
 pauseSprite = ExtResource("3_bneo7")
+timerWaveformSync = NodePath("Node/Sync Waveform")
 
 [node name="Timeline" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -181,12 +181,10 @@ layout_mode = 2
 color = Color(0, 0, 0, 0.184314)
 
 [node name="Timeline Content" type="Control" parent="Timeline/Timeline/Content/Body/Content"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 1
-anchor_right = 1.0
-anchor_bottom = 1.0
 offset_left = 200.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_right = 320.0
 
 [node name="Layers Controllers" type="VBoxContainer" parent="Timeline/Timeline/Content/Body/Content"]
 layout_mode = 1
