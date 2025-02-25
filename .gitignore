@@ -23,6 +23,9 @@ mono_crash.*.json
 [Oo]utput/
 [Bb]uild/
 [Bb]uilds/
+.[Oo]utput/
+.[Bb]uild/
+.[Bb]uilds/
 
 # Blender autosave
 *.blend1
