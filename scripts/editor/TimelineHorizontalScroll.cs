@@ -22,7 +22,7 @@ using Godot;
 
 namespace ClockBombGames.CircleBeats.Editor
 {
-	public partial class TimelineHorizontalScroll : Panel
+	public partial class TimelineHorizontalScroll : Control
 	{
 		[Signal]
 		public delegate void DragEventHandler();

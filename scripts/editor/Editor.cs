@@ -42,14 +42,12 @@ namespace ClockBombGames.CircleBeats.Editor
 		[Export] TimelineHorizontalScroll horizontalScroll;
 
 		[ExportGroup("Waveform")]
-		[Export] Control waveformWidthRef;
-		[Export] Control waveformHeightRef;
 		[Export] TextureRect waveformRect;
 		[Export] Timer timerWaveformSync;
 
-		[ExportSubgroup("Split Containers")]
-		[Export] HSplitContainer timelineHeader;
-		[Export] HSplitContainer timelineBody;
+		// [ExportSubgroup("Split Containers")]
+		// [Export] HSplitContainer timelineHeader;
+		// [Export] HSplitContainer timelineBody;
 
 		[ExportSubgroup("Playtest Controls")]
 		[Export] Button skipBackwardButton;
@@ -185,15 +183,15 @@ namespace ClockBombGames.CircleBeats.Editor
 
 
 			// Waveform renderer
-			waveformRect.GlobalPosition = new(
-				waveformWidthRef.GlobalPosition.X,
-				waveformHeightRef.GlobalPosition.Y
-			);
+			// waveformRect.GlobalPosition = new(
+			// 	waveformWidthRef.GlobalPosition.X,
+			// 	waveformHeightRef.GlobalPosition.Y
+			// );
 
-			waveformRect.Size = new(
-				waveformWidthRef.Size.X,
-				waveformHeightRef.Size.Y
-			);
+			// waveformRect.Size = new(
+			// 	waveformWidthRef.Size.X,
+			// 	waveformHeightRef.Size.Y
+			// );
 
 
 			if (mp3Reader.Ready) {
