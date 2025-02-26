@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://utps1w84iu0u"]
+[gd_scene load_steps=12 format=3 uid="uid://utps1w84iu0u"]
 
 [ext_resource type="Script" path="res://scripts/editor/Editor.cs" id="1_40f74"]
 [ext_resource type="Texture2D" uid="uid://vwcladgmfhn6" path="res://assets/sprites/symbols/skip-backward.svg" id="2_cujcb"]
 [ext_resource type="Texture2D" uid="uid://bq8313lmmorpc" path="res://assets/sprites/symbols/pause.svg" id="3_bneo7"]
 [ext_resource type="Script" path="res://scripts/editor/EditorTimeline.cs" id="4_00nnq"]
 [ext_resource type="Texture2D" uid="uid://cxbehkd6cf2px" path="res://assets/sprites/symbols/play.svg" id="4_prgs7"]
+[ext_resource type="Script" path="res://scripts/editor/ResizeHandler.cs" id="5_m5hgo"]
 [ext_resource type="Script" path="res://scripts/editor/TimelineSlider.cs" id="5_pg18s"]
 [ext_resource type="Texture2D" uid="uid://cv7teiouquiyp" path="res://assets/sprites/symbols/music-position.svg" id="6_l15l2"]
 [ext_resource type="Script" path="res://scripts/editor/TimelineHorizontalScroll.cs" id="7_pmkyn"]
@@ -20,7 +21,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_40f74")
 
-[node name="Timeline" type="VBoxContainer" parent="." node_paths=PackedStringArray("editor", "skipBackwardButton", "playButton", "songTimeLabel", "timelineSlider", "waveformTextureRect", "timelineContent", "timelineSeeker", "infoLabel", "horizontalScroll", "horizontalScrollSeeker", "timerWaveformSync")]
+[node name="Timeline" type="VBoxContainer" parent="." node_paths=PackedStringArray("editor", "skipBackwardButton", "playButton", "songTimeLabel", "timelineSlider", "resizeHandler", "timelineBody", "waveformTextureRect", "timelineContent", "timelineSeeker", "infoLabel", "horizontalScroll", "horizontalScrollSeeker", "timerWaveformSync", "timerUpdateWaveformSize")]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -37,7 +38,9 @@ skipBackwardButton = NodePath("Timeline Container/Content/Header/Controls/Skip B
 playButton = NodePath("Timeline Container/Content/Header/Controls/Play Button")
 songTimeLabel = NodePath("Timeline Container/Content/Header/Song Time")
 timelineSlider = NodePath("Timeline Container/Content/Header/Timeline Slider")
-waveformTextureRect = NodePath("Timeline Container/Content/Body/ColorRect/Waveform Texture")
+resizeHandler = NodePath("Timeline Container/Content/Header/Resize Handler")
+timelineBody = NodePath("Timeline Container/Content/Body")
+waveformTextureRect = NodePath("Timeline Container/Content/Body/Waveform Texture")
 timelineContent = NodePath("Timeline Container/Content/Body/Content/Timeline Content")
 timelineSeeker = NodePath("Timeline Container/Content/Body/Overlapping Content/Timeline Seeker")
 infoLabel = NodePath("Timeline Container/Content/Footer/Info Panel/Info Label")
@@ -46,6 +49,7 @@ horizontalScrollSeeker = NodePath("Timeline Container/Content/Footer/Timeline Ho
 playSprite = ExtResource("4_prgs7")
 pauseSprite = ExtResource("3_bneo7")
 timerWaveformSync = NodePath("../Node/Sync Waveform")
+timerUpdateWaveformSize = NodePath("../Node/Update Waveform Size")
 
 [node name="Tabs Bar" type="TabBar" parent="Timeline"]
 layout_mode = 2
@@ -65,6 +69,20 @@ theme_override_constants/separation = 0
 [node name="Header" type="Control" parent="Timeline/Timeline Container/Content"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+
+[node name="Resize Handler" type="Panel" parent="Timeline/Timeline Container/Content/Header"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -250.0
+offset_top = 6.0
+offset_right = 250.0
+offset_bottom = 18.0
+grow_horizontal = 2
+mouse_default_cursor_shape = 9
+script = ExtResource("5_m5hgo")
 
 [node name="Controls" type="HBoxContainer" parent="Timeline/Timeline Container/Content/Header"]
 custom_minimum_size = Vector2(0, 25)
@@ -143,23 +161,13 @@ metadata/_edit_use_anchors_ = true
 custom_minimum_size = Vector2(0, 250)
 layout_mode = 2
 
-[node name="ColorRect" type="Control" parent="Timeline/Timeline Container/Content/Body"]
-clip_children = 1
-clip_contents = true
+[node name="Waveform Texture" type="TextureRect" parent="Timeline/Timeline Container/Content/Body"]
+custom_minimum_size = Vector2(0, 25)
 layout_mode = 1
+anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 200.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Waveform Texture" type="TextureRect" parent="Timeline/Timeline Container/Content/Body/ColorRect"]
-custom_minimum_size = Vector2(0, 250)
-layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 expand_mode = 1
@@ -243,6 +251,7 @@ color = Color(0.121569, 0.121569, 0.121569, 1)
 clip_children = 1
 clip_contents = true
 layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 200.0
@@ -361,4 +370,8 @@ text = "Some tooltips over here!"
 
 [node name="Sync Waveform" type="Timer" parent="Node"]
 wait_time = 0.05
+one_shot = true
+
+[node name="Update Waveform Size" type="Timer" parent="Node"]
+wait_time = 0.5
 one_shot = true

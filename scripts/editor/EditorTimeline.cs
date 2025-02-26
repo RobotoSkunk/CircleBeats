@@ -42,8 +42,10 @@ namespace ClockBombGames.CircleBeats.Editor
 		[Export] Button playButton;
 		[Export] Label songTimeLabel;
 		[Export] TimelineSlider timelineSlider;
+		[Export] ResizeHandler resizeHandler;
 
 		[ExportSubgroup("Body")]
+		[Export] Control timelineBody;
 		[Export] TextureRect waveformTextureRect;
 		[Export] Control timelineContent;
 		[Export] ColorRect timelineSeeker;
@@ -63,6 +65,7 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		[ExportSubgroup("Timers")]
 		[Export] Timer timerWaveformSync;
+		[Export] Timer timerUpdateWaveformSize;
 		#endregion
 
 		public event SliderEventHandler OnSliderChange = delegate { };
@@ -134,24 +137,30 @@ namespace ClockBombGames.CircleBeats.Editor
 		{
 			skipBackwardAction = () => SeekMusicPosition(0);
 
-			// Set Controls listeners
+			// Controls
 			skipBackwardButton.Pressed += skipBackwardAction;
 			playButton.Pressed += OnPlayPressed;
-
 			timelineSlider.OnValueChange += SeekMusicPosition;
 			horizontalScroll.OnDragging += UpdateTimelineSlider;
-			timerWaveformSync.Timeout += WaveformSyncLoop;
-		}
+			resizeHandler.OnResize += ResizeBody;
 
+			// Timers
+			timerWaveformSync.Timeout += WaveformSyncLoop;
+			timerUpdateWaveformSize.Timeout += WaveformSyncLoop;
+		}
 
 		public override void _ExitTree()
 		{
+			// Controls
 			skipBackwardButton.Pressed -= skipBackwardAction;
 			playButton.Pressed -= OnPlayPressed;
-
 			timelineSlider.OnValueChange -= SeekMusicPosition;
 			horizontalScroll.OnDragging -= UpdateTimelineSlider;
+			resizeHandler.OnResize -= ResizeBody;
+
+			// Timers
 			timerWaveformSync.Timeout -= WaveformSyncLoop;
+			timerUpdateWaveformSize.Timeout -= WaveformSyncLoop;
 		}
 
 
@@ -198,7 +207,8 @@ namespace ClockBombGames.CircleBeats.Editor
 			if (mp3Reader.Ready && canUpdateWaveform && waveformSize != currentWaveformSize) {
 				waveformSize = currentWaveformSize;
 
-				UpdateWaveform();
+				timerUpdateWaveformSize.Stop();
+				timerUpdateWaveformSize.Start();
 			}
 		}
 
@@ -242,6 +252,16 @@ namespace ClockBombGames.CircleBeats.Editor
 			}
 
 			musicPlayer.Seek((float)songPosition);
+		}
+
+		void ResizeBody(float deltaY)
+		{
+			Vector2 bodySize = timelineBody.CustomMinimumSize;
+
+			bodySize.Y -= deltaY;
+			bodySize.Y = Mathf.Clamp(bodySize.Y, 25, 500);
+
+			timelineBody.CustomMinimumSize = bodySize;
 		}
 
 
