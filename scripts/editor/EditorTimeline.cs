@@ -284,8 +284,10 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		void UpdateTimelineSlider()
 		{
-			timelineSlider.MinValue = (float)(songLength * horizontalScroll.MinValue);
-			timelineSlider.MaxValue = (float)(songLength * horizontalScroll.MaxValue);
+			timelineSlider.SetMinMaxValues(
+				(float)(songLength * horizontalScroll.MinValue),
+				(float)(songLength * horizontalScroll.MaxValue)
+			);
 
 			OnSliderChange.Invoke(timelineSlider.MinValue, timelineSlider.MaxValue);
 

@@ -33,10 +33,12 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		public event ValueEventHandler OnValueChange = delegate { };
 
-		public float MinValue { get; set; }
-		public float MaxValue { get; set; }
+		public float MinValue { get; private set; }
+		public float MaxValue { get; private set; }
 
 		float value;
+
+		float prevValue;
 		float prevMouseX;
 
 
@@ -64,11 +66,20 @@ namespace ClockBombGames.CircleBeats.Editor
 		protected override void OnDrag(InputEventMouseMotion _) => HandleChange();
 
 
+		public void SetMinMaxValues(float min, float max)
+		{
+			MinValue = min;
+			MaxValue = max;
+
+			SetValue(value);
+		}
+
+
 		private void HandleChange()
 		{
 			float mouseX = GetLocalMousePosition().X;
 
-			if (mouseX != prevMouseX) {
+			if (prevValue != value || mouseX != prevMouseX) {
 				value = MinValue + (Mathf.Clamp(mouseX / Size.X, 0, 1) * (MaxValue - MinValue));
 
 				SetValue(value);
@@ -76,6 +87,7 @@ namespace ClockBombGames.CircleBeats.Editor
 			}
 
 			prevMouseX = mouseX;
+			prevValue = value;
 		}
 
 		public void SetValue(float value)
