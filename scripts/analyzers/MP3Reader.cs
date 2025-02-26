@@ -214,41 +214,21 @@ namespace ClockBombGames.CircleBeats.Analyzers
 		}
 
 
-		public async Task RenderWaveformImage(int startIndex, int endIndex, Image image, Color backgroundColor, Color wavesColor)
+		public async Task<Vector2[]> ResampleWaveformMipmapped(int startIndex, int endIndex, int width)
 		{
 			if (!Ready) {
 				GD.PrintErr("Waveform data hasn't been read.");
-				return;
+				return [];
 			}
 
-			Vector2I size = image.GetSize();
-			image.Fill(backgroundColor);
+			Vector2[] samples = new Vector2[width];
 
-
-			int channelHeight = size.Y / Channels;
-
-			await ResampleWaveform(startIndex, endIndex, size.X, (channel, x, sample) =>
+			await ResampleWaveform(startIndex, endIndex, width, (channel, i, sample) =>
 			{
-				int heightCenter = channelHeight / 2 + (channelHeight * channel);
-				int peakHeight = (int)(sample * (channelHeight / 2));
-
-				peakHeight = Mathf.Clamp(peakHeight, 1, channelHeight / 2);
-
-				for (int y = 0; y < peakHeight; y++) {
-					image.SetPixel(x, heightCenter + y, wavesColor * new Color(0.8f, 0.8f, 0.8f, 1f));
-					image.SetPixel(x, heightCenter - y, wavesColor);
-				}
+				samples[i][channel] = sample;
 			});
-		}
 
-		public async Task RenderWaveformImage(Image image, Color backgroundColor, Color wavesColor)
-		{
-			await RenderWaveformImage(0, DataLength, image, backgroundColor, wavesColor);
-		}
-
-		public async Task RenderWaveformImage(Image image)
-		{
-			await RenderWaveformImage(image, Colors.Black, Colors.Gold);
+			return samples;
 		}
 	}
 }

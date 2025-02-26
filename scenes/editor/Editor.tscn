@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://utps1w84iu0u"]
+[gd_scene load_steps=14 format=3 uid="uid://utps1w84iu0u"]
 
 [ext_resource type="Script" path="res://scripts/editor/Editor.cs" id="1_40f74"]
 [ext_resource type="Texture2D" uid="uid://vwcladgmfhn6" path="res://assets/sprites/symbols/skip-backward.svg" id="2_cujcb"]
@@ -11,6 +11,13 @@
 [ext_resource type="Script" path="res://scripts/editor/TimelineHorizontalScroll.cs" id="7_pmkyn"]
 [ext_resource type="Script" path="res://scripts/editor/LayersContainer.cs" id="8_fwlfl"]
 [ext_resource type="Script" path="res://scripts/editor/TimelineHorizontalScrollHandler.cs" id="8_jjcwb"]
+[ext_resource type="Shader" path="res://assets/shaders/Waveform.gdshader" id="12_afwpq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4vv3c"]
+shader = ExtResource("12_afwpq")
+shader_parameter/size = null
+shader_parameter/channels = null
+shader_parameter/samples = null
 
 [node name="Editor" type="Control"]
 layout_mode = 3
@@ -21,7 +28,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_40f74")
 
-[node name="Timeline" type="VBoxContainer" parent="." node_paths=PackedStringArray("editor", "skipBackwardButton", "playButton", "songTimeLabel", "timelineSlider", "resizeHandler", "timelineBody", "waveformTextureRect", "timelineContent", "timelineSeeker", "infoLabel", "horizontalScroll", "horizontalScrollSeeker", "timerWaveformSync", "timerUpdateWaveformSize")]
+[node name="Timeline" type="VBoxContainer" parent="." node_paths=PackedStringArray("editor", "skipBackwardButton", "playButton", "songTimeLabel", "timelineSlider", "resizeHandler", "timelineBody", "waveformRect", "timelineContent", "timelineSeeker", "infoLabel", "horizontalScroll", "horizontalScrollSeeker", "timerWaveformSync")]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -40,7 +47,7 @@ songTimeLabel = NodePath("Timeline Container/Content/Header/Song Time")
 timelineSlider = NodePath("Timeline Container/Content/Header/Timeline Slider")
 resizeHandler = NodePath("Timeline Container/Content/Header/Resize Handler")
 timelineBody = NodePath("Timeline Container/Content/Body")
-waveformTextureRect = NodePath("Timeline Container/Content/Body/Waveform Texture")
+waveformRect = NodePath("Timeline Container/Content/Body/Waveform Rect")
 timelineContent = NodePath("Timeline Container/Content/Body/Content/Timeline Content")
 timelineSeeker = NodePath("Timeline Container/Content/Body/Overlapping Content/Timeline Seeker")
 infoLabel = NodePath("Timeline Container/Content/Footer/Info Panel/Info Label")
@@ -49,7 +56,6 @@ horizontalScrollSeeker = NodePath("Timeline Container/Content/Footer/Timeline Ho
 playSprite = ExtResource("4_prgs7")
 pauseSprite = ExtResource("3_bneo7")
 timerWaveformSync = NodePath("../Node/Sync Waveform")
-timerUpdateWaveformSize = NodePath("../Node/Update Waveform Size")
 
 [node name="Tabs Bar" type="TabBar" parent="Timeline"]
 layout_mode = 2
@@ -161,7 +167,8 @@ metadata/_edit_use_anchors_ = true
 custom_minimum_size = Vector2(0, 250)
 layout_mode = 2
 
-[node name="Waveform Texture" type="TextureRect" parent="Timeline/Timeline Container/Content/Body"]
+[node name="Waveform Rect" type="ColorRect" parent="Timeline/Timeline Container/Content/Body"]
+material = SubResource("ShaderMaterial_4vv3c")
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 1
 anchors_preset = -1
@@ -170,7 +177,6 @@ anchor_bottom = 1.0
 offset_left = 200.0
 grow_horizontal = 2
 grow_vertical = 2
-expand_mode = 1
 
 [node name="Background" type="ColorRect" parent="Timeline/Timeline Container/Content/Body"]
 layout_mode = 1
@@ -223,6 +229,7 @@ offset_right = 1.0
 offset_bottom = 40.0
 
 [node name="ColorRect" type="ColorRect" parent="Timeline/Timeline Container/Content/Body/Content/Timeline Content"]
+visible = false
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 1
 anchors_preset = -1
