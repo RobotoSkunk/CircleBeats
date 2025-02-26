@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://cvyeq2ktigpe1"]
+[gd_scene load_steps=5 format=3 uid="uid://cvyeq2ktigpe1"]
 
 [ext_resource type="Script" path="res://scripts/Main.cs" id="1_71p4u"]
 [ext_resource type="PackedScene" uid="uid://vgucmfperviw" path="res://scenes/Playground.tscn" id="1_iopfw"]
 [ext_resource type="PackedScene" uid="uid://utps1w84iu0u" path="res://scenes/editor/Editor.tscn" id="3_i5r6b"]
+[ext_resource type="AudioStream" uid="uid://bjsyw4me3xvbu" path="res://assets/music/1163046_CHICKEN-WAR.mp3" id="3_nt2rr"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_71p4u")
@@ -16,6 +17,7 @@ grow_vertical = 2
 color = Color(0.127451, 0.127451, 0.127451, 1)
 
 [node name="Playground" parent="." instance=ExtResource("1_iopfw")]
+music = ExtResource("3_nt2rr")
 
 [node name="Editor" parent="." node_paths=PackedStringArray("playground") instance=ExtResource("3_i5r6b")]
 playground = NodePath("../Playground")
