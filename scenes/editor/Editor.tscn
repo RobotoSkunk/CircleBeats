@@ -1,15 +1,17 @@
-[gd_scene load_steps=9 format=3 uid="uid://utps1w84iu0u"]
+[gd_scene load_steps=11 format=3 uid="uid://utps1w84iu0u"]
 
 [ext_resource type="Script" path="res://scripts/editor/Editor.cs" id="1_40f74"]
 [ext_resource type="Texture2D" uid="uid://vwcladgmfhn6" path="res://assets/sprites/symbols/skip-backward.svg" id="2_cujcb"]
 [ext_resource type="Texture2D" uid="uid://bq8313lmmorpc" path="res://assets/sprites/symbols/pause.svg" id="3_bneo7"]
+[ext_resource type="Script" path="res://scripts/editor/EditorTimeline.cs" id="4_00nnq"]
 [ext_resource type="Texture2D" uid="uid://cxbehkd6cf2px" path="res://assets/sprites/symbols/play.svg" id="4_prgs7"]
 [ext_resource type="Script" path="res://scripts/editor/TimelineSlider.cs" id="5_pg18s"]
 [ext_resource type="Texture2D" uid="uid://cv7teiouquiyp" path="res://assets/sprites/symbols/music-position.svg" id="6_l15l2"]
 [ext_resource type="Script" path="res://scripts/editor/TimelineHorizontalScroll.cs" id="7_pmkyn"]
+[ext_resource type="Script" path="res://scripts/editor/LayersContainer.cs" id="8_fwlfl"]
 [ext_resource type="Script" path="res://scripts/editor/TimelineHorizontalScrollHandler.cs" id="8_jjcwb"]
 
-[node name="Editor" type="Control" node_paths=PackedStringArray("skipBackwardButton", "playButton", "songTimeLabel", "timelineSeeker", "timelineSlider", "waveformTextureRect", "infoLabel", "horizontalScrollSeeker", "horizontalScroll", "timerWaveformSync")]
+[node name="Editor" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,20 +19,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_40f74")
-skipBackwardButton = NodePath("Timeline/Timeline/Content/Controls/Skip Backward")
-playButton = NodePath("Timeline/Timeline/Content/Controls/Play - Pause")
-songTimeLabel = NodePath("Timeline/Timeline/Content/Header/Song Time")
-timelineSeeker = NodePath("Timeline/Timeline/Content/Body/Overlapping Content/Timeline Seeker")
-timelineSlider = NodePath("Timeline/Timeline/Content/Header/Timeline Slider")
-waveformTextureRect = NodePath("Timeline/Timeline/Content/Body/Waveform Texture")
-infoLabel = NodePath("Timeline/Timeline/Content/Info Panel/Info Label")
-horizontalScrollSeeker = NodePath("Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll/Horizontal Scroll Seeker")
-horizontalScroll = NodePath("Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll")
-playSprite = ExtResource("4_prgs7")
-pauseSprite = ExtResource("3_bneo7")
-timerWaveformSync = NodePath("Node/Sync Waveform")
 
-[node name="Timeline" type="VBoxContainer" parent="."]
+[node name="Timeline" type="VBoxContainer" parent="." node_paths=PackedStringArray("editor", "skipBackwardButton", "playButton", "songTimeLabel", "timelineSlider", "waveformTextureRect", "timelineContent", "timelineSeeker", "infoLabel", "horizontalScroll", "horizontalScrollSeeker", "timerWaveformSync")]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -41,6 +31,21 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/separation = 0
 alignment = 2
+script = ExtResource("4_00nnq")
+editor = NodePath("..")
+skipBackwardButton = NodePath("Timeline Container/Content/Header/Controls/Skip Backward Button")
+playButton = NodePath("Timeline Container/Content/Header/Controls/Play Button")
+songTimeLabel = NodePath("Timeline Container/Content/Header/Song Time")
+timelineSlider = NodePath("Timeline Container/Content/Header/Timeline Slider")
+waveformTextureRect = NodePath("Timeline Container/Content/Body/ColorRect/Waveform Texture")
+timelineContent = NodePath("Timeline Container/Content/Body/Content/Timeline Content")
+timelineSeeker = NodePath("Timeline Container/Content/Body/Overlapping Content/Timeline Seeker")
+infoLabel = NodePath("Timeline Container/Content/Footer/Info Panel/Info Label")
+horizontalScroll = NodePath("Timeline Container/Content/Footer/Timeline Horizontal Scroll")
+horizontalScrollSeeker = NodePath("Timeline Container/Content/Footer/Timeline Horizontal Scroll/Horizontal Scroll Seeker")
+playSprite = ExtResource("4_prgs7")
+pauseSprite = ExtResource("3_bneo7")
+timerWaveformSync = NodePath("../Node/Sync Waveform")
 
 [node name="Tabs Bar" type="TabBar" parent="Timeline"]
 layout_mode = 2
@@ -50,20 +55,28 @@ tab_0/title = "Timeline"
 tab_1/title = "Effects"
 tab_2/title = "Background"
 
-[node name="Timeline" type="PanelContainer" parent="Timeline"]
+[node name="Timeline Container" type="PanelContainer" parent="Timeline"]
 layout_mode = 2
 
-[node name="Content" type="VBoxContainer" parent="Timeline/Timeline"]
+[node name="Content" type="VBoxContainer" parent="Timeline/Timeline Container"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Controls" type="HBoxContainer" parent="Timeline/Timeline/Content"]
-custom_minimum_size = Vector2(0, 25)
+[node name="Header" type="Control" parent="Timeline/Timeline Container/Content"]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+
+[node name="Controls" type="HBoxContainer" parent="Timeline/Timeline Container/Content/Header"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 1
+anchors_preset = -1
+anchor_bottom = 0.5
+offset_right = 104.0
+grow_vertical = 2
 size_flags_horizontal = 0
 alignment = 1
 
-[node name="Skip Backward" type="Button" parent="Timeline/Timeline/Content/Controls"]
+[node name="Skip Backward Button" type="Button" parent="Timeline/Timeline Container/Content/Header/Controls"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -71,7 +84,7 @@ icon = ExtResource("2_cujcb")
 icon_alignment = 1
 expand_icon = true
 
-[node name="Play - Pause" type="Button" parent="Timeline/Timeline/Content/Controls"]
+[node name="Play Button" type="Button" parent="Timeline/Timeline Container/Content/Header/Controls"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -79,14 +92,11 @@ icon = ExtResource("4_prgs7")
 icon_alignment = 1
 expand_icon = true
 
-[node name="Header" type="Control" parent="Timeline/Timeline/Content"]
-custom_minimum_size = Vector2(0, 25)
-layout_mode = 2
-
-[node name="Song Time" type="Label" parent="Timeline/Timeline/Content/Header"]
+[node name="Song Time" type="Label" parent="Timeline/Timeline Container/Content/Header"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 1
-anchors_preset = 9
+anchors_preset = -1
+anchor_top = 0.5
 anchor_bottom = 1.0
 offset_right = 142.0
 grow_vertical = 2
@@ -94,11 +104,12 @@ text = "10:00.00 / 10:00.00"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Timeline Slider" type="ColorRect" parent="Timeline/Timeline/Content/Header" node_paths=PackedStringArray("handlerRect")]
+[node name="Timeline Slider" type="ColorRect" parent="Timeline/Timeline Container/Content/Header" node_paths=PackedStringArray("handlerRect")]
 clip_children = 2
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 1
 anchors_preset = -1
+anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 200.0
@@ -110,13 +121,13 @@ color = Color(0.121094, 0.121094, 0.121094, 1)
 script = ExtResource("5_pg18s")
 handlerRect = NodePath("Handler")
 
-[node name="Handler" type="Control" parent="Timeline/Timeline/Content/Header/Timeline Slider"]
+[node name="Handler" type="Control" parent="Timeline/Timeline Container/Content/Header/Timeline Slider"]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="Texture" type="TextureRect" parent="Timeline/Timeline/Content/Header/Timeline Slider/Handler"]
+[node name="Texture" type="TextureRect" parent="Timeline/Timeline Container/Content/Header/Timeline Slider/Handler"]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 0
 offset_left = -12.5
@@ -128,11 +139,12 @@ texture = ExtResource("6_l15l2")
 expand_mode = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="Body" type="Control" parent="Timeline/Timeline/Content"]
+[node name="Body" type="Control" parent="Timeline/Timeline Container/Content"]
 custom_minimum_size = Vector2(0, 250)
 layout_mode = 2
 
-[node name="Waveform Texture" type="TextureRect" parent="Timeline/Timeline/Content/Body"]
+[node name="ColorRect" type="ColorRect" parent="Timeline/Timeline Container/Content/Body"]
+clip_children = 1
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -140,9 +152,19 @@ anchor_bottom = 1.0
 offset_left = 200.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Waveform Texture" type="TextureRect" parent="Timeline/Timeline Container/Content/Body/ColorRect"]
+custom_minimum_size = Vector2(0, 250)
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
 expand_mode = 1
 
-[node name="Background" type="ColorRect" parent="Timeline/Timeline/Content/Body"]
+[node name="Background" type="ColorRect" parent="Timeline/Timeline Container/Content/Body"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -151,7 +173,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.160784)
 
-[node name="Content" type="ColorRect" parent="Timeline/Timeline/Content/Body"]
+[node name="Content" type="ColorRect" parent="Timeline/Timeline Container/Content/Body" node_paths=PackedStringArray("timeline", "layersBackgrounds", "timelineContent", "layersControllers")]
 clip_children = 1
 layout_mode = 1
 anchors_preset = 15
@@ -160,8 +182,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 0, 0, 1)
+script = ExtResource("8_fwlfl")
+timeline = NodePath("../../../..")
+layersBackgrounds = NodePath("Layers Backgrounds")
+timelineContent = NodePath("Timeline Content")
+layersControllers = NodePath("Layers Controllers")
 
-[node name="Layers Backgrounds" type="VBoxContainer" parent="Timeline/Timeline/Content/Body/Content"]
+[node name="Layers Backgrounds" type="VBoxContainer" parent="Timeline/Timeline Container/Content/Body/Content"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -170,23 +197,31 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 
-[node name="Layer" type="ColorRect" parent="Timeline/Timeline/Content/Body/Content/Layers Backgrounds"]
+[node name="Layer" type="ColorRect" parent="Timeline/Timeline Container/Content/Body/Content/Layers Backgrounds"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 color = Color(0, 0, 0, 0.137255)
 
-[node name="Layer2" type="ColorRect" parent="Timeline/Timeline/Content/Body/Content/Layers Backgrounds"]
+[node name="Layer2" type="ColorRect" parent="Timeline/Timeline Container/Content/Body/Content/Layers Backgrounds"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 color = Color(0, 0, 0, 0.184314)
 
-[node name="Timeline Content" type="Control" parent="Timeline/Timeline/Content/Body/Content"]
+[node name="Timeline Content" type="Control" parent="Timeline/Timeline Container/Content/Body/Content"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 1
-offset_left = 200.0
-offset_right = 320.0
+anchors_preset = 0
+offset_right = 1.0
+offset_bottom = 40.0
 
-[node name="Layers Controllers" type="VBoxContainer" parent="Timeline/Timeline/Content/Body/Content"]
+[node name="ColorRect" type="ColorRect" parent="Timeline/Timeline Container/Content/Body/Content/Timeline Content"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 30.0
+anchor_right = 50.0
+
+[node name="Layers Controllers" type="VBoxContainer" parent="Timeline/Timeline Container/Content/Body/Content"]
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -194,18 +229,17 @@ offset_right = 200.0
 grow_vertical = 2
 theme_override_constants/separation = 0
 
-[node name="Controls" type="ColorRect" parent="Timeline/Timeline/Content/Body/Content/Layers Controllers"]
+[node name="Controls" type="ColorRect" parent="Timeline/Timeline Container/Content/Body/Content/Layers Controllers"]
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 color = Color(0.121569, 0.121569, 0.121569, 1)
 
-[node name="Control" type="ColorRect" parent="Timeline/Timeline/Content/Body/Content/Layers Controllers"]
+[node name="Control" type="ColorRect" parent="Timeline/Timeline Container/Content/Body/Content/Layers Controllers"]
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 color = Color(0.121569, 0.121569, 0.121569, 1)
 
-[node name="Overlapping Content" type="ColorRect" parent="Timeline/Timeline/Content/Body"]
-visible = false
+[node name="Overlapping Content" type="ColorRect" parent="Timeline/Timeline Container/Content/Body"]
 clip_children = 1
 layout_mode = 1
 anchors_preset = -1
@@ -216,7 +250,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Timeline Seeker" type="ColorRect" parent="Timeline/Timeline/Content/Body/Overlapping Content"]
+[node name="Timeline Seeker" type="ColorRect" parent="Timeline/Timeline Container/Content/Body/Overlapping Content"]
 custom_minimum_size = Vector2(1, 300)
 layout_mode = 2
 offset_left = -212.0
@@ -226,15 +260,16 @@ size_flags_horizontal = 0
 size_flags_vertical = 4
 mouse_filter = 2
 
-[node name="Footer" type="Control" parent="Timeline/Timeline/Content"]
-custom_minimum_size = Vector2(0, 25)
+[node name="Footer" type="Control" parent="Timeline/Timeline Container/Content"]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
-[node name="Timeline Horizontal Scroll" type="ColorRect" parent="Timeline/Timeline/Content/Footer" node_paths=PackedStringArray("handlerBar", "minHandler", "scrollHandler", "maxHandler")]
+[node name="Timeline Horizontal Scroll" type="ColorRect" parent="Timeline/Timeline Container/Content/Footer" node_paths=PackedStringArray("handlerBar", "minHandler", "scrollHandler", "maxHandler")]
+custom_minimum_size = Vector2(0, 25)
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.5
 offset_left = 200.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -245,7 +280,7 @@ minHandler = NodePath("Handler Bar/Min Handler")
 scrollHandler = NodePath("Handler Bar/Scroll Handler")
 maxHandler = NodePath("Handler Bar/Max Handler")
 
-[node name="Handler Bar" type="Panel" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll"]
+[node name="Handler Bar" type="Panel" parent="Timeline/Timeline Container/Content/Footer/Timeline Horizontal Scroll"]
 clip_children = 1
 layout_mode = 1
 anchors_preset = 15
@@ -254,7 +289,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Min Handler" type="ColorRect" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll/Handler Bar"]
+[node name="Min Handler" type="ColorRect" parent="Timeline/Timeline Container/Content/Footer/Timeline Horizontal Scroll/Handler Bar"]
 custom_minimum_size = Vector2(8, 0)
 layout_mode = 1
 anchors_preset = 9
@@ -263,7 +298,7 @@ grow_vertical = 2
 mouse_default_cursor_shape = 15
 script = ExtResource("8_jjcwb")
 
-[node name="Scroll Handler" type="ColorRect" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll/Handler Bar"]
+[node name="Scroll Handler" type="ColorRect" parent="Timeline/Timeline Container/Content/Footer/Timeline Horizontal Scroll/Handler Bar"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -276,7 +311,7 @@ mouse_default_cursor_shape = 6
 color = Color(0.359375, 0.359375, 0.359375, 1)
 script = ExtResource("8_jjcwb")
 
-[node name="Max Handler" type="ColorRect" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll/Handler Bar"]
+[node name="Max Handler" type="ColorRect" parent="Timeline/Timeline Container/Content/Footer/Timeline Horizontal Scroll/Handler Bar"]
 custom_minimum_size = Vector2(8, 0)
 layout_mode = 1
 anchors_preset = 11
@@ -288,7 +323,7 @@ grow_vertical = 2
 mouse_default_cursor_shape = 15
 script = ExtResource("8_jjcwb")
 
-[node name="Horizontal Scroll Seeker" type="ColorRect" parent="Timeline/Timeline/Content/Footer/Timeline Horizontal Scroll"]
+[node name="Horizontal Scroll Seeker" type="ColorRect" parent="Timeline/Timeline Container/Content/Footer/Timeline Horizontal Scroll"]
 custom_minimum_size = Vector2(1, 0)
 layout_mode = 1
 anchors_preset = 13
@@ -301,12 +336,17 @@ size_flags_horizontal = 0
 size_flags_vertical = 4
 mouse_filter = 2
 
-[node name="Info Panel" type="ColorRect" parent="Timeline/Timeline/Content"]
+[node name="Info Panel" type="ColorRect" parent="Timeline/Timeline Container/Content/Footer"]
 custom_minimum_size = Vector2(0, 25)
-layout_mode = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_vertical = 2
 color = Color(0.121569, 0.121569, 0.121569, 1)
 
-[node name="Info Label" type="Label" parent="Timeline/Timeline/Content/Info Panel"]
+[node name="Info Label" type="Label" parent="Timeline/Timeline Container/Content/Footer/Info Panel"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
