@@ -30,9 +30,9 @@ namespace ClockBombGames.CircleBeats.Editor
 		[Export] Control handlerBar;
 
 		[ExportCategory("Handlers")]
-		[Export] TimelineHorizontalScrollHandler minHandler;
-		[Export] TimelineHorizontalScrollHandler scrollHandler;
-		[Export] TimelineHorizontalScrollHandler maxHandler;
+		[Export] DragMotionHandler minHandler;
+		[Export] DragMotionHandler scrollHandler;
+		[Export] DragMotionHandler maxHandler;
 
 		public event DragEventHandler OnDragging = delegate { };
 
@@ -41,21 +41,36 @@ namespace ClockBombGames.CircleBeats.Editor
 		public float MinValue { get; private set; } = 0f;
 		public float MaxValue { get; private set; } = 1f;
 
+
 		float lastHandlerPosSeed = 0f;
+
+		float zoomBuffer;
+		float maxValueBuffer;
+		float minValueBuffer;
 
 
 		public override void _EnterTree()
 		{
+			minHandler.OnMotionStartEvent += MinHandlerStartCallback;
 			minHandler.OnMotionEvent += MinHandlerCallback;
-			scrollHandler.OnMotionEvent += ScrollHandlerCallback;
+
+			maxHandler.OnMotionStartEvent += MaxHandlerStartCallback;
 			maxHandler.OnMotionEvent += MaxHandlerCallback;
+
+			scrollHandler.OnMotionStartEvent += ScrollHandlerStartCallback;
+			scrollHandler.OnMotionEvent += ScrollHandlerCallback;
 		}
 
 		public override void _ExitTree()
 		{
+			minHandler.OnMotionStartEvent -= MinHandlerStartCallback;
 			minHandler.OnMotionEvent -= MinHandlerCallback;
-			scrollHandler.OnMotionEvent -= ScrollHandlerCallback;
+
+			maxHandler.OnMotionStartEvent -= MaxHandlerStartCallback;
 			maxHandler.OnMotionEvent -= MaxHandlerCallback;
+
+			scrollHandler.OnMotionStartEvent -= ScrollHandlerStartCallback;
+			scrollHandler.OnMotionEvent -= ScrollHandlerCallback;
 		}
 
 		public override void _Process(double delta)
@@ -84,10 +99,6 @@ namespace ClockBombGames.CircleBeats.Editor
 			handlerSize.X = size.X * (MaxValue - MinValue);
 			handlerPos.X = size.X * MinValue;
 
-			if (handlerSize.X < 24) {
-				handlerSize.X = 24;
-			}
-
 			handlerBar.Size = handlerSize;
 			handlerBar.Position = handlerPos;
 		}
@@ -98,45 +109,63 @@ namespace ClockBombGames.CircleBeats.Editor
 		}
 
 
+
+		void MinHandlerStartCallback() => minValueBuffer = MinValue;
 		void MinHandlerCallback(Vector2 pointer)
 		{
-			float relativePos = TranslateVelocity(pointer.X);
+			MinValue = minValueBuffer + TranslateVelocity(pointer.X);
 
-			if (MinValue + relativePos > MaxValue - MinZoom) {
-				return;
+			if (MinValue > MaxValue - MinZoom) {
+				MinValue = MaxValue - MinZoom;
 			}
 
-			MinValue += relativePos;
 			CalculateValues();
 
 			OnDragging.Invoke();
+		}
+
+
+		void MaxHandlerStartCallback() => maxValueBuffer = MaxValue;
+		void MaxHandlerCallback(Vector2 pointer)
+		{
+			MaxValue = maxValueBuffer + TranslateVelocity(pointer.X);
+
+			if (MaxValue < MinValue + MinZoom) {
+				MaxValue = MinValue + MinZoom;
+			}
+
+			CalculateValues();
+
+			OnDragging.Invoke();
+		}
+
+
+		void ScrollHandlerStartCallback()
+		{
+			minValueBuffer = MinValue;
+			maxValueBuffer = MaxValue;
+
+			zoomBuffer = MaxValue - MinValue;
 		}
 
 		void ScrollHandlerCallback(Vector2 pointer)
 		{
 			float relativePos = TranslateVelocity(pointer.X);
 
-			if (MinValue + relativePos < 0f ||MaxValue + relativePos > 1f) {
-				return;
+			MinValue = minValueBuffer + relativePos;
+			MaxValue = maxValueBuffer + relativePos;
+
+
+			if (MinValue < 0f) {
+				MinValue = 0f;
+				MaxValue = zoomBuffer;
 			}
 
-			MinValue += relativePos;
-			MaxValue += relativePos;
-
-			CalculateValues();
-
-			OnDragging.Invoke();
-		}
-
-		void MaxHandlerCallback(Vector2 pointer)
-		{
-			float relativePos = TranslateVelocity(pointer.X);
-
-			if (MaxValue + relativePos < MinValue + MinZoom) {
-				return;
+			if (MaxValue > 1f) {
+				MaxValue = 1f;
+				MinValue = 1f - zoomBuffer;
 			}
 
-			MaxValue += relativePos;
 			CalculateValues();
 
 			OnDragging.Invoke();

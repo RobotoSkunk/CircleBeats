@@ -1,16 +1,15 @@
-[gd_scene load_steps=14 format=3 uid="uid://utps1w84iu0u"]
+[gd_scene load_steps=13 format=3 uid="uid://utps1w84iu0u"]
 
 [ext_resource type="Script" path="res://scripts/editor/Editor.cs" id="1_40f74"]
 [ext_resource type="Texture2D" uid="uid://vwcladgmfhn6" path="res://assets/sprites/symbols/skip-backward.svg" id="2_cujcb"]
 [ext_resource type="Texture2D" uid="uid://bq8313lmmorpc" path="res://assets/sprites/symbols/pause.svg" id="3_bneo7"]
 [ext_resource type="Script" path="res://scripts/editor/EditorTimeline.cs" id="4_00nnq"]
 [ext_resource type="Texture2D" uid="uid://cxbehkd6cf2px" path="res://assets/sprites/symbols/play.svg" id="4_prgs7"]
-[ext_resource type="Script" path="res://scripts/editor/ResizeHandler.cs" id="5_m5hgo"]
+[ext_resource type="Script" path="res://scripts/editor/DragMotionHandler.cs" id="5_guuns"]
 [ext_resource type="Script" path="res://scripts/editor/TimelineSlider.cs" id="5_pg18s"]
 [ext_resource type="Texture2D" uid="uid://cv7teiouquiyp" path="res://assets/sprites/symbols/music-position.svg" id="6_l15l2"]
 [ext_resource type="Script" path="res://scripts/editor/TimelineHorizontalScroll.cs" id="7_pmkyn"]
 [ext_resource type="Script" path="res://scripts/editor/LayersContainer.cs" id="8_fwlfl"]
-[ext_resource type="Script" path="res://scripts/editor/TimelineHorizontalScrollHandler.cs" id="8_jjcwb"]
 [ext_resource type="Shader" path="res://assets/shaders/Waveform.gdshader" id="12_afwpq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4vv3c"]
@@ -88,7 +87,7 @@ offset_right = 250.0
 offset_bottom = 18.0
 grow_horizontal = 2
 mouse_default_cursor_shape = 9
-script = ExtResource("5_m5hgo")
+script = ExtResource("5_guuns")
 
 [node name="Controls" type="HBoxContainer" parent="Timeline/Timeline Container/Content/Header"]
 custom_minimum_size = Vector2(0, 25)
@@ -306,29 +305,29 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Min Handler" type="ColorRect" parent="Timeline/Timeline Container/Content/Footer/Timeline Horizontal Scroll/Handler Bar"]
-custom_minimum_size = Vector2(8, 0)
+custom_minimum_size = Vector2(5, 0)
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
 grow_vertical = 2
 mouse_default_cursor_shape = 15
-script = ExtResource("8_jjcwb")
+script = ExtResource("5_guuns")
 
 [node name="Scroll Handler" type="ColorRect" parent="Timeline/Timeline Container/Content/Footer/Timeline Horizontal Scroll/Handler Bar"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 8.0
-offset_right = -8.0
+offset_left = 5.0
+offset_right = -5.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_default_cursor_shape = 6
 color = Color(0.359375, 0.359375, 0.359375, 1)
-script = ExtResource("8_jjcwb")
+script = ExtResource("5_guuns")
 
 [node name="Max Handler" type="ColorRect" parent="Timeline/Timeline Container/Content/Footer/Timeline Horizontal Scroll/Handler Bar"]
-custom_minimum_size = Vector2(8, 0)
+custom_minimum_size = Vector2(5, 0)
 layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0
@@ -337,7 +336,7 @@ anchor_bottom = 1.0
 grow_horizontal = 0
 grow_vertical = 2
 mouse_default_cursor_shape = 15
-script = ExtResource("8_jjcwb")
+script = ExtResource("5_guuns")
 
 [node name="Horizontal Scroll Seeker" type="ColorRect" parent="Timeline/Timeline Container/Content/Footer/Timeline Horizontal Scroll"]
 custom_minimum_size = Vector2(1, 0)

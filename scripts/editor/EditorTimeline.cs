@@ -42,7 +42,7 @@ namespace ClockBombGames.CircleBeats.Editor
 		[Export] Button playButton;
 		[Export] Label songTimeLabel;
 		[Export] TimelineSlider timelineSlider;
-		[Export] ResizeHandler resizeHandler;
+		[Export] DragMotionHandler resizeHandler;
 
 		[ExportSubgroup("Body")]
 		[Export] Control timelineBody;
@@ -78,6 +78,7 @@ namespace ClockBombGames.CircleBeats.Editor
 		private Action skipBackwardAction;
 
 		Vector2 waveformSize;
+		Vector2 lastBodySize;
 
 		double songPosition = 0f;
 		double songLength = 0f;
@@ -144,7 +145,8 @@ namespace ClockBombGames.CircleBeats.Editor
 			playButton.Pressed += OnPlayPressed;
 			timelineSlider.OnValueChange += SeekMusicPosition;
 			horizontalScroll.OnDragging += UpdateTimelineSlider;
-			resizeHandler.OnResize += ResizeBody;
+			resizeHandler.OnMotionStartEvent += ResizeBodyStart;
+			resizeHandler.OnMotionEvent += ResizeBody;
 
 			// Timers
 			timerWaveformSync.Timeout += WaveformSyncLoop;
@@ -157,7 +159,8 @@ namespace ClockBombGames.CircleBeats.Editor
 			playButton.Pressed -= OnPlayPressed;
 			timelineSlider.OnValueChange -= SeekMusicPosition;
 			horizontalScroll.OnDragging -= UpdateTimelineSlider;
-			resizeHandler.OnResize -= ResizeBody;
+			resizeHandler.OnMotionStartEvent -= ResizeBodyStart;
+			resizeHandler.OnMotionEvent -= ResizeBody;
 
 			// Timers
 			timerWaveformSync.Timeout -= WaveformSyncLoop;
@@ -247,11 +250,13 @@ namespace ClockBombGames.CircleBeats.Editor
 			musicPlayer.Seek((float)songPosition);
 		}
 
-		void ResizeBody(float deltaY)
+
+		void ResizeBodyStart() => lastBodySize = timelineBody.CustomMinimumSize;
+		void ResizeBody(Vector2 delta)
 		{
 			Vector2 bodySize = timelineBody.CustomMinimumSize;
 
-			bodySize.Y -= deltaY;
+			bodySize.Y = lastBodySize.Y - delta.Y;
 			bodySize.Y = Mathf.Clamp(bodySize.Y, 25, 500);
 
 			timelineBody.CustomMinimumSize = bodySize;

@@ -24,17 +24,28 @@ using Godot;
 
 namespace ClockBombGames.CircleBeats.Editor
 {
-	public partial class TimelineHorizontalScrollHandler : DragHandler
+	public partial class DragMotionHandler : DragHandler
 	{
 		[Signal]
+		public delegate void MotionStartEventHandler();
 		public delegate void MotionEventHandler(Vector2 pointerRelative);
 
+		public event MotionStartEventHandler OnMotionStartEvent = delegate { };
 		public event MotionEventHandler OnMotionEvent = delegate { };
 
+		Vector2 dragStartPos;
+
+
+		protected override void OnDragStart(InputEventMouseButton mouseEvent)
+		{
+			dragStartPos = mouseEvent.GlobalPosition;
+
+			OnMotionStartEvent.Invoke();
+		}
 
 		protected override void OnDrag(InputEventMouseMotion @motionEvent)
 		{
-			OnMotionEvent.Invoke(@motionEvent.Relative);
+			OnMotionEvent.Invoke(@motionEvent.GlobalPosition - dragStartPos);
 		}
 	}
 }
