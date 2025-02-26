@@ -41,9 +41,6 @@ namespace ClockBombGames.CircleBeats.Editor
 		public float MinValue { get; private set; } = 0f;
 		public float MaxValue { get; private set; } = 1f;
 
-
-		float lastHandlerPosSeed = 0f;
-
 		float zoomBuffer;
 		float maxValueBuffer;
 		float minValueBuffer;
@@ -59,6 +56,11 @@ namespace ClockBombGames.CircleBeats.Editor
 
 			scrollHandler.OnMotionStartEvent += ScrollHandlerStartCallback;
 			scrollHandler.OnMotionEvent += ScrollHandlerCallback;
+
+			Callable.From(() =>
+			{
+				Resized += OnResizeHandler;
+			}).CallDeferred();
 		}
 
 		public override void _ExitTree()
@@ -71,17 +73,11 @@ namespace ClockBombGames.CircleBeats.Editor
 
 			scrollHandler.OnMotionStartEvent -= ScrollHandlerStartCallback;
 			scrollHandler.OnMotionEvent -= ScrollHandlerCallback;
+
+			Resized -= OnResizeHandler;
 		}
 
-		public override void _Process(double delta)
-		{
-			float handlerPosSeed = Size.X + MinValue + MaxValue;
-
-			if (lastHandlerPosSeed != handlerPosSeed) {
-				lastHandlerPosSeed = handlerPosSeed;
-				CalculateValues();
-			}
-		}
+		void OnResizeHandler() => CalculateValues();
 
 		void CalculateValues()
 		{

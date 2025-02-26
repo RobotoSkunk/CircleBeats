@@ -36,12 +36,8 @@ namespace ClockBombGames.CircleBeats.Editor
 		public float MinValue { get; set; }
 		public float MaxValue { get; set; }
 
-		bool isFocused;
-		bool isChangingValue;
-
 		float value;
 		float prevMouseX;
-		float lastHandlerPosSeed = 0f;
 
 
 		public Vector2 HandlerPosition
@@ -52,25 +48,20 @@ namespace ClockBombGames.CircleBeats.Editor
 		}
 
 
-		public override void _Process(double delta)
+		public override void _EnterTree()
 		{
-			float handlerPosSeed = Size.X + MinValue + MaxValue;
-
-			if (lastHandlerPosSeed != handlerPosSeed) {
-				lastHandlerPosSeed = handlerPosSeed;
-				SetValue(value);
-			}
+			base._EnterTree();
+			Callable.From(() => Resized += OnResizeHandler).CallDeferred();
+		}
+		public override void _ExitTree()
+		{
+			base._EnterTree();
+			Resized -= OnResizeHandler;
 		}
 
-		protected override void OnDragStart(InputEventMouseButton _)
-		{
-			HandleChange();
-		}
-
-		protected override void OnDrag(InputEventMouseMotion _)
-		{
-			HandleChange();
-		}
+		void OnResizeHandler() => SetValue(value);
+		protected override void OnDragStart(InputEventMouseButton _) => HandleChange();
+		protected override void OnDrag(InputEventMouseMotion _) => HandleChange();
 
 
 		private void HandleChange()

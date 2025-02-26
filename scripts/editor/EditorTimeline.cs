@@ -152,6 +152,9 @@ namespace ClockBombGames.CircleBeats.Editor
 
 			// Timers
 			timerWaveformSync.Timeout += WaveformSyncLoop;
+
+			// Waveform
+			waveformRect.Resized += OnResizeWaveformHandler;
 		}
 
 		public override void _ExitTree()
@@ -166,6 +169,9 @@ namespace ClockBombGames.CircleBeats.Editor
 
 			// Timers
 			timerWaveformSync.Timeout -= WaveformSyncLoop;
+
+			// Waveform
+			waveformRect.Resized -= OnResizeWaveformHandler;
 		}
 
 
@@ -208,11 +214,6 @@ namespace ClockBombGames.CircleBeats.Editor
 			seekerPosition.X = horizontalScroll.GlobalPosition.X + horizontalScroll.Size.X * relativeMusicPos;
 
 			horizontalScrollSeeker.GlobalPosition = seekerPosition;
-
-
-			// Waveform renderer
-			Vector2 currentWaveformSize = waveformRect.Size;
-			waveformMaterial.SetShaderParameter("size", currentWaveformSize);
 		}
 
 
@@ -257,6 +258,15 @@ namespace ClockBombGames.CircleBeats.Editor
 			musicPlayer.Seek((float)songPosition);
 		}
 
+
+		void OnResizeWaveformHandler()
+		{
+			if (waveformMaterial == null) {
+				return;
+			}
+
+			waveformMaterial.SetShaderParameter("size", waveformRect.Size);
+		}
 
 		void ResizeBodyStart() => lastBodySize = timelineBody.CustomMinimumSize;
 		void ResizeBody(Vector2 delta)
