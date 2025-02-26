@@ -18,7 +18,7 @@ shader_parameter/size = null
 shader_parameter/channels = null
 shader_parameter/samples = null
 
-[node name="Editor" type="Control"]
+[node name="Editor" type="Control" node_paths=PackedStringArray("timeline")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,6 +26,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_40f74")
+timeline = NodePath("Timeline")
 
 [node name="Timeline" type="VBoxContainer" parent="." node_paths=PackedStringArray("editor", "skipBackwardButton", "playButton", "songTimeLabel", "timelineSlider", "resizeHandler", "timelineBody", "waveformRect", "timelineContent", "timelineSeeker", "infoLabel", "horizontalScroll", "horizontalScrollSeeker", "timerWaveformSync")]
 layout_mode = 1

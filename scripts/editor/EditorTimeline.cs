@@ -31,6 +31,7 @@ namespace ClockBombGames.CircleBeats.Editor
 	{
 		[Signal]
 		public delegate void SliderEventHandler(float min, float max);
+		public delegate void ResizeBodyEventHandler(float newSize);
 
 		[Export] Editor editor;
 
@@ -68,6 +69,7 @@ namespace ClockBombGames.CircleBeats.Editor
 		#endregion
 
 		public event SliderEventHandler OnSliderChange = delegate { };
+		public event ResizeBodyEventHandler OnResizeBody = delegate { };
 
 
 		ShaderMaterial waveformMaterial;
@@ -265,6 +267,8 @@ namespace ClockBombGames.CircleBeats.Editor
 			bodySize.Y = Mathf.Clamp(bodySize.Y, 25, 500);
 
 			timelineBody.CustomMinimumSize = bodySize;
+
+			OnResizeBody.Invoke(bodySize.Y);
 		}
 
 

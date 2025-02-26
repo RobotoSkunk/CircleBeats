@@ -26,7 +26,51 @@ namespace ClockBombGames.CircleBeats.Editor
 	{
 		[Export] Playground.Playground playground;
 
+		[ExportGroup("Editor elements")]
+		[Export] EditorTimeline timeline;
+
+
+		Window window;
+
+
 		// Playground
 		public Playground.Playground Playground => playground; // Playground playground? Playground.
+
+		float timelineBodySizeBuffer;
+
+
+		public override void _EnterTree()
+		{
+			window = GetViewport().GetWindow();
+
+			timeline.OnResizeBody += ResizePlayground;
+			window.SizeChanged += ResizePlaygroundImpl;
+		}
+
+		public override void _ExitTree()
+		{
+			timeline.OnResizeBody += ResizePlayground;
+			window.SizeChanged -= ResizePlaygroundImpl;
+		}
+
+
+
+		void ResizePlayground(float newSize)
+		{
+			timelineBodySizeBuffer = newSize;
+
+			ResizePlaygroundImpl();
+		}
+
+		void ResizePlaygroundImpl()
+		{
+			Vector2 multiplier = Vector2.One * Mathf.Clamp((timelineBodySizeBuffer - 250f) / 225f, 0f, 1f) * 0.25f;
+			Vector2 pivotOffset = playground.Size / 2f;
+
+			pivotOffset.Y -= playground.Size.Y * multiplier.Y;
+
+			playground.PivotOffset = pivotOffset;
+			playground.Scale = Vector2.One - multiplier;
+		}
 	}
 }
