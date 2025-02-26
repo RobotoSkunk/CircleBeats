@@ -185,7 +185,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.160784)
+color = Color(1, 1, 1, 0.160784)
 
 [node name="Content" type="Control" parent="Timeline/Timeline Container/Content/Body" node_paths=PackedStringArray("timeline", "layersBackgrounds", "timelineContent", "layersControllers")]
 clip_children = 1
@@ -214,12 +214,12 @@ theme_override_constants/separation = 0
 [node name="Layer" type="ColorRect" parent="Timeline/Timeline Container/Content/Body/Content/Layers Backgrounds"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
-color = Color(0, 0, 0, 0.137255)
+color = Color(0, 0, 0, 0.254902)
 
 [node name="Layer2" type="ColorRect" parent="Timeline/Timeline Container/Content/Body/Content/Layers Backgrounds"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
-color = Color(0, 0, 0, 0.184314)
+color = Color(0, 0, 0, 0.392157)
 
 [node name="Timeline Content" type="Control" parent="Timeline/Timeline Container/Content/Body/Content"]
 custom_minimum_size = Vector2(0, 40)
