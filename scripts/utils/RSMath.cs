@@ -17,6 +17,9 @@
 */
 
 
+using Godot;
+
+
 namespace ClockBombGames.CircleBeats.Utils
 {
 	public partial class RSMath
@@ -25,7 +28,7 @@ namespace ClockBombGames.CircleBeats.Utils
 
 		public static float FixedDelta(double delta)
 		{
-			return (float)(delta / (1f / targetFPS));
+			return Mathf.Clamp((float)(delta / (1f / targetFPS)), 0, 2);
 		}
 
 		public static float Clamp01(float x)

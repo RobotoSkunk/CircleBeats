@@ -18,6 +18,7 @@
 
 
 using System.Threading.Tasks;
+using ClockBombGames.CircleBeats.Utils;
 using Godot;
 
 
@@ -37,7 +38,7 @@ namespace ClockBombGames.CircleBeats.Playground
 
 		double carrouselTickTime;
 
-		float scale;
+		float scale = 1f;
 		float[] spectrum;
 
 		readonly int carrouselSpikes = 5;
@@ -103,10 +104,10 @@ namespace ClockBombGames.CircleBeats.Playground
 		{
 			float decibelsForce = playground.DecibelsForce;
 
-			float bump = 1f - 0.2f * decibelsForce + playground.AverageSample * decibelsForce;
+			float bump = 1f + (playground.AverageSample - 0.2f) * decibelsForce;
 
 
-			scale = Mathf.Lerp(scale, bump, 0.75f);
+			scale = Mathf.Lerp(scale, bump, 0.75f * RSMath.FixedDelta(delta));
 			Scale = new Vector3(scale, scale, 1f);
 
 
