@@ -38,7 +38,7 @@ namespace ClockBombGames.CircleBeats.Playground
 		[Export] Label debugLabel;
 
 
-		long songTicks;
+		// long songTicks;
 		long virtualTicks;
 
 		double virtualTime;
@@ -85,13 +85,13 @@ namespace ClockBombGames.CircleBeats.Playground
 		public override void _Process(double delta)
 		{
 			double playbackPosition = musicPlayer.GetPlaybackPosition();
-			songTicks = TimeToTicks(playbackPosition);
+			// songTicks = TimeToTicks(playbackPosition);
 
 			debugLabel.Text = "FPS: " + Engine.GetFramesPerSecond() +
-							"\nDraw Calls: " + Performance.GetMonitor(Performance.Monitor.RenderTotalDrawCallsInFrame) +
-							"\nAverage Audio Data: " + AverageSample +
-							"\nProcess Mode: " + (IsPlaying ? "Inherit" : "Disabled") +
-							"\nTicks: " + virtualTicks + " / " + songTicks;
+							"\nDraw Calls: " + Performance.GetMonitor(Performance.Monitor.RenderTotalDrawCallsInFrame);
+							// "\nAverage Audio Data: " + AverageSample +
+							// "\nProcess Mode: " + (IsPlaying ? "Inherit" : "Disabled") +
+							// "\nTicks: " + virtualTicks + " / " + songTicks;
 		}
 
 
@@ -99,22 +99,22 @@ namespace ClockBombGames.CircleBeats.Playground
 		{
 			AverageSample = AudioBusReader.GetAverageSample();
 
-			while (songTicks > virtualTicks) {
-				virtualTicks++;
-			}
+			// while (songTicks > virtualTicks) {
+			// 	virtualTicks++;
+			// }
 
-			virtualTime = TicksToTime(virtualTicks);
+			// virtualTime = TicksToTime(virtualTicks);
 		}
 
 
-		public static double TicksToTime(long ticks)
-		{
-			return ticks * (1.0 / ticksPerSecond);
-		}
+		// public static double TicksToTime(long ticks)
+		// {
+		// 	return ticks * (1.0 / ticksPerSecond);
+		// }
 
-		public static long TimeToTicks(double time)
-		{
-			return (long)(time / (1.0 / ticksPerSecond));
-		}
+		// public static long TimeToTicks(double time)
+		// {
+		// 	return (long)(time / (1.0 / ticksPerSecond));
+		// }
 	}
 }
