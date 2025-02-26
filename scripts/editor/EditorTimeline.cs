@@ -103,6 +103,7 @@ namespace ClockBombGames.CircleBeats.Editor
 
 			// Do first calls
 			UpdateTimelineSlider();
+			horizontalScroll.MinZoom = 3f / (float)songLength;
 
 			waveformMaterial = (ShaderMaterial)waveformRect.Material;
 

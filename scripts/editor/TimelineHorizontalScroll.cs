@@ -37,8 +37,7 @@ namespace ClockBombGames.CircleBeats.Editor
 		public event DragEventHandler OnDragging = delegate { };
 
 
-		private readonly float minZoom = 0.001f;
-
+		public float MinZoom { get; set; }
 		public float MinValue { get; private set; } = 0f;
 		public float MaxValue { get; private set; } = 1f;
 
@@ -75,7 +74,7 @@ namespace ClockBombGames.CircleBeats.Editor
 				MinValue = 0f;
 			}
 
-			MaxValue = Mathf.Clamp(MaxValue, MinValue + minZoom, 1f);
+			MaxValue = Mathf.Clamp(MaxValue, MinValue + MinZoom, 1f);
 
 			Vector2 size = Size;
 
@@ -103,7 +102,7 @@ namespace ClockBombGames.CircleBeats.Editor
 		{
 			float relativePos = TranslateVelocity(pointer.X);
 
-			if (MinValue + relativePos > MaxValue - minZoom) {
+			if (MinValue + relativePos > MaxValue - MinZoom) {
 				return;
 			}
 
@@ -133,7 +132,7 @@ namespace ClockBombGames.CircleBeats.Editor
 		{
 			float relativePos = TranslateVelocity(pointer.X);
 
-			if (MaxValue + relativePos < MinValue + minZoom) {
+			if (MaxValue + relativePos < MinValue + MinZoom) {
 				return;
 			}
 
