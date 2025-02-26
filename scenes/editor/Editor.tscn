@@ -203,11 +203,10 @@ layersControllers = NodePath("Layers Controllers")
 
 [node name="Layers Backgrounds" type="VBoxContainer" parent="Timeline/Timeline Container/Content/Body/Content"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 1.0
+offset_bottom = 80.0
 grow_horizontal = 2
-grow_vertical = 2
 theme_override_constants/separation = 0
 
 [node name="Layer" type="ColorRect" parent="Timeline/Timeline Container/Content/Body/Content/Layers Backgrounds"]
@@ -237,10 +236,8 @@ anchor_right = 50.0
 
 [node name="Layers Controllers" type="VBoxContainer" parent="Timeline/Timeline Container/Content/Body/Content"]
 layout_mode = 1
-anchors_preset = 9
-anchor_bottom = 1.0
 offset_right = 200.0
-grow_vertical = 2
+offset_bottom = 80.0
 theme_override_constants/separation = 0
 
 [node name="Controls" type="ColorRect" parent="Timeline/Timeline Container/Content/Body/Content/Layers Controllers"]

@@ -174,6 +174,11 @@ namespace ClockBombGames.CircleBeats.Editor
 
 				timelineSlider.SetValue((float)songPosition);
 
+				if (!musicPlayer.Playing) {
+					isPlaying = false;
+					playButton.Icon = playSprite;
+				}
+
 			} else if (pausedPlaybackBuffer > 0f) {
 				pausedPlaybackBuffer -= delta;
 
