@@ -25,11 +25,11 @@ namespace ClockBombGames.CircleBeats.Structures
 {
 	interface IInterval
 	{
-		int Start { get; }
-		int End { get; }
-		int Zoom { get; }
+		float Start { get; }
+		float End { get; }
+		float Zoom { get; }
 
-		public bool HasTicks(int ticks);
+		public bool HasTime(float time);
 	}
 
 	interface IInterval<TValue> : IInterval
@@ -44,12 +44,12 @@ namespace ClockBombGames.CircleBeats.Structures
 	public struct Interval<TValue> : IInterval<TValue>, IEquatable<Interval<TValue>>
 	{
 		public TValue Value { get; private set; }
-		public int Start { get; private set; }
-		public int End { get; private set; }
-		public readonly int Zoom => End - Start;
+		public float Start { get; private set; }
+		public float End { get; private set; }
+		public readonly float Zoom => End - Start;
 
 
-		public Interval(int start, int end, TValue value)
+		public Interval(float start, float end, TValue value)
 		{
 			if (start > end) {
 				throw new ArgumentException("Start must be less than or equal to end.");
@@ -68,9 +68,9 @@ namespace ClockBombGames.CircleBeats.Structures
 		}
 
 
-		public readonly bool HasTicks(int ticks)
+		public readonly bool HasTime(float time)
 		{
-			return Start <= ticks && End >= ticks;
+			return Start <= time && End >= time;
 		}
 
 
@@ -136,12 +136,12 @@ namespace ClockBombGames.CircleBeats.Structures
 	/// </summary>
 	public struct Interval : IInterval, IEquatable<Interval>
 	{
-		public int Start { get; private set; }
-		public int End { get; private set; }
-		public readonly int Zoom => End - Start;
+		public float Start { get; private set; }
+		public float End { get; private set; }
+		public readonly float Zoom => End - Start;
 
 
-		public Interval(int start, int end)
+		public Interval(float start, float end)
 		{
 			if (start > end) {
 				throw new ArgumentException("Start must be less than or equal to end.");
@@ -152,9 +152,9 @@ namespace ClockBombGames.CircleBeats.Structures
 		}
 
 
-		public readonly bool HasTicks(int ticks)
+		public readonly bool HasTime(float time)
 		{
-			return Start <= ticks && End >= ticks;
+			return Start <= time && End >= time;
 		}
 
 		public readonly int CompareTo(Interval other)

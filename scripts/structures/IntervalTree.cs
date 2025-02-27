@@ -36,19 +36,19 @@ namespace ClockBombGames.CircleBeats.Structures
 
 			public Node Left  { get; private set; }
 			public Node Right  { get; private set; }
-			public int Max  { get; private set; }
+			public float Max  { get; private set; }
 
 			public TValue Value => Interval.Value;
 
-			int Start => Interval.Start;
-			int End   => Interval.End;
+			float Start => Interval.Start;
+			float End   => Interval.End;
 
 
 
 			/// <summary>
 			/// Creates a new node with the specified interval.
 			/// </summary>
-			public Node(int start, int end, TValue value)
+			public Node(float start, float end, TValue value)
 			{
 				Interval = new Interval<TValue>(start, end, value);
 			}
@@ -102,7 +102,7 @@ namespace ClockBombGames.CircleBeats.Structures
 			}
 
 
-			public int CompareTo(Node other)
+			public float CompareTo(Node other)
 			{
 				return Interval.CompareTo(other.Interval);
 			}
@@ -137,9 +137,9 @@ namespace ClockBombGames.CircleBeats.Structures
 			/// <summary>
 			/// Searches for an interval that contains the given ticks.
 			/// </summary>
-			public Node FindInterval(int ticks)
+			public Node FindInterval(float ticks)
 			{
-				if (Interval.HasTicks(ticks)) {
+				if (Interval.HasTime(ticks)) {
 					return this;
 				}
 
@@ -157,9 +157,9 @@ namespace ClockBombGames.CircleBeats.Structures
 			/// <summary>
 			/// Searches for all intervals that contains the given ticks and executes an action on each one.
 			/// </summary>
-			public void FindIntersectInterval(int ticks, Action<Node> action)
+			public void FindIntersectInterval(float ticks, Action<Node> action)
 			{
-				if (Interval.HasTicks(ticks)) {
+				if (Interval.HasTime(ticks)) {
 					action(this);
 				}
 
@@ -197,11 +197,11 @@ namespace ClockBombGames.CircleBeats.Structures
 		/// Searches for an interval that contains the given scalar. If there's a cached node and it contains
 		/// the given scalar, it will be used instead.
 		/// </summary>
-		public Node Search(int ticks)
+		public Node Search(float ticks)
 		{
 			if (_temporalNode != null) {
 
-				if (_temporalNode.Interval.HasTicks(ticks)) {
+				if (_temporalNode.Interval.HasTime(ticks)) {
 					return _temporalNode;
 				} else {
 					_temporalNode = null;
@@ -217,7 +217,7 @@ namespace ClockBombGames.CircleBeats.Structures
 		/// <summary>
 		/// Forces the tree to search for an interval that contains the given scalar, ignoring any cached node.
 		/// </summary>
-		public Node ForceSearch(int ticks)
+		public Node ForceSearch(float ticks)
 		{
 			return Root.FindInterval(ticks);
 		}
