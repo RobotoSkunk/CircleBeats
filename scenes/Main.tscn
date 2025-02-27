@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/Main.cs" id="1_71p4u"]
 [ext_resource type="PackedScene" uid="uid://vgucmfperviw" path="res://scenes/Playground.tscn" id="1_iopfw"]
-[ext_resource type="AudioStream" uid="uid://5p5705787vti" path="res://assets/music/772738_ColBreakz---30000.mp3" id="3_1tpy3"]
+[ext_resource type="AudioStream" uid="uid://cp55krq4l5a8i" path="res://assets/music/Tests/624882_Jomekka---Eighto.mp3" id="3_htjkq"]
 [ext_resource type="PackedScene" uid="uid://utps1w84iu0u" path="res://scenes/editor/Editor.tscn" id="3_i5r6b"]
 
 [node name="Main" type="Node"]
@@ -17,7 +17,7 @@ grow_vertical = 2
 color = Color(0.127451, 0.127451, 0.127451, 1)
 
 [node name="Playground" parent="." instance=ExtResource("1_iopfw")]
-music = ExtResource("3_1tpy3")
+music = ExtResource("3_htjkq")
 
 [node name="Editor" parent="." node_paths=PackedStringArray("playground") instance=ExtResource("3_i5r6b")]
 playground = NodePath("../Playground")

@@ -17,6 +17,7 @@
 */
 
 
+using System;
 using System.Collections.Generic;
 
 using Godot;
@@ -35,19 +36,19 @@ namespace ClockBombGames.CircleBeats.Structures
 
 			public Node Left  { get; private set; }
 			public Node Right  { get; private set; }
-			public float Max  { get; private set; }
+			public int Max  { get; private set; }
 
 			public TValue Value => Interval.Value;
 
-			float Start => Interval.Start;
-			float End   => Interval.End;
+			int Start => Interval.Start;
+			int End   => Interval.End;
 
 
 
 			/// <summary>
 			/// Creates a new node with the specified interval.
 			/// </summary>
-			public Node(float start, float end, TValue value)
+			public Node(int start, int end, TValue value)
 			{
 				Interval = new Interval<TValue>(start, end, value);
 			}
@@ -110,7 +111,7 @@ namespace ClockBombGames.CircleBeats.Structures
 			/// <summary>
 			/// Adds a new node to the tree.
 			/// </summary>
-			public Node AddNode(Node newNode)
+			public void AddNode(Node newNode)
 			{
 				if (newNode.End > Max) {
 					Max = newNode.End;
@@ -129,51 +130,48 @@ namespace ClockBombGames.CircleBeats.Structures
 						Left.AddNode(newNode);
 					}
 				}
-
-
-				return this;
 			}
 
 
 
 			/// <summary>
-			/// Searches for an interval that contains the given time.
+			/// Searches for an interval that contains the given ticks.
 			/// </summary>
-			public Node FindInterval(float time)
+			public Node FindInterval(int ticks)
 			{
-				if (Interval.HasTime(time)) {
+				if (Interval.HasTicks(ticks)) {
 					return this;
 				}
 
-				if (Left != null && Left.Max >= time) {
-					Left.FindInterval(time);
+				if (Left != null && Left.Max >= ticks) {
+					Left.FindInterval(ticks);
 				}
 
-				if (Start <= time) {
-					Right?.FindInterval(time);
+				if (Start <= ticks) {
+					Right?.FindInterval(ticks);
 				}
 
 				return null;
 			}
 
 			/// <summary>
-			/// Searches for an interval that contains the given time.
+			/// Searches for all intervals that contains the given ticks and executes an action on each one.
 			/// </summary>
-			public void FindIntersectInterval(float time, List<Node> result)
+			public void FindIntersectInterval(int ticks, Action<Node> action)
 			{
-				if (Interval.HasTime(time)) {
-					result.Add(this);
+				if (Interval.HasTicks(ticks)) {
+					action(this);
 				}
 
-				if (Left != null && Left.Max >= time) {
-					Left.FindIntersectInterval(time, result);
+				if (Left != null && Left.Max >= ticks) {
+					Left.FindIntersectInterval(ticks, action);
 				}
 
-				if (Start > time) {
+				if (Start > ticks) {
 					return;
 				}
 
-				Right?.FindIntersectInterval(time, result);
+				Right?.FindIntersectInterval(ticks, action);
 			}
 		}
 
@@ -191,7 +189,7 @@ namespace ClockBombGames.CircleBeats.Structures
 		public IntervalTree(List<Interval<TValue>> intervals)
 		{
 			intervals.Sort((a, b) => a.CompareTo(b));
-			Root = new Node(intervals.ToArray());
+			Root = new Node([.. intervals]);
 		}
 
 
@@ -199,11 +197,11 @@ namespace ClockBombGames.CircleBeats.Structures
 		/// Searches for an interval that contains the given scalar. If there's a cached node and it contains
 		/// the given scalar, it will be used instead.
 		/// </summary>
-		public Node Search(float time)
+		public Node Search(int ticks)
 		{
 			if (_temporalNode != null) {
 
-				if (_temporalNode.Interval.HasTime(time)) {
+				if (_temporalNode.Interval.HasTicks(ticks)) {
 					return _temporalNode;
 				} else {
 					_temporalNode = null;
@@ -211,7 +209,7 @@ namespace ClockBombGames.CircleBeats.Structures
 			}
 
 
-			_temporalNode = ForceSearch(time);
+			_temporalNode = ForceSearch(ticks);
 
 			return _temporalNode;
 		}
@@ -219,9 +217,9 @@ namespace ClockBombGames.CircleBeats.Structures
 		/// <summary>
 		/// Forces the tree to search for an interval that contains the given scalar, ignoring any cached node.
 		/// </summary>
-		public Node ForceSearch(float time)
+		public Node ForceSearch(int ticks)
 		{
-			return Root.FindInterval(time);
+			return Root.FindInterval(ticks);
 		}
 
 

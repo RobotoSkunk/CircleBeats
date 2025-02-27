@@ -25,10 +25,10 @@ namespace ClockBombGames.CircleBeats.Structures
 {
 	interface IInterval
 	{
-		float Start { get; }
-		float End { get; }
+		int Start { get; }
+		int End { get; }
 
-		public bool HasTime(float time);
+		public bool HasTicks(int ticks);
 	}
 
 	interface IInterval<TValue> : IInterval
@@ -43,11 +43,11 @@ namespace ClockBombGames.CircleBeats.Structures
 	public struct Interval<TValue> : IInterval<TValue>, IEquatable<Interval<TValue>>
 	{
 		public TValue Value { get; private set; }
-		public float Start { get; private set; }
-		public float End { get; private set; }
+		public int Start { get; private set; }
+		public int End { get; private set; }
 
 
-		public Interval(float start, float end, TValue value)
+		public Interval(int start, int end, TValue value)
 		{
 			if (start > end) {
 				throw new ArgumentException("Start must be less than or equal to end.");
@@ -66,9 +66,9 @@ namespace ClockBombGames.CircleBeats.Structures
 		}
 
 
-		public readonly bool HasTime(float time)
+		public readonly bool HasTicks(int ticks)
 		{
-			return Start <= time && End >= time;
+			return Start <= ticks && End >= ticks;
 		}
 
 
@@ -134,11 +134,11 @@ namespace ClockBombGames.CircleBeats.Structures
 	/// </summary>
 	public struct Interval : IInterval, IEquatable<Interval>
 	{
-		public float Start { get; private set; }
-		public float End { get; private set; }
+		public int Start { get; private set; }
+		public int End { get; private set; }
 
 
-		public Interval(float start, float end)
+		public Interval(int start, int end)
 		{
 			if (start > end) {
 				throw new ArgumentException("Start must be less than or equal to end.");
@@ -149,9 +149,9 @@ namespace ClockBombGames.CircleBeats.Structures
 		}
 
 
-		public readonly bool HasTime(float time)
+		public readonly bool HasTicks(int ticks)
 		{
-			return Start <= time && End >= time;
+			return Start <= ticks && End >= ticks;
 		}
 
 		public readonly int CompareTo(Interval other)
