@@ -27,6 +27,7 @@ namespace ClockBombGames.CircleBeats.Structures
 	{
 		int Start { get; }
 		int End { get; }
+		int Zoom { get; }
 
 		public bool HasTicks(int ticks);
 	}
@@ -45,6 +46,7 @@ namespace ClockBombGames.CircleBeats.Structures
 		public TValue Value { get; private set; }
 		public int Start { get; private set; }
 		public int End { get; private set; }
+		public readonly int Zoom => End - Start;
 
 
 		public Interval(int start, int end, TValue value)
@@ -136,6 +138,7 @@ namespace ClockBombGames.CircleBeats.Structures
 	{
 		public int Start { get; private set; }
 		public int End { get; private set; }
+		public readonly int Zoom => End - Start;
 
 
 		public Interval(int start, int end)
