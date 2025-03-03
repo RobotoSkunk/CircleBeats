@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://vgucmfperviw"]
 
-[ext_resource type="Script" path="res://scripts/playground/Playground.cs" id="1_6h4qg"]
+[ext_resource type="Script" uid="uid://l5s2lfwpmbau" path="res://scripts/playground/Playground.cs" id="1_6h4qg"]
 [ext_resource type="PackedScene" uid="uid://blex4yt0sysmo" path="res://scenes/playground/Scenario.tscn" id="2_grsjh"]
 
 [node name="Playground" type="Control" node_paths=PackedStringArray("scenario", "gameContainer", "musicPlayer", "debugLabel")]

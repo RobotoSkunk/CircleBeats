@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cda5akmjbhhb5"]
 
 [ext_resource type="ArrayMesh" uid="uid://ddant82bpb4vd" path="res://assets/models/Square.obj" id="1_7m7d3"]
-[ext_resource type="Script" path="res://scripts/playground/CarrouselBar.cs" id="1_wqjfa"]
+[ext_resource type="Script" uid="uid://dy8wgtkk4ok2" path="res://scripts/playground/CarrouselBar.cs" id="1_wqjfa"]
 [ext_resource type="Material" uid="uid://vdcctuf11pdd" path="res://assets/materials/Obstacles Material.tres" id="2_f776d"]
 
 [node name="That Cool Spectrum Bar" type="Node3D" node_paths=PackedStringArray("mesh")]
