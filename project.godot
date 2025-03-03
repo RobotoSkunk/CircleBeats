@@ -55,3 +55,4 @@ right_axis={
 common/physics_ticks_per_second=120
 common/max_physics_steps_per_frame=60
 common/physics_jitter_fix=0.0
+common/physics_interpolation=true
