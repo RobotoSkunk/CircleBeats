@@ -17,6 +17,7 @@
 */
 
 
+using ClockBombGames.CircleBeats.Utils;
 using Godot;
 
 
@@ -48,7 +49,7 @@ namespace ClockBombGames.CircleBeats.Playground
 			angle += 360f * Speed * horizontalAxis * (float)delta;
 			RotationDegrees = Vector3.Forward * angle;
 
-			effect = Mathf.Lerp(effect, horizontalAxis * 25f, Mathf.Clamp(0.2f * Speed, 0f, 1f));
+			effect = Mathf.Lerp(effect, horizontalAxis * 25f, Mathf.Clamp(0.4f * Speed, 0f, 1f) * RSMath.FixedDelta(delta));
 			dart.RotationDegrees = Vector3.Forward * effect;
 		}
 	}
