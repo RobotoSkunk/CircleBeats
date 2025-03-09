@@ -167,11 +167,9 @@ namespace ClockBombGames.CircleBeats.Structures
 					Left.FindIntersectInterval(time, action);
 				}
 
-				if (Start > time) {
-					return;
+				if (Start <= time) {
+					Right?.FindIntersectInterval(time, action);
 				}
-
-				Right?.FindIntersectInterval(time, action);
 			}
 		}
 
