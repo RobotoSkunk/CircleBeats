@@ -32,113 +32,20 @@ namespace ClockBombGames.CircleBeats.Structures
 		public bool HasTime(float time);
 	}
 
-	interface IInterval<TValue> : IInterval
+	interface IInterval<T> : IInterval
 	{
-		public TValue Value { get; }
+		public T Value { get; }
 	}
-
-
-	/// <summary>
-	/// A structure that represents a range of values and contains a value.
-	/// </summary>
-	public struct Interval<TValue> : IInterval<TValue>, IEquatable<Interval<TValue>>
-	{
-		public TValue Value { get; private set; }
-		public float Start { get; private set; }
-		public float End { get; private set; }
-		public readonly float Zoom => End - Start;
-
-
-		public Interval(float start, float end, TValue value)
-		{
-			if (start > end) {
-				throw new ArgumentException("Start must be less than or equal to end.");
-			}
-
-			Start = start;
-			End = end;
-			Value = value;
-		}
-
-		public Interval(Interval interval, TValue value)
-		{
-			Start = interval.Start;
-			End = interval.End;
-			Value = value;
-		}
-
-
-		public readonly bool HasTime(float time)
-		{
-			return Start <= time && End >= time;
-		}
-
-
-		public readonly int CompareTo(Interval<TValue> other)
-		{
-			if (Start < other.Start) {
-				return -1;
-			}
-
-			if (Start == other.Start) {
-				if (End < other.End) {
-					return -1;
-				}
-				
-				if (End == other.End) {
-					return 0;
-				}
-			}
-
-			return 1;
-		}
-
-
-		public readonly bool Equals(Interval<TValue> other)
-		{
-			return Start == other.Start
-				&& End == other.End
-				&& EqualityComparer<TValue>.Default.Equals(Value, other.Value);
-		}
-
-		public readonly override bool Equals(object obj)
-		{
-			return obj is Interval<TValue> interval && Equals(interval);
-		}
-
-		public readonly override int GetHashCode()
-		{
-			return HashCode.Combine(Start, End, Value);
-		}
-
-		public readonly override string ToString()
-		{
-			return string.Concat("([", Start.ToString(), ", ", End.ToString(), "] ", Value.ToString(), ")");
-		}
-
-		public static bool operator ==(Interval<TValue> a, Interval<TValue> b)
-		{
-			return a.Start == b.Start
-				&& a.End == b.End
-				&& a.Value.Equals(b.Value);
-		}
-
-		public static bool operator !=(Interval<TValue> a, Interval<TValue> b)
-		{
-			return !(a == b);
-		}
-	}
-
 
 
 	/// <summary>
 	/// A structure that represents a range of values.
 	/// </summary>
-	public struct Interval : IInterval, IEquatable<Interval>
+	public class Interval : IInterval, IEquatable<Interval>
 	{
 		public float Start { get; private set; }
 		public float End { get; private set; }
-		public readonly float Zoom => End - Start;
+		public float Zoom => End - Start;
 
 
 		public Interval(float start, float end)
@@ -152,12 +59,12 @@ namespace ClockBombGames.CircleBeats.Structures
 		}
 
 
-		public readonly bool HasTime(float time)
+		public bool HasTime(float time)
 		{
 			return Start <= time && End >= time;
 		}
 
-		public readonly int CompareTo(Interval other)
+		public int CompareTo(Interval other)
 		{
 			if (Start < other.Start) {
 				return -1;
@@ -177,23 +84,23 @@ namespace ClockBombGames.CircleBeats.Structures
 		}
 
 
-		public readonly bool Equals(Interval other)
+		public bool Equals(Interval other)
 		{
 			return Start == other.Start
 				&& End == other.End;
 		}
 
-		public readonly override bool Equals(object obj)
+		public override bool Equals(object obj)
 		{
 			return obj is Interval interval && Equals(interval);
 		}
 
-		public readonly override int GetHashCode()
+		public override int GetHashCode()
 		{
 			return HashCode.Combine(Start, End);
 		}
 
-		public readonly override string ToString()
+		public override string ToString()
 		{
 			return string.Concat("([", Start.ToString(), ", ", End.ToString(), "])");
 		}
@@ -206,6 +113,50 @@ namespace ClockBombGames.CircleBeats.Structures
 		}
 
 		public static bool operator !=(Interval a, Interval b)
+		{
+			return !(a == b);
+		}
+	}
+
+
+	/// <summary>
+	/// A structure that represents a range of values and contains a value.
+	/// </summary>
+	public class Interval<T>(float start, float end, T value) : Interval(start, end), IInterval<T>
+	{
+		public T Value { get; private set; } = value;
+
+
+		public bool Equals(Interval<T> other)
+		{
+			return Start == other.Start
+				&& End == other.End
+				&& EqualityComparer<T>.Default.Equals(Value, other.Value);
+		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is Interval<T> interval && Equals(interval);
+		}
+
+		public override int GetHashCode()
+		{
+			return HashCode.Combine(Start, End, Value);
+		}
+
+		public override string ToString()
+		{
+			return string.Concat("([", Start.ToString(), ", ", End.ToString(), "] ", Value.ToString(), ")");
+		}
+
+		public static bool operator ==(Interval<T> a, Interval<T> b)
+		{
+			return a.Start == b.Start
+				&& a.End == b.End
+				&& a.Value.Equals(b.Value);
+		}
+
+		public static bool operator !=(Interval<T> a, Interval<T> b)
 		{
 			return !(a == b);
 		}
