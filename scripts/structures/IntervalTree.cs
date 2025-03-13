@@ -30,12 +30,12 @@ namespace ClockBombGames.CircleBeats.Structures
 	/// </summary>
 	public class IntervalTree<TValue>
 	{
-		public class Node
+		public class TreeNode
 		{
 			public Interval<TValue> Interval { get; private set; }
 
-			public Node Left  { get; private set; }
-			public Node Right { get; private set; }
+			public TreeNode Left  { get; private set; }
+			public TreeNode Right { get; private set; }
 
 			public TValue Value => Interval.Value;
 
@@ -47,39 +47,39 @@ namespace ClockBombGames.CircleBeats.Structures
 
 
 			/// <summary>
-			/// Creates a new node with the specified interval.
+			/// Creates a new TreeNode with the specified interval.
 			/// </summary>
-			public Node(float start, float end, TValue value)
+			public TreeNode(float start, float end, TValue value)
 			{
 				Interval = new Interval<TValue>(start, end, value);
 				Max = end;
 			}
 
 			/// <summary>
-			/// Creates a new node with the specified interval.
+			/// Creates a new TreeNode with the specified interval.
 			/// </summary>
-			public Node(Interval<TValue> interval)
+			public TreeNode(Interval<TValue> interval)
 			{
 				Interval = interval;
 				Max = interval.End;
 			}
 
-			private static int GetHeight(Node node)
+			private static int GetHeight(TreeNode TreeNode)
 			{
-				if (node == null) {
+				if (TreeNode == null) {
 					return 0;
 				}
 
-				return node.Height;
+				return TreeNode.Height;
 			}
 
-			private static float GetMax(Node node)
+			private static float GetMax(TreeNode TreeNode)
 			{
-				if (node == null) {
+				if (TreeNode == null) {
 					return int.MinValue;
 				}
 
-				return node.Max;
+				return TreeNode.Max;
 			}
 
 			private int GetBalance()
@@ -93,10 +93,10 @@ namespace ClockBombGames.CircleBeats.Structures
 			}
 
 
-			private static Node RightRotate(Node y)
+			private static TreeNode RightRotate(TreeNode y)
 			{
-				Node x = y?.Left;
-				Node T2 = x?.Right;
+				TreeNode x = y?.Left;
+				TreeNode T2 = x?.Right;
 
 				if (x == null && T2 == null) {
 					return y;
@@ -114,10 +114,10 @@ namespace ClockBombGames.CircleBeats.Structures
 				return x;
 			}
 
-			private static Node LeftRotate(Node x)
+			private static TreeNode LeftRotate(TreeNode x)
 			{
-				Node y = x?.Right;
-				Node T2 = y?.Left;
+				TreeNode y = x?.Right;
+				TreeNode T2 = y?.Left;
 
 				if (y == null && T2 == null) {
 					return x;
@@ -138,60 +138,60 @@ namespace ClockBombGames.CircleBeats.Structures
 
 
 
-			public float CompareTo(Node other)
+			public float CompareTo(TreeNode other)
 			{
 				return Interval.CompareTo(other.Interval);
 			}
 
 
 			/// <summary>
-			/// Inserts a new node to the tree.
+			/// Inserts a new TreeNode to the tree.
 			/// <br/><br/>
 			/// Complexity: O(log n)
 			/// </summary>
-			public static Node Insert(Node node, Interval<TValue> key)
+			public static TreeNode Insert(TreeNode TreeNode, Interval<TValue> key)
 			{
-				if (node == null) {
-					return new Node(key);
+				if (TreeNode == null) {
+					return new TreeNode(key);
 				}
 
-				if (key.CompareTo(node.Interval) < 0) {
-					node.Left = Insert(node.Left, key);
+				if (key.CompareTo(TreeNode.Interval) < 0) {
+					TreeNode.Left = Insert(TreeNode.Left, key);
 
 				} else {
-					node.Right = Insert(node.Right, key);
+					TreeNode.Right = Insert(TreeNode.Right, key);
 				}
 
-				node.Height = 1 + Mathf.Max(GetHeight(node.Left), GetHeight(node.Right));
-				node.SetMax();
+				TreeNode.Height = 1 + Mathf.Max(GetHeight(TreeNode.Left), GetHeight(TreeNode.Right));
+				TreeNode.SetMax();
 
 
-				int balance = node.GetBalance();
+				int balance = TreeNode.GetBalance();
 
 
 				// Left Left case
-				if (balance > 1 && key.CompareTo(node.Left.Interval) < 0) {
-					return RightRotate(node);
+				if (balance > 1 && key.CompareTo(TreeNode.Left.Interval) < 0) {
+					return RightRotate(TreeNode);
 				}
 
 				// Right Right case
-				if (balance < -1 && key.CompareTo(node.Right.Interval) >= 0) {
-					return LeftRotate(node);
+				if (balance < -1 && key.CompareTo(TreeNode.Right.Interval) >= 0) {
+					return LeftRotate(TreeNode);
 				}
 
 				// Left Right case
-				if (balance > 1 && key.CompareTo(node.Left.Interval) > 0) {
-					node.Left = LeftRotate(node.Left);
-					return RightRotate(node);
+				if (balance > 1 && key.CompareTo(TreeNode.Left.Interval) > 0) {
+					TreeNode.Left = LeftRotate(TreeNode.Left);
+					return RightRotate(TreeNode);
 				}
 
 				// Right Left case
-				if (balance < -1 && key.CompareTo(node.Right.Interval) < 0) {
-					node.Right = RightRotate(node.Right);
-					return LeftRotate(node);
+				if (balance < -1 && key.CompareTo(TreeNode.Right.Interval) < 0) {
+					TreeNode.Right = RightRotate(TreeNode.Right);
+					return LeftRotate(TreeNode);
 				}
 
-				return node;
+				return TreeNode;
 			}
 
 
@@ -201,7 +201,7 @@ namespace ClockBombGames.CircleBeats.Structures
 			/// <br/><br/>
 			/// Complexity: O(log n)
 			/// </summary>
-			public Node FindInterval(float time)
+			public TreeNode FindInterval(float time)
 			{
 				if (Interval.HasTime(time)) {
 					return this;
@@ -223,7 +223,7 @@ namespace ClockBombGames.CircleBeats.Structures
 			/// <br/><br/>
 			/// Complexity: O(log n + k)
 			/// </summary>
-			public void FindIntersectInterval(float time, Action<Node> action)
+			public void FindIntersectInterval(float time, Action<TreeNode> action)
 			{
 				if (Interval.HasTime(time)) {
 					action(this);
@@ -239,8 +239,8 @@ namespace ClockBombGames.CircleBeats.Structures
 			}
 		}
 
-		public Node Root { get; private set; }
-		Node _temporalNode;
+		public TreeNode Root { get; private set; }
+		TreeNode _temporalNode;
 
 		/// <summary>
 		/// Creates a new empty interval tree.
@@ -259,12 +259,12 @@ namespace ClockBombGames.CircleBeats.Structures
 
 
 		/// <summary>
-		/// Searches for an interval that contains the given scalar. If there's a cached node and it contains
+		/// Searches for an interval that contains the given scalar. If there's a cached TreeNode and it contains
 		/// the given scalar, it will be used instead.
 		/// <br/><br/>
 		/// Complexity: O(1) Best, O(log n) Worst
 		/// </summary>
-		public Node Search(float time)
+		public TreeNode Search(float time)
 		{
 			if (_temporalNode != null) {
 
@@ -282,11 +282,11 @@ namespace ClockBombGames.CircleBeats.Structures
 		}
 
 		/// <summary>
-		/// Forces the tree to search for an interval that contains the given scalar, ignoring any cached node.
+		/// Forces the tree to search for an interval that contains the given scalar, ignoring any cached TreeNode.
 		/// <br/><br/>
 		/// Complexity: O(log n)
 		/// </summary>
-		public Node ForceSearch(float time)
+		public TreeNode ForceSearch(float time)
 		{
 			return Root.FindInterval(time);
 		}
@@ -300,7 +300,7 @@ namespace ClockBombGames.CircleBeats.Structures
 		/// </summary>
 		public void Add(Interval<TValue> interval)
 		{
-			Root = Node.Insert(Root, interval);
+			Root = TreeNode.Insert(Root, interval);
 		}
 	}
 }

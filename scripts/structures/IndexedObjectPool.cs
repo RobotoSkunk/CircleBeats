@@ -66,6 +66,7 @@ namespace ClockBombGames.CircleBeats.Structures
 
 			if (availableObjects[index].Count == 0) {
 				scene = packedScenes[index].Instantiate<T>();
+				scene.PoolIndex = index;
 
 			} else {
 				scene = availableObjects[index].Dequeue();
@@ -116,6 +117,10 @@ namespace ClockBombGames.CircleBeats.Structures
 	/// </summary>
 	public interface IForIndexedObjectPool
 	{
-		public int PoolIndex { get; }
+		/// <summary>
+		/// Used by IndexedObjectPool, any pre-defined value will be ignored.
+		/// <b>Do not edit this variable in runtime.</b>
+		/// </summary>
+		public int PoolIndex { get; set; }
 	}
 }
