@@ -31,7 +31,7 @@ namespace ClockBombGames.CircleBeats.Structures
 		public IntervalTree<ScalarFrame>  RotationFrames { get; set; } = new();
 
 
-		public void TransformByTime(Node3D node, float time)
+		public virtual void TransformByTime(Node3D node, float time)
 		{
 			#region Position
 			var positionInterval = PositionFrames.Search(time).Interval;
