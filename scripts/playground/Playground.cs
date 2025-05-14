@@ -84,7 +84,7 @@ namespace ClockBombGames.CircleBeats.Playground
 
 		public override void _Process(double delta)
 		{
-			double playbackPosition = musicPlayer.GetPlaybackPosition();
+			// double playbackPosition = musicPlayer.GetPlaybackPosition();
 			// songTicks = TimeToTicks(playbackPosition);
 
 			debugLabel.Text = "FPS: " + Engine.GetFramesPerSecond() +

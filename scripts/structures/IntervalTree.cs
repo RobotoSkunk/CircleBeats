@@ -149,17 +149,17 @@ namespace ClockBombGames.CircleBeats.Structures
 			/// <br/><br/>
 			/// Complexity: O(log n)
 			/// </summary>
-			public static TreeNode Insert(TreeNode TreeNode, Interval<TValue> key)
+			public static TreeNode Insert(TreeNode TreeNode, TreeNode keyNode)
 			{
 				if (TreeNode == null) {
-					return new TreeNode(key);
+					return keyNode;
 				}
 
-				if (key.CompareTo(TreeNode.Interval) < 0) {
-					TreeNode.Left = Insert(TreeNode.Left, key);
+				if (keyNode.CompareTo(TreeNode) < 0) {
+					TreeNode.Left = Insert(TreeNode.Left, keyNode);
 
 				} else {
-					TreeNode.Right = Insert(TreeNode.Right, key);
+					TreeNode.Right = Insert(TreeNode.Right, keyNode);
 				}
 
 				TreeNode.Height = 1 + Mathf.Max(GetHeight(TreeNode.Left), GetHeight(TreeNode.Right));
@@ -170,23 +170,23 @@ namespace ClockBombGames.CircleBeats.Structures
 
 
 				// Left Left case
-				if (balance > 1 && key.CompareTo(TreeNode.Left.Interval) < 0) {
+				if (balance > 1 && keyNode.CompareTo(TreeNode.Left) < 0) {
 					return RightRotate(TreeNode);
 				}
 
 				// Right Right case
-				if (balance < -1 && key.CompareTo(TreeNode.Right.Interval) >= 0) {
+				if (balance < -1 && keyNode.CompareTo(TreeNode.Right) >= 0) {
 					return LeftRotate(TreeNode);
 				}
 
 				// Left Right case
-				if (balance > 1 && key.CompareTo(TreeNode.Left.Interval) > 0) {
+				if (balance > 1 && keyNode.CompareTo(TreeNode.Left) > 0) {
 					TreeNode.Left = LeftRotate(TreeNode.Left);
 					return RightRotate(TreeNode);
 				}
 
 				// Right Left case
-				if (balance < -1 && key.CompareTo(TreeNode.Right.Interval) < 0) {
+				if (balance < -1 && keyNode.CompareTo(TreeNode.Right) < 0) {
 					TreeNode.Right = RightRotate(TreeNode.Right);
 					return LeftRotate(TreeNode);
 				}
@@ -208,11 +208,11 @@ namespace ClockBombGames.CircleBeats.Structures
 				}
 
 				if (Left != null && Left.Max >= time) {
-					Left.FindInterval(time);
+					return Left.FindInterval(time);
 				}
 
 				if (Start <= time) {
-					Right?.FindInterval(time);
+					return Right?.FindInterval(time);
 				}
 
 				return null;
@@ -239,7 +239,7 @@ namespace ClockBombGames.CircleBeats.Structures
 			}
 		}
 
-		public TreeNode Root { get; private set; }
+		public TreeNode Root { get; protected set; }
 		TreeNode _temporalNode;
 
 		/// <summary>
@@ -270,9 +270,9 @@ namespace ClockBombGames.CircleBeats.Structures
 
 				if (_temporalNode.Interval.HasTime(time)) {
 					return _temporalNode;
-				} else {
-					_temporalNode = null;
 				}
+
+				_temporalNode = null;
 			}
 
 
@@ -288,6 +288,10 @@ namespace ClockBombGames.CircleBeats.Structures
 		/// </summary>
 		public TreeNode ForceSearch(float time)
 		{
+			if (Root == null) {
+				return null;
+			}
+
 			return Root.FindInterval(time);
 		}
 
@@ -300,7 +304,9 @@ namespace ClockBombGames.CircleBeats.Structures
 		/// </summary>
 		public void Add(Interval<TValue> interval)
 		{
-			Root = TreeNode.Insert(Root, interval);
+			TreeNode keyNode = new(interval);
+
+			Root = TreeNode.Insert(Root, keyNode);
 		}
 	}
 }

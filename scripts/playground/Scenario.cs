@@ -17,7 +17,11 @@
 */
 
 
+using System;
 using System.Threading.Tasks;
+using ClockBombGames.CircleBeats.Playground.Obstacles;
+using ClockBombGames.CircleBeats.Structures;
+using ClockBombGames.CircleBeats.Structures.Frames;
 using ClockBombGames.CircleBeats.Utils;
 using Godot;
 
@@ -31,7 +35,7 @@ namespace ClockBombGames.CircleBeats.Playground
 		[Export] Player player;
 
 		[ExportCategory("Obstacles")]
-		[Export] Node3D squareObstacle;
+		[Export] PackedScene squareObstacle;
 		[Export] Node3D obstaclesContainerBack;
 		[Export] Node3D obstaclesContainerMiddle;
 		[Export] Node3D obstaclesContainerFront;
@@ -42,6 +46,7 @@ namespace ClockBombGames.CircleBeats.Playground
 		[Export] MeshInstance3D[] radialParts;
 
 
+		Random _random = new();
 		double carrouselTickTime;
 
 		float scale = 1f;
@@ -51,6 +56,8 @@ namespace ClockBombGames.CircleBeats.Playground
 		readonly int spectrumSamples = 128;
 
 		public int CarrouselIndexPosition { get; private set; }
+
+		ObjectTimeline<Square> obstacles;
 
 		public float[] Spectrum
 		{
@@ -103,7 +110,56 @@ namespace ClockBombGames.CircleBeats.Playground
 					}
 				}
 			});
+
+
+			obstacles = new([ squareObstacle ]);
+
+			float audioLength = 200f;
+
+			for (int i = 0; i < 150; i++) {
+				TimelineParameters parameters = new();
+
+				Vector2 pos1 = RandomVector();
+				Vector2 pos2 = RandomVector();
+				Vector2 pos3 = RandomVector();
+
+				parameters.PositionFrames.Add(new(0f, 0.5f, new(pos1, pos2, BezierCurve.EaseInOut)));
+				parameters.PositionFrames.Add(new(0.5f, 1f, new(pos2, pos3, BezierCurve.EaseInOut)));
+
+				parameters.ScaleFrames.Add(new(0f,   0.2f, new(Vector2.Zero, Vector2.One, BezierCurve.Linear)));
+				parameters.ScaleFrames.Add(new(0.2f, 0.8f, new(Vector2.One, Vector2.One, BezierCurve.Linear)));
+				parameters.ScaleFrames.Add(new(0.8f,   1f, new(Vector2.One, Vector2.Zero, BezierCurve.Linear)));
+
+				parameters.RotationFrames.Add(new(0f, 1f, new(0f, _random.NextSingle() * 360f, BezierCurve.CubicInOut)));
+
+
+				float timeStart = _random.NextSingle() * audioLength;
+				float timeEnd = timeStart + 5f;
+				// float timeEnd = timeStart + _random.NextSingle() * (audioLength - timeStart);
+
+				Node parentTarget = _random.NextSingle() switch {
+					< 0.33f => obstaclesContainerBack,
+					> 0.66f => obstaclesContainerFront,
+					_ => obstaclesContainerMiddle,
+				};
+
+				ObjectTimeline<Square>.NodeTimeline nodeTimeline = new(timeStart, timeEnd, parameters) {
+					PoolIndex = 0,
+					ParentTarget = parentTarget,
+				};
+
+				obstacles.Add(nodeTimeline);
+			}
 		}
+
+		Vector2 RandomVector()
+		{
+			return new (
+				-10f + _random.NextSingle() * 20f,
+				-10f + _random.NextSingle() * 20f
+			);
+		}
+
 
 		public override void _Process(double delta)
 		{
@@ -120,6 +176,8 @@ namespace ClockBombGames.CircleBeats.Playground
 
 			if (playground.MusicPlayer.Playing) {
 				playground.AudioBusReader.GetSpectrum(ref spectrum);
+
+				obstacles.GetTime(playground.MusicPlayer.GetPlaybackPosition());
 
 				// Spin carrousel
 				carrouselTickTime += delta;

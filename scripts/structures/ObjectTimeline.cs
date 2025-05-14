@@ -30,8 +30,8 @@ namespace ClockBombGames.CircleBeats.Structures
 	/// <typeparam name="TParameters">The base class for all parameters to be passed on each node.</typeparam>
 	/// <typeparam name="TScene">The base class of the nodes that will be stored in the tree.</typeparam>
 	/// <param name="packedScenes">The packed scene references to instantiate when required.</param>
-	public class ObjectTimeline<TParameters, TScene>(PackedScene[] packedScenes) : IntervalTree<TParameters>
-		where TScene : Node, IForIndexedObjectPool, IForTimeline<TParameters>
+	public class ObjectTimeline<TScene>(PackedScene[] packedScenes) : IntervalTree<TimelineParameters>
+		where TScene : Node, IForIndexedObjectPool, IForTimeline
 	{
 		readonly IndexedObjectPool<TScene> objectPool = new(packedScenes);
 
@@ -53,7 +53,7 @@ namespace ClockBombGames.CircleBeats.Structures
 				if (node.Scene == null) {
 					node.Scene = objectPool.RequestScene(node.PoolIndex, node.ParentTarget);
 
-					node.Scene.SetParameters(node.Value);
+					node.Scene.SetInterval(node.Interval);
 				}
 
 				node.Scene.ExecuteTime(time);
@@ -90,11 +90,17 @@ namespace ClockBombGames.CircleBeats.Structures
 		}
 
 
+		public void Add(NodeTimeline nodetimeline)
+		{
+			Root = TreeNode.Insert(Root, nodetimeline);
+		}
+
+
 
 		public class NodeTimeline : TreeNode
 		{
-			public NodeTimeline(float start, float end, TParameters parameters) : base(start, end, parameters) { }
-			public NodeTimeline(Interval<TParameters> interval) : base(interval) { }
+			public NodeTimeline(float start, float end, TimelineParameters parameters) : base(start, end, parameters) { }
+			public NodeTimeline(Interval<TimelineParameters> interval) : base(interval) { }
 
 			/// <summary>
 			/// Tells which packed scene has to be used.
@@ -120,17 +126,17 @@ namespace ClockBombGames.CircleBeats.Structures
 	/// The custom class of parameters to execute when the timeline requests a given time
 	/// between 0 and 1 (inclusive).
 	/// </typeparam>
-	public interface IForTimeline<TParameters>
+	public interface IForTimeline
 	{
 		/// <summary>
 		/// The paramenters to do something with the current object with a time interval between 0 and 1 (inclusive).
 		/// </summary>
-		public virtual void SetParameters(TParameters parameters) { }
+		public virtual void SetInterval(Interval<TimelineParameters> parameters) { }
 
 		/// <summary>
 		/// Called by ObjectTimeline.
 		/// Modifies the object transform with a given time interval based on the
-		/// parameters received by SetParameters().
+		/// parameters received by SetInterval().
 		/// </summary>
 		public virtual void ExecuteTime(float time) { }
 	}

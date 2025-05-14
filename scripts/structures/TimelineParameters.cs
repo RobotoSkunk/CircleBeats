@@ -34,31 +34,43 @@ namespace ClockBombGames.CircleBeats.Structures
 		public virtual void TransformByTime(Node3D node, float time)
 		{
 			#region Position
-			var positionInterval = PositionFrames.Search(time).Interval;
+			var positionNode = PositionFrames.Search(time);
 
-			float positionTime = (time - positionInterval.Start) / positionInterval.Zoom;
+			if (positionNode != null) {
+				var positionInterval = positionNode.Interval;
 
-			Vector2 position = positionInterval.Value.GetVector(positionTime);
-			node.Position = new(position.X, position.Y, 0f);
+				float positionTime = (time - positionInterval.Start) / positionInterval.Zoom;
+
+				Vector2 position = positionInterval.Value.GetVector(positionTime);
+				node.Position = new(position.X, position.Y, 0f);
+			}
 			#endregion
 
 
 			#region Scale
-			var scaleInterval = ScaleFrames.Search(time).Interval;
+			var scaleNode = ScaleFrames.Search(time);
 
-			float scaleTime = (time - scaleInterval.Start) / scaleInterval.Zoom;
+			if (scaleNode != null) {
+				var scaleInterval = scaleNode.Interval;
 
-			Vector2 scale = scaleInterval.Value.GetVector(scaleTime);
-			node.Scale = new(scale.X, scale.Y, 1f);
+				float scaleTime = (time - scaleInterval.Start) / scaleInterval.Zoom;
+
+				Vector2 scale = scaleInterval.Value.GetVector(scaleTime);
+				node.Scale = new(scale.X, scale.Y, 1f);
+			}
 			#endregion
 
 
 			#region Rotation
-			var rotationInterval = RotationFrames.Search(time).Interval;
+			var rotationNode = RotationFrames.Search(time);
 
-			float rotationTime = (time - rotationInterval.Start) / rotationInterval.Zoom;
+			if (rotationNode != null) {
+				var rotationInterval = rotationNode.Interval;
 
-			node.RotationDegrees = new(0f, 0f, rotationInterval.Value.GetScalar(rotationTime));
+				float rotationTime = (time - rotationInterval.Start) / rotationInterval.Zoom;
+
+				node.RotationDegrees = new(0f, 0f, rotationInterval.Value.GetScalar(rotationTime));
+			}
 			#endregion
 		}
 	}
