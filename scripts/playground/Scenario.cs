@@ -85,6 +85,8 @@ namespace ClockBombGames.CircleBeats.Playground
 
 			Task.Run(async () =>
 			{
+				await Task.Yield();
+
 				for (int j = 0; j < carrouselSpikes; j++) {
 					float jAngle = j * (360f / carrouselSpikes);
 
@@ -98,9 +100,6 @@ namespace ClockBombGames.CircleBeats.Playground
 							carrouselContainer.AddChild(bar);
 							bar.SetUp(angle, this, index);
 						}).CallDeferred(i, angle);
-
-
-						await Task.Yield();
 					}
 				}
 			});
