@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://db5kb70bnnmey"]
+
+[ext_resource type="Script" uid="uid://yhvxpr4qhckx" path="res://scripts/playground/obstacles/Square.cs" id="1_m7ifr"]
+[ext_resource type="ArrayMesh" uid="uid://ddant82bpb4vd" path="res://assets/models/Square.obj" id="2_m7kbx"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dh7hr"]
+shading_mode = 0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_m7ifr"]
+size = Vector3(2, 2, 1)
+
+[node name="ObstacleSquare" type="CharacterBody3D"]
+script = ExtResource("1_m7ifr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_dh7hr")
+mesh = ExtResource("2_m7kbx")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_m7ifr")

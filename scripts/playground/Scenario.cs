@@ -30,6 +30,12 @@ namespace ClockBombGames.CircleBeats.Playground
 		[Export] Playground playground;
 		[Export] Player player;
 
+		[ExportCategory("Obstacles")]
+		[Export] Node3D squareObstacle;
+		[Export] Node3D obstaclesContainerBack;
+		[Export] Node3D obstaclesContainerMiddle;
+		[Export] Node3D obstaclesContainerFront;
+
 		[ExportCategory("Scenario Parts")]
 		[Export] PackedScene carrouselBarScene;
 		[Export] Node3D carrouselContainer;

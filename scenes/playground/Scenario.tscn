@@ -21,10 +21,13 @@ albedo_color = Color(0.691176, 0.691176, 0.691176, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_2c6wr"]
 size = Vector3(0.5, 0.75, 0.5)
 
-[node name="Scenario" type="Node3D" node_paths=PackedStringArray("player", "carrouselContainer", "radialParts")]
+[node name="Scenario" type="Node3D" node_paths=PackedStringArray("player", "obstaclesContainerBack", "obstaclesContainerMiddle", "obstaclesContainerFront", "carrouselContainer", "radialParts")]
 transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 1, 0, 0, 0)
 script = ExtResource("1_xwdlm")
 player = NodePath("Content/Player")
+obstaclesContainerBack = NodePath("Content/Obstacles Back")
+obstaclesContainerMiddle = NodePath("Content/Obstacles Middle")
+obstaclesContainerFront = NodePath("Content/Obstacles Front")
 carrouselBarScene = ExtResource("2_sqrsd")
 carrouselContainer = NodePath("Content/Circle/Carrousel Container")
 radialParts = [NodePath("Content/Background/Radial Part 1"), NodePath("Content/Background/Radial Part 2"), NodePath("Content/Background/Radial Part 3"), NodePath("Content/Background/Radial Part 4"), NodePath("Content/Background/Radial Part 5"), NodePath("Content/Background/Radial Part 6"), NodePath("Content/Background/Radial Part 7"), NodePath("Content/Background/Radial Part 8")]
@@ -100,7 +103,7 @@ cast_shadow = 0
 mesh = ExtResource("6_0im0l")
 
 [node name="Inner Circle" type="Node3D" parent="Content/Circle"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.06)
 
 [node name="Ring" type="MeshInstance3D" parent="Content/Circle/Inner Circle"]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
@@ -113,6 +116,15 @@ transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0.01)
 material_override = SubResource("StandardMaterial3D_oemx5")
 cast_shadow = 0
 mesh = ExtResource("6_0im0l")
+
+[node name="Obstacles Back" type="Node3D" parent="Content"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.03)
+
+[node name="Obstacles Middle" type="Node3D" parent="Content"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+
+[node name="Obstacles Front" type="Node3D" parent="Content"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.09)
 
 [node name="Player" type="CharacterBody3D" parent="Content" node_paths=PackedStringArray("dart")]
 process_mode = 3
