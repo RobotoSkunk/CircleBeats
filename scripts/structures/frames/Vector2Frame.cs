@@ -34,11 +34,11 @@ namespace ClockBombGames.CircleBeats.Structures.Frames
 
 		public Vector2 GetVector(float time)
 		{
-			Vector2 bezier = BezierCurve.GetTime(time);
+			float bezier = BezierCurve.GetTimeYDimension(time);
 
 			return new(
-				Mathf.Lerp(Start.X, End.X, bezier.X),
-				Mathf.Lerp(Start.Y, End.Y, bezier.Y)
+				Mathf.Lerp(Start.X, End.X, bezier),
+				Mathf.Lerp(Start.Y, End.Y, bezier)
 			);
 		}
 	}

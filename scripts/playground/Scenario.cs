@@ -126,9 +126,9 @@ namespace ClockBombGames.CircleBeats.Playground
 				parameters.PositionFrames.Add(new(0f, 0.5f, new(pos1, pos2, BezierCurve.EaseInOut)));
 				parameters.PositionFrames.Add(new(0.5f, 1f, new(pos2, pos3, BezierCurve.EaseInOut)));
 
-				parameters.ScaleFrames.Add(new(0f,   0.2f, new(Vector2.Zero, Vector2.One, BezierCurve.Linear)));
+				parameters.ScaleFrames.Add(new(0f,   0.2f, new(Vector2.Zero, Vector2.One, BezierCurve.QuartIn)));
 				parameters.ScaleFrames.Add(new(0.2f, 0.8f, new(Vector2.One, Vector2.One, BezierCurve.Linear)));
-				parameters.ScaleFrames.Add(new(0.8f,   1f, new(Vector2.One, Vector2.Zero, BezierCurve.Linear)));
+				parameters.ScaleFrames.Add(new(0.8f,   1f, new(Vector2.One, Vector2.Zero, BezierCurve.QuartOut)));
 
 				parameters.RotationFrames.Add(new(0f, 1f, new(0f, _random.NextSingle() * 360f, BezierCurve.CubicInOut)));
 
