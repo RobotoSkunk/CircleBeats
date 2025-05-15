@@ -72,7 +72,7 @@ namespace ClockBombGames.CircleBeats.Structures
 				scene = availableObjects[index].Dequeue();
 			}
 
-			Callable.From(() => parent.AddChild(scene)).CallDeferred();
+			parent.AddChild(scene);
 
 			return scene;
 		}
@@ -90,7 +90,7 @@ namespace ClockBombGames.CircleBeats.Structures
 				return;
 			}
 
-			Callable.From(() => parent.RemoveChild(scene)).CallDeferred();
+			parent.RemoveChild(scene);
 
 			availableObjects[scene.PoolIndex].Enqueue(scene);
 		}

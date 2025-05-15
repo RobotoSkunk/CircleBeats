@@ -116,7 +116,7 @@ namespace ClockBombGames.CircleBeats.Playground
 
 			float audioLength = 200f;
 
-			for (int i = 0; i < 150; i++) {
+			for (int i = 0; i < 2500; i++) {
 				TimelineParameters parameters = new();
 
 				Vector2 pos1 = RandomVector();
