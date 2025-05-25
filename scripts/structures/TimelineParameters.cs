@@ -56,6 +56,14 @@ namespace ClockBombGames.CircleBeats.Structures
 				float scaleTime = (time - scaleInterval.Start) / scaleInterval.Zoom;
 
 				Vector2 scale = scaleInterval.Value.GetVector(scaleTime);
+
+				if (scale.X <= 0) {
+					scale.X = 0.01f;
+				}
+				if (scale.Y <= 0) {
+					scale.Y = 0.01f;
+				}
+
 				node.Scale = new(scale.X, scale.Y, 1f);
 			}
 			#endregion
