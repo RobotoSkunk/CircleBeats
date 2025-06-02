@@ -81,7 +81,7 @@ mesh = ExtResource("4_q1brg")
 [node name="Circle" type="Node3D" parent="Content"]
 
 [node name="Shadow" type="MeshInstance3D" parent="Content/Circle"]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, -0.24)
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, -0.24)
 material_override = ExtResource("5_p0yvl")
 cast_shadow = 0
 mesh = ExtResource("6_0im0l")
@@ -93,13 +93,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
 [node name="Outer Circle" type="Node3D" parent="Content/Circle"]
 
 [node name="Ring" type="MeshInstance3D" parent="Content/Circle/Outer Circle"]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 material_override = ExtResource("7_elus6")
 cast_shadow = 0
 mesh = ExtResource("6_0im0l")
 
 [node name="Center" type="MeshInstance3D" parent="Content/Circle/Outer Circle"]
-transform = Transform3D(4.5, 0, 0, 0, 4.5, 0, 0, 0, 4.5, 0, 0, 0.01)
+transform = Transform3D(9, 0, 0, 0, 9, 0, 0, 0, 9, 0, 0, 0.01)
 material_override = SubResource("StandardMaterial3D_baa6n")
 cast_shadow = 0
 mesh = ExtResource("6_0im0l")
@@ -108,13 +108,13 @@ mesh = ExtResource("6_0im0l")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.06)
 
 [node name="Ring" type="MeshInstance3D" parent="Content/Circle/Inner Circle"]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 0, 0)
 material_override = ExtResource("7_elus6")
 cast_shadow = 0
 mesh = ExtResource("6_0im0l")
 
 [node name="Center" type="MeshInstance3D" parent="Content/Circle/Inner Circle"]
-transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0.01)
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0.01)
 material_override = SubResource("StandardMaterial3D_oemx5")
 cast_shadow = 0
 mesh = ExtResource("6_0im0l")
@@ -134,13 +134,13 @@ script = ExtResource("8_2yai6")
 dart = NodePath("Model")
 
 [node name="Model" type="MeshInstance3D" parent="Content/Player"]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
 material_override = ExtResource("7_elus6")
 cast_shadow = 0
 mesh = ExtResource("9_jby3v")
 
 [node name="Shadow" type="MeshInstance3D" parent="Content/Player/Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.48)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.24)
 material_override = ExtResource("5_p0yvl")
 cast_shadow = 0
 mesh = ExtResource("9_jby3v")
