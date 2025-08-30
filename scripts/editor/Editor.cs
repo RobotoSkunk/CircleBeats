@@ -49,7 +49,7 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		public override void _ExitTree()
 		{
-			timeline.OnResizeBody += ResizePlayground;
+			timeline.OnResizeBody -= ResizePlayground;
 			window.SizeChanged -= ResizePlaygroundImpl;
 		}
 
