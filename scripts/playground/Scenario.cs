@@ -82,9 +82,8 @@ namespace ClockBombGames.CircleBeats.Playground
 
 			for (int i = 0; i < radialParts.Length; i++) {
 				MeshInstance3D mesh = radialParts[i];
-				ShaderMaterial material = (ShaderMaterial)mesh.MaterialOverlay;
 
-				material.SetShaderParameter("_color", Color.FromHsv(0, 0, i % 2 == 0 ? 0.5f : 0.75f));
+				mesh.SetInstanceShaderParameter("_color", Color.FromHsv(0, 0, i % 2 == 0 ? 0.5f : 0.75f));
 			}
 
 

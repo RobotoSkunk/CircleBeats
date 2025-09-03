@@ -7,9 +7,17 @@ namespace ClockBombGames.CircleBeats.Playground.Obstacles
 {
 	public partial class Square : Node3D, IForTimeline, IForIndexedObjectPool
 	{
+		[Export] MeshInstance3D meshInstance;
+
 		public int PoolIndex { get; set; }
 
 		Interval<TimelineParameters> parameters;
+
+
+		public override void _Ready()
+		{
+			meshInstance.SetInstanceShaderParameter("_color", Color.FromHsv(GD.Randf(), 0.8f, 0.95f));
+		}
 
 
 		public virtual void SetInterval(Interval<TimelineParameters> parameters)
