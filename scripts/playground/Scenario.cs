@@ -175,8 +175,6 @@ namespace ClockBombGames.CircleBeats.Playground
 			if (playground.MusicPlayer.Playing) {
 				playground.AudioBusReader.GetSpectrum(ref spectrum);
 
-				obstacles.GetTime(playground.MusicPlayer.GetPlaybackPosition());
-
 				// Spin carrousel
 				carrouselTickTime += delta;
 
@@ -190,6 +188,13 @@ namespace ClockBombGames.CircleBeats.Playground
 				}
 			}
 			#endregion
+		}
+
+		public override void _PhysicsProcess(double delta)
+		{
+			if (playground.MusicPlayer.Playing) {
+				obstacles.GetTime(playground.MusicPlayer.GetPlaybackPosition());
+			}
 		}
 	}
 }
