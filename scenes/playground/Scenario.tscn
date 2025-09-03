@@ -3,21 +3,27 @@
 [ext_resource type="Script" uid="uid://0xa7kpu3cf46" path="res://scripts/playground/Scenario.cs" id="1_xwdlm"]
 [ext_resource type="PackedScene" uid="uid://db5kb70bnnmey" path="res://scenes/playground/obstacles/ObstacleSquare.tscn" id="2_00uwn"]
 [ext_resource type="PackedScene" uid="uid://cda5akmjbhhb5" path="res://scenes/playground/That Cool Spectrum Bar.tscn" id="2_sqrsd"]
-[ext_resource type="Material" uid="uid://dsv5icqwvup3r" path="res://assets/materials/Background Material.tres" id="3_dc8xj"]
 [ext_resource type="ArrayMesh" uid="uid://buqotk83l576o" path="res://assets/models/Scenario Radial Background Part.obj" id="4_q1brg"]
-[ext_resource type="Material" uid="uid://dwic4afdrfqyp" path="res://assets/materials/Shadow Material.tres" id="5_p0yvl"]
 [ext_resource type="ArrayMesh" uid="uid://dy52yn0fjoiiq" path="res://assets/models/Circle.obj" id="6_0im0l"]
-[ext_resource type="Material" uid="uid://vdcctuf11pdd" path="res://assets/materials/Obstacles Material.tres" id="7_elus6"]
 [ext_resource type="Script" uid="uid://cpad6a178tfqa" path="res://scripts/playground/Player.cs" id="8_2yai6"]
+[ext_resource type="Shader" uid="uid://bvp2x4o8ddh45" path="res://assets/shaders/Objects.gdshader" id="9_i18kr"]
 [ext_resource type="ArrayMesh" uid="uid://b28o3mieaajx7" path="res://assets/models/Player.obj" id="9_jby3v"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_baa6n"]
-shading_mode = 0
-albedo_color = Color(0.480392, 0.480392, 0.480392, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_00uwn"]
+render_priority = 0
+shader = ExtResource("9_i18kr")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oemx5"]
-shading_mode = 0
-albedo_color = Color(0.691176, 0.691176, 0.691176, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r0qj6"]
+render_priority = 0
+shader = ExtResource("9_i18kr")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i18kr"]
+render_priority = 0
+shader = ExtResource("9_i18kr")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yjfh5"]
+render_priority = 0
+shader = ExtResource("9_i18kr")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2c6wr"]
 size = Vector3(0.5, 0.75, 0.5)
@@ -40,50 +46,67 @@ radialParts = [NodePath("Content/Background/Radial Part 1"), NodePath("Content/B
 transform = Transform3D(1000, 0, 0, 0, 1000, 0, 0, 0, 1000, 0, 0, -0.5)
 
 [node name="Radial Part 1" type="MeshInstance3D" parent="Content/Background"]
-material_override = ExtResource("3_dc8xj")
+material_overlay = SubResource("ShaderMaterial_00uwn")
+cast_shadow = 0
+instance_shader_parameters/_color = Color(0.75, 0.75, 0.75, 1)
 mesh = ExtResource("4_q1brg")
 
 [node name="Radial Part 2" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0, 1, 0, 0, 0)
-material_override = ExtResource("3_dc8xj")
+material_overlay = SubResource("ShaderMaterial_00uwn")
+cast_shadow = 0
+instance_shader_parameters/_color = Color(0.5, 0.5, 0.5, 1)
 mesh = ExtResource("4_q1brg")
 
 [node name="Radial Part 3" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-material_override = ExtResource("3_dc8xj")
+material_overlay = SubResource("ShaderMaterial_00uwn")
+cast_shadow = 0
+instance_shader_parameters/_color = Color(0.75, 0.75, 0.75, 1)
 mesh = ExtResource("4_q1brg")
 
 [node name="Radial Part 4" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(-0.707107, 0.707107, 0, -0.707107, -0.707107, 0, 0, 0, 1, 0, 0, 0)
-material_override = ExtResource("3_dc8xj")
+material_overlay = SubResource("ShaderMaterial_00uwn")
+cast_shadow = 0
+instance_shader_parameters/_color = Color(0.5, 0.5, 0.5, 1)
 mesh = ExtResource("4_q1brg")
 
 [node name="Radial Part 5" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, 0, 0, 0)
-material_override = ExtResource("3_dc8xj")
+material_overlay = SubResource("ShaderMaterial_00uwn")
+cast_shadow = 0
+instance_shader_parameters/_color = Color(0.75, 0.75, 0.75, 1)
 mesh = ExtResource("4_q1brg")
 
 [node name="Radial Part 6" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(-0.707107, -0.707107, 0, 0.707107, -0.707107, 0, 0, 0, 1, 0, 0, 0)
-material_override = ExtResource("3_dc8xj")
+material_overlay = SubResource("ShaderMaterial_00uwn")
+cast_shadow = 0
+instance_shader_parameters/_color = Color(0.5, 0.5, 0.5, 1)
 mesh = ExtResource("4_q1brg")
 
 [node name="Radial Part 7" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(1.19249e-08, -1, 0, 1, 1.19249e-08, 0, 0, 0, 1, 0, 0, 0)
-material_override = ExtResource("3_dc8xj")
+material_overlay = SubResource("ShaderMaterial_00uwn")
+cast_shadow = 0
+instance_shader_parameters/_color = Color(0.75, 0.75, 0.75, 1)
 mesh = ExtResource("4_q1brg")
 
 [node name="Radial Part 8" type="MeshInstance3D" parent="Content/Background"]
 transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0, 0, 0)
-material_override = ExtResource("3_dc8xj")
+material_overlay = SubResource("ShaderMaterial_00uwn")
+cast_shadow = 0
+instance_shader_parameters/_color = Color(0.5, 0.5, 0.5, 1)
 mesh = ExtResource("4_q1brg")
 
 [node name="Circle" type="Node3D" parent="Content"]
 
 [node name="Shadow" type="MeshInstance3D" parent="Content/Circle"]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, -0.24)
-material_override = ExtResource("5_p0yvl")
+material_override = SubResource("ShaderMaterial_r0qj6")
 cast_shadow = 0
+instance_shader_parameters/_color = Color(0, 0, 0, 1)
 mesh = ExtResource("6_0im0l")
 skeleton = NodePath("../../../../../..")
 
@@ -94,14 +117,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
 
 [node name="Ring" type="MeshInstance3D" parent="Content/Circle/Outer Circle"]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-material_override = ExtResource("7_elus6")
+material_overlay = SubResource("ShaderMaterial_i18kr")
 cast_shadow = 0
 mesh = ExtResource("6_0im0l")
 
 [node name="Center" type="MeshInstance3D" parent="Content/Circle/Outer Circle"]
 transform = Transform3D(9, 0, 0, 0, 9, 0, 0, 0, 9, 0, 0, 0.01)
-material_override = SubResource("StandardMaterial3D_baa6n")
+material_overlay = SubResource("ShaderMaterial_i18kr")
 cast_shadow = 0
+instance_shader_parameters/_color = Color(0.5, 0.5, 0.5, 1)
 mesh = ExtResource("6_0im0l")
 
 [node name="Inner Circle" type="Node3D" parent="Content/Circle"]
@@ -109,14 +133,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.06)
 
 [node name="Ring" type="MeshInstance3D" parent="Content/Circle/Inner Circle"]
 transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 0, 0)
-material_override = ExtResource("7_elus6")
+material_overlay = SubResource("ShaderMaterial_i18kr")
 cast_shadow = 0
 mesh = ExtResource("6_0im0l")
 
 [node name="Center" type="MeshInstance3D" parent="Content/Circle/Inner Circle"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0.01)
-material_override = SubResource("StandardMaterial3D_oemx5")
+material_overlay = SubResource("ShaderMaterial_i18kr")
 cast_shadow = 0
+instance_shader_parameters/_color = Color(0.5, 0.5, 0.5, 1)
 mesh = ExtResource("6_0im0l")
 
 [node name="Obstacles Back" type="Node3D" parent="Content"]
@@ -135,14 +160,15 @@ dart = NodePath("Model")
 
 [node name="Model" type="MeshInstance3D" parent="Content/Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
-material_override = ExtResource("7_elus6")
+material_overlay = SubResource("ShaderMaterial_yjfh5")
 cast_shadow = 0
 mesh = ExtResource("9_jby3v")
 
 [node name="Shadow" type="MeshInstance3D" parent="Content/Player/Model"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.24)
-material_override = ExtResource("5_p0yvl")
+material_override = SubResource("ShaderMaterial_r0qj6")
 cast_shadow = 0
+instance_shader_parameters/_color = Color(0, 0, 0, 1)
 mesh = ExtResource("9_jby3v")
 
 [node name="Hitbox" type="CollisionShape3D" parent="Content/Player"]

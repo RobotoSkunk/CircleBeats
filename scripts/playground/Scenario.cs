@@ -82,11 +82,9 @@ namespace ClockBombGames.CircleBeats.Playground
 
 			for (int i = 0; i < radialParts.Length; i++) {
 				MeshInstance3D mesh = radialParts[i];
-				StandardMaterial3D material = (StandardMaterial3D)mesh.MaterialOverride.Duplicate();
+				ShaderMaterial material = (ShaderMaterial)mesh.MaterialOverlay;
 
-				material.AlbedoColor = Color.FromHsv(0, 0, i % 2 == 0 ? 0.5f : 0.75f);
-
-				mesh.MaterialOverride = material;
+				material.SetShaderParameter("_color", Color.FromHsv(0, 0, i % 2 == 0 ? 0.5f : 0.75f));
 			}
 
 
