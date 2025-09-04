@@ -18,6 +18,7 @@
 
 
 using System;
+using ClockBombGames.CircleBeats.IO;
 using Godot;
 
 
@@ -29,10 +30,19 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		[ExportGroup("Editor elements")]
 		[Export] EditorTimeline timeline;
-		[Export] FileDialog fileDialog;
 
+		[ExportGroup("Temporal debug stuff")]
+		[Export] Label filenameLabel;
+		[Export] Button openProjectButton;
+		[Export] Button saveProjectButton;
+		[Export] Button loadAudioFileButton;
+		[Export] FileDialog audioFileDialog;
+		[Export] FileDialog openProjectFileDialog;
+		[Export] FileDialog saveProjectFileDialog;
 
 		Window window;
+		string projectFilePath;
+		string audioFilePath;
 
 
 		// Playground
@@ -41,29 +51,86 @@ namespace ClockBombGames.CircleBeats.Editor
 		float timelineBodySizeBuffer;
 
 
-		public override void _Ready()
-		{
-			fileDialog.Popup();
-		}
-
 		public override void _EnterTree()
 		{
 			window = GetViewport().GetWindow();
 
 			timeline.OnResizeBody += ResizePlayground;
 			window.SizeChanged += ResizePlaygroundImpl;
-			fileDialog.FileSelected += OnFileSelected;
-			fileDialog.Canceled += OnDialogCancel;
+
+			openProjectButton.Pressed += OpenProjectHandler;
+			saveProjectButton.Pressed += SaveProjectHandler;
+			loadAudioFileButton.Pressed += OpenAudioFileHandler;
+
+			openProjectFileDialog.FileSelected += OnProjectFileSelected;
+			saveProjectFileDialog.FileSelected += OnProjectFileSaved;
+			audioFileDialog.FileSelected += OnAudioFileSelected;
 		}
 
 		public override void _ExitTree()
 		{
 			timeline.OnResizeBody -= ResizePlayground;
 			window.SizeChanged -= ResizePlaygroundImpl;
+
+			openProjectButton.Pressed -= OpenProjectHandler;
+			saveProjectButton.Pressed -= SaveProjectHandler;
+			loadAudioFileButton.Pressed -= OpenAudioFileHandler;
+
+			openProjectFileDialog.FileSelected -= OnProjectFileSelected;
+			saveProjectFileDialog.FileSelected -= OnProjectFileSaved;
+			audioFileDialog.FileSelected -= OnAudioFileSelected;
 		}
 
-		
-		void OnFileSelected(string filepath)
+
+		#region Temporal debug stuff until a proper file handling system is created
+
+		void OpenProjectHandler()
+		{
+			openProjectFileDialog.Popup();
+		}
+
+		void SaveProjectHandler()
+		{
+			if (string.IsNullOrEmpty(projectFilePath)) {
+				saveProjectFileDialog.Popup();
+			} else {
+				FileManager.WriteLocalLevel(projectFilePath, audioFilePath);
+			}
+		}
+
+		void OpenAudioFileHandler()
+		{
+			audioFileDialog.Popup();
+		}
+
+		void OnProjectFileSelected(string filepath)
+		{
+			try {
+				projectFilePath = filepath;
+				filenameLabel.Text = filepath;
+
+				saveProjectButton.Disabled = false;
+
+				audioFilePath = FileManager.ReadLocalLevel(filepath);
+				OnAudioFileSelected(audioFilePath);
+			} catch (Exception e) {
+				GD.PrintErr(e);
+			}
+		}
+
+		void OnProjectFileSaved(string filepath)
+		{
+			try {
+				projectFilePath = filepath;
+				filenameLabel.Text = filepath;
+
+				FileManager.WriteLocalLevel(projectFilePath, audioFilePath);
+			} catch (Exception e) {
+				GD.PrintErr(e);
+			}
+		}
+
+		void OnAudioFileSelected(string filepath)
 		{
 			try {
 				var file = FileAccess.Open(filepath, FileAccess.ModeFlags.Read);
@@ -73,18 +140,17 @@ namespace ClockBombGames.CircleBeats.Editor
 				};
 
 				file.Close();
-				timeline.SetAudioStream(audioStream);
 
+				audioFilePath = filepath;
+				saveProjectButton.Disabled = false;
+
+				timeline.SetAudioStream(audioStream);
 			} catch (Exception e) {
 				GD.PrintErr(e);
-				fileDialog.Popup();
 			}
 		}
 
-		void OnDialogCancel()
-		{
-			fileDialog.Popup();
-		}
+		#endregion
 
 
 		void ResizePlayground(float newSize)

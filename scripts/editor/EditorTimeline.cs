@@ -325,15 +325,19 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		public void SetAudioStream(AudioStreamMP3 stream)
 		{
+			// Read mp3 stream
+			musicPlayer.Stream = stream;
+			mp3Reader.ReadAudioStream(stream);
+			infoLabel.Text = "Reading audio samples...";
+
 			// Set values
 			songLength = stream.GetLength();
 			horizontalScroll.MinZoom = 3f / (float)songLength;
 			UpdateTimelineSlider();
 
-			// Read mp3 stream
-			musicPlayer.Stream = stream;
-			mp3Reader.ReadAudioStream(stream);
-			infoLabel.Text = "Reading audio samples...";
+			SeekMusicPosition(0f);
+			waveformMaterial.SetShaderParameter("channels", 2);
+			waveformMaterial.SetShaderParameter("samples", new Vector2[12000]);
 
 			Task.Run(async () =>
 			{
