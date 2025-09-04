@@ -1,7 +1,6 @@
-[gd_scene load_steps=14 format=3 uid="uid://blex4yt0sysmo"]
+[gd_scene load_steps=13 format=3 uid="uid://blex4yt0sysmo"]
 
 [ext_resource type="Script" uid="uid://0xa7kpu3cf46" path="res://scripts/playground/Scenario.cs" id="1_xwdlm"]
-[ext_resource type="PackedScene" uid="uid://db5kb70bnnmey" path="res://scenes/playground/obstacles/ObstacleSquare.tscn" id="2_00uwn"]
 [ext_resource type="PackedScene" uid="uid://cda5akmjbhhb5" path="res://scenes/playground/That Cool Spectrum Bar.tscn" id="2_sqrsd"]
 [ext_resource type="ArrayMesh" uid="uid://buqotk83l576o" path="res://assets/models/Scenario Radial Background Part.obj" id="4_q1brg"]
 [ext_resource type="ArrayMesh" uid="uid://dy52yn0fjoiiq" path="res://assets/models/Circle.obj" id="6_0im0l"]
@@ -32,7 +31,6 @@ size = Vector3(0.5, 0.75, 0.5)
 transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 1, 0, 0, 0)
 script = ExtResource("1_xwdlm")
 player = NodePath("Content/Player")
-squareObstacle = ExtResource("2_00uwn")
 obstaclesContainerBack = NodePath("Content/Obstacles Back")
 obstaclesContainerMiddle = NodePath("Content/Obstacles Middle")
 obstaclesContainerFront = NodePath("Content/Obstacles Front")
