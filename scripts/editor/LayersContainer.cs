@@ -91,6 +91,10 @@ namespace ClockBombGames.CircleBeats.Editor
 
 			float timeZoom = maxTime - minTime;
 
+			if (timeZoom == 0f) {
+				return;
+			}
+
 			contentSize.X = ContentWidth / timeZoom;
 			contentPos.X = LEFT_PADDING + -contentSize.X * minTime;
 
