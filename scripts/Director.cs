@@ -22,15 +22,23 @@ using Godot;
 
 namespace ClockBombGames.CircleBeats
 {
-	public partial class Main : Node
+	public partial class Director : Node
 	{
+		[Export] AudioStreamPlayer musicPlayer;
+
 		Window window;
+
+		public AudioStreamPlayer MusicPlayer => musicPlayer;
+
 
 		public override void _Ready()
 		{
 			window = GetViewport().GetWindow();
-
 			window.MinSize = new(1270, 720);
+
+			Instance = this;
 		}
+
+		public static Director Instance { get; private set; }
 	}
 }

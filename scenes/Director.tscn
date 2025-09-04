@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://3u0mcxcbihqo"]
+
+[ext_resource type="Script" uid="uid://c0f0y4b248nbc" path="res://scripts/Director.cs" id="1_kwuo8"]
+
+[node name="Director" type="Node" node_paths=PackedStringArray("musicPlayer")]
+script = ExtResource("1_kwuo8")
+musicPlayer = NodePath("Music Player")
+
+[node name="Music Player" type="AudioStreamPlayer" parent="."]
+bus = &"Music"

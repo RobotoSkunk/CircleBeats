@@ -1,13 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://cvyeq2ktigpe1"]
+[gd_scene load_steps=3 format=3 uid="uid://cvyeq2ktigpe1"]
 
-[ext_resource type="Script" uid="uid://c0f0y4b248nbc" path="res://scripts/Main.cs" id="1_71p4u"]
 [ext_resource type="PackedScene" uid="uid://vgucmfperviw" path="res://scenes/Playground.tscn" id="1_iopfw"]
 [ext_resource type="PackedScene" uid="uid://utps1w84iu0u" path="res://scenes/editor/Editor.tscn" id="3_i5r6b"]
 
 [node name="Main" type="Node"]
-script = ExtResource("1_71p4u")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="Game Content" type="Node" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="Game Content"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -15,7 +15,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.127451, 0.127451, 0.127451, 1)
 
-[node name="Playground" parent="." instance=ExtResource("1_iopfw")]
+[node name="Playground" parent="Game Content" instance=ExtResource("1_iopfw")]
 
-[node name="Editor" parent="." node_paths=PackedStringArray("playground") instance=ExtResource("3_i5r6b")]
+[node name="Editor" parent="Game Content" node_paths=PackedStringArray("playground") instance=ExtResource("3_i5r6b")]
 playground = NodePath("../Playground")

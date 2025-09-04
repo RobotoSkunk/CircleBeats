@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://l5s2lfwpmbau" path="res://scripts/playground/Playground.cs" id="1_6h4qg"]
 [ext_resource type="PackedScene" uid="uid://blex4yt0sysmo" path="res://scenes/playground/Scenario.tscn" id="2_grsjh"]
 
-[node name="Playground" type="Control" node_paths=PackedStringArray("scenario", "gameContainer", "musicPlayer", "debugLabel")]
+[node name="Playground" type="Control" node_paths=PackedStringArray("scenario", "gameContainer", "debugLabel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,11 +13,7 @@ grow_vertical = 2
 script = ExtResource("1_6h4qg")
 scenario = NodePath("Game Container/Viewports Container/Game Viewport/Scenario")
 gameContainer = NodePath("Game Container")
-musicPlayer = NodePath("AudioStreamPlayer")
 debugLabel = NodePath("Game Container/Debug Label")
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-bus = &"Music"
 
 [node name="Game Container" type="Control" parent="."]
 layout_mode = 1

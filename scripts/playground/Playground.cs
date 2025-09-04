@@ -32,7 +32,6 @@ namespace ClockBombGames.CircleBeats.Playground
 		[ExportCategory("Components")]
 		[Export] Scenario scenario;
 		[Export] Control gameContainer;
-		[Export] AudioStreamPlayer musicPlayer;
 
 		[ExportCategory("Debugging")]
 		[Export] Label debugLabel;
@@ -47,8 +46,8 @@ namespace ClockBombGames.CircleBeats.Playground
 
 		bool _isPlaying;
 
-		public AudioStreamPlayer MusicPlayer => musicPlayer;
 		public AudioBusReader AudioBusReader { get; private set; }
+		public static AudioStreamPlayer MusicPlayer => Director.Instance.MusicPlayer;
 
 		public float AverageSample { get; private set; }
 
@@ -75,9 +74,9 @@ namespace ClockBombGames.CircleBeats.Playground
 
 		public override void _Ready()
 		{
-			AudioBusReader = new AudioBusReader(musicPlayer.Bus);
+			AudioBusReader = new AudioBusReader(MusicPlayer.Bus);
 
-			musicPlayer.Stream = music;
+			MusicPlayer.Stream = music;
 
 			DecibelsForce = 1f;
 		}

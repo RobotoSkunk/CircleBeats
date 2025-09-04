@@ -59,21 +59,10 @@ namespace ClockBombGames.CircleBeats.Playground
 
 		ObjectTimeline<Square> obstacles;
 
-		public float[] Spectrum
-		{
-			get
-			{
-				return spectrum;
-			}
-		}
+		public float[] Spectrum => spectrum;
+		public Player Player => player;
 
-		public Player Player
-		{
-			get
-			{
-				return player;
-			}
-		}
+		static AudioStreamPlayer MusicPlayer => Director.Instance.MusicPlayer;
 
 
 		public override void _Ready()
@@ -171,7 +160,7 @@ namespace ClockBombGames.CircleBeats.Playground
 
 			#region Spectrum and carousel
 
-			if (playground.MusicPlayer.Playing) {
+			if (MusicPlayer.Playing) {
 				playground.AudioBusReader.GetSpectrum(ref spectrum);
 
 				// Spin carrousel
@@ -191,8 +180,8 @@ namespace ClockBombGames.CircleBeats.Playground
 
 		public override void _PhysicsProcess(double delta)
 		{
-			if (playground.MusicPlayer.Playing) {
-				obstacles.GetTime(playground.MusicPlayer.GetPlaybackPosition());
+			if (MusicPlayer.Playing) {
+				obstacles.GetTime(MusicPlayer.GetPlaybackPosition());
 			}
 		}
 	}

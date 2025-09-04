@@ -74,7 +74,6 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		ShaderMaterial waveformMaterial;
 
-		AudioStreamPlayer musicPlayer;
 		readonly MP3Reader mp3Reader = new();
 
 		private Action skipBackwardAction;
@@ -90,17 +89,12 @@ namespace ClockBombGames.CircleBeats.Editor
 		bool isPlaying = false;
 		bool canUpdateWaveform = true;
 
-		float Zoom
-		{
-			get {
-				return horizontalScroll.MaxValue - horizontalScroll.MinValue;
-			}
-		}
+		float Zoom =>  horizontalScroll.MaxValue - horizontalScroll.MinValue;
+		static AudioStreamPlayer MusicPlayer => Director.Instance.MusicPlayer;
 
 
 		public override void _Ready()
 		{
-			musicPlayer = editor.Playground.MusicPlayer;
 			waveformMaterial = (ShaderMaterial)waveformRect.Material;
 
 			infoLabel.Text = "Waiting for audio input...";
@@ -145,16 +139,16 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		public override void _Process(double delta)
 		{
-			if (musicPlayer.Stream == null) {
+			if (MusicPlayer.Stream == null) {
 				return;
 			}
 
 			if (isPlaying) {
-				songPosition = musicPlayer.GetPlaybackPosition();
+				songPosition = MusicPlayer.GetPlaybackPosition();
 
 				timelineSlider.SetValue((float)songPosition);
 
-				if (!musicPlayer.Playing) {
+				if (!MusicPlayer.Playing) {
 					isPlaying = false;
 					playButton.Icon = playSprite;
 				}
@@ -162,8 +156,8 @@ namespace ClockBombGames.CircleBeats.Editor
 			} else if (pausedPlaybackBuffer > 0f) {
 				pausedPlaybackBuffer -= delta;
 
-			} else if (musicPlayer.Playing) {
-				musicPlayer.Playing = false;
+			} else if (MusicPlayer.Playing) {
+				MusicPlayer.Playing = false;
 				editor.Playground.IsPlaying = false;
 			}
 
@@ -201,19 +195,19 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		void OnPlayPressed()
 		{
-			if (musicPlayer.Stream == null) {
+			if (MusicPlayer.Stream == null) {
 				return;
 			}
 
 			isPlaying = !isPlaying;
 
-			musicPlayer.Playing = isPlaying;
+			MusicPlayer.Playing = isPlaying;
 			editor.Playground.IsPlaying = isPlaying;
 
-			if (musicPlayer.Playing) {
+			if (MusicPlayer.Playing) {
 				playButton.Icon = pauseSprite;
 
-				musicPlayer.Seek((float)songPosition);
+				MusicPlayer.Seek((float)songPosition);
 				return;
 			}
 
@@ -227,11 +221,11 @@ namespace ClockBombGames.CircleBeats.Editor
 			if (!isPlaying && songPosition < songLength - 0.1f) {
 				pausedPlaybackBuffer = 0.1f;
 
-				musicPlayer.Playing = true;
+				MusicPlayer.Playing = true;
 				editor.Playground.IsPlaying = true;
 			}
 
-			musicPlayer.Seek((float)songPosition);
+			MusicPlayer.Seek((float)songPosition);
 		}
 
 
@@ -326,7 +320,7 @@ namespace ClockBombGames.CircleBeats.Editor
 		public void SetAudioStream(AudioStreamMP3 stream)
 		{
 			// Read mp3 stream
-			musicPlayer.Stream = stream;
+			MusicPlayer.Stream = stream;
 			mp3Reader.ReadAudioStream(stream);
 			infoLabel.Text = "Reading audio samples...";
 
