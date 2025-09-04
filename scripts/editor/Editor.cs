@@ -17,6 +17,7 @@
 */
 
 
+using System;
 using Godot;
 
 
@@ -28,6 +29,7 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		[ExportGroup("Editor elements")]
 		[Export] EditorTimeline timeline;
+		[Export] FileDialog fileDialog;
 
 
 		Window window;
@@ -39,12 +41,19 @@ namespace ClockBombGames.CircleBeats.Editor
 		float timelineBodySizeBuffer;
 
 
+		public override void _Ready()
+		{
+			fileDialog.Popup();
+		}
+
 		public override void _EnterTree()
 		{
 			window = GetViewport().GetWindow();
 
 			timeline.OnResizeBody += ResizePlayground;
 			window.SizeChanged += ResizePlaygroundImpl;
+			fileDialog.FileSelected += OnFileSelected;
+			fileDialog.Canceled += OnDialogCancel;
 		}
 
 		public override void _ExitTree()
@@ -53,6 +62,29 @@ namespace ClockBombGames.CircleBeats.Editor
 			window.SizeChanged -= ResizePlaygroundImpl;
 		}
 
+		
+		void OnFileSelected(string filepath)
+		{
+			try {
+				var file = FileAccess.Open(filepath, FileAccess.ModeFlags.Read);
+
+				var audioStream = new AudioStreamMP3 {
+					Data = file.GetBuffer((long)file.GetLength()),
+				};
+
+				file.Close();
+				timeline.SetAudioStream(audioStream);
+
+			} catch (Exception e) {
+				GD.PrintErr(e);
+				fileDialog.Popup();
+			}
+		}
+
+		void OnDialogCancel()
+		{
+			fileDialog.Popup();
+		}
 
 
 		void ResizePlayground(float newSize)

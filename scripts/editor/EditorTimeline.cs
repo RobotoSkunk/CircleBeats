@@ -100,42 +100,10 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		public override void _Ready()
 		{
-			// Load music info
 			musicPlayer = editor.Playground.MusicPlayer;
-			songLength = musicPlayer.Stream.GetLength();
-
-			// Do first calls
-			UpdateTimelineSlider();
-			horizontalScroll.MinZoom = 3f / (float)songLength;
-
 			waveformMaterial = (ShaderMaterial)waveformRect.Material;
 
-			// Read mp3 stream
-			if (musicPlayer.Stream is AudioStreamMP3 audioStream) {
-				mp3Reader.ReadAudioStream(audioStream);
-
-				infoLabel.Text = "Reading audio samples...";
-
-				Task.Run(async () =>
-				{
-					try {
-						await mp3Reader.ReadWaveformData();
-
-						Callable.From(() => UpdateWaveform()).CallDeferred();
-					} catch (Exception e) {
-						GD.PrintErr(e.Message);
-						GD.PrintErr(e.StackTrace);
-
-						Callable.From(() => infoLabel.Text = "Something went wrong...").CallDeferred();
-
-						return;
-					}
-
-					Callable.From(() => infoLabel.Text = "").CallDeferred();
-				});
-			} else {
-				GD.PrintErr("Only MP3 files are allowed.");
-			}
+			infoLabel.Text = "Waiting for audio input...";
 		}
 
 		public override void _EnterTree()
@@ -177,6 +145,10 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		public override void _Process(double delta)
 		{
+			if (musicPlayer.Stream == null) {
+				return;
+			}
+
 			if (isPlaying) {
 				songPosition = musicPlayer.GetPlaybackPosition();
 
@@ -229,6 +201,10 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		void OnPlayPressed()
 		{
+			if (musicPlayer.Stream == null) {
+				return;
+			}
+
 			isPlaying = !isPlaying;
 
 			musicPlayer.Playing = isPlaying;
@@ -344,6 +320,37 @@ namespace ClockBombGames.CircleBeats.Editor
 
 					canUpdateWaveform = true;
 				}
+			});
+		}
+
+		public void SetAudioStream(AudioStreamMP3 stream)
+		{
+			// Set values
+			songLength = stream.GetLength();
+			horizontalScroll.MinZoom = 3f / (float)songLength;
+			UpdateTimelineSlider();
+
+			// Read mp3 stream
+			musicPlayer.Stream = stream;
+			mp3Reader.ReadAudioStream(stream);
+			infoLabel.Text = "Reading audio samples...";
+
+			Task.Run(async () =>
+			{
+				try {
+					await mp3Reader.ReadWaveformData();
+
+					Callable.From(() => UpdateWaveform()).CallDeferred();
+				} catch (Exception e) {
+					GD.PrintErr(e.Message);
+					GD.PrintErr(e.StackTrace);
+
+					Callable.From(() => infoLabel.Text = "Something went wrong...").CallDeferred();
+
+					return;
+				}
+
+				Callable.From(() => infoLabel.Text = "").CallDeferred();
 			});
 		}
 	}
