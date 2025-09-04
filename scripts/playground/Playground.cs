@@ -46,10 +46,7 @@ namespace ClockBombGames.CircleBeats.Playground
 
 		bool _isPlaying;
 
-		public AudioBusReader AudioBusReader { get; private set; }
 		public static AudioStreamPlayer MusicPlayer => Director.Instance.MusicPlayer;
-
-		public float AverageSample { get; private set; }
 
 		public static readonly int ticksPerSecond = ProjectSettings
 														.GetSetting("physics/common/physics_ticks_per_second")
@@ -74,8 +71,6 @@ namespace ClockBombGames.CircleBeats.Playground
 
 		public override void _Ready()
 		{
-			AudioBusReader = new AudioBusReader(MusicPlayer.Bus);
-
 			MusicPlayer.Stream = music;
 
 			DecibelsForce = 1f;
@@ -96,8 +91,6 @@ namespace ClockBombGames.CircleBeats.Playground
 
 		public override void _PhysicsProcess(double delta)
 		{
-			AverageSample = AudioBusReader.GetAverageSample();
-
 			// while (songTicks > virtualTicks) {
 			// 	virtualTicks++;
 			// }

@@ -43,7 +43,7 @@ radialParts = [NodePath("Content/Background/Radial Part 1"), NodePath("Content/B
 [node name="Content" type="Node3D" parent="."]
 
 [node name="Background" type="Node3D" parent="Content"]
-transform = Transform3D(1000, 0, 0, 0, 1000, 0, 0, 0, 1000, 0, 0, -0.5)
+transform = Transform3D(1000, 0, 0, 0, 1000, 0, 0, 0, 1000, 0, 0, -0.3)
 
 [node name="Radial Part 1" type="MeshInstance3D" parent="Content/Background"]
 material_overlay = SubResource("ShaderMaterial_00uwn")
@@ -111,7 +111,7 @@ mesh = ExtResource("6_0im0l")
 skeleton = NodePath("../../../../../..")
 
 [node name="Carrousel Container" type="Node3D" parent="Content/Circle"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.28)
 
 [node name="Outer Circle" type="Node3D" parent="Content/Circle"]
 

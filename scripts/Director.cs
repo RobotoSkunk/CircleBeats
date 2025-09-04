@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+using ClockBombGames.CircleBeats.Analyzers;
 
 using Godot;
 
@@ -27,8 +28,14 @@ namespace ClockBombGames.CircleBeats
 		[Export] AudioStreamPlayer musicPlayer;
 
 		Window window;
+		float[] audioSpectrum;
+		bool canResetAudioValues = false;
 
 		public AudioStreamPlayer MusicPlayer => musicPlayer;
+		public float[] AudioSpectrum => audioSpectrum;
+
+		public AudioBusReader AudioBusReader { get; private set; }
+		public float AverageSample { get; private set; }
 
 
 		public override void _Ready()
@@ -36,9 +43,29 @@ namespace ClockBombGames.CircleBeats
 			window = GetViewport().GetWindow();
 			window.MinSize = new(1270, 720);
 
+			AudioBusReader = new AudioBusReader(MusicPlayer.Bus);
+
+			audioSpectrum = new float[SPECTRUM_SAMPLES];
 			Instance = this;
 		}
 
+		public override void _Process(double delta)
+		{
+			if (MusicPlayer.Playing) {
+				AverageSample = AudioBusReader.GetAverageSample();
+				AudioBusReader.GetSpectrum(ref audioSpectrum);
+
+				canResetAudioValues = true;
+
+			} else if (canResetAudioValues) {
+				AverageSample = 0f;
+				audioSpectrum = new float[SPECTRUM_SAMPLES];
+
+				canResetAudioValues = false;
+			}
+		}
+
 		public static Director Instance { get; private set; }
+		public static readonly int SPECTRUM_SAMPLES = 128;
 	}
 }

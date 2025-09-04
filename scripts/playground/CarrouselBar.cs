@@ -28,10 +28,11 @@ namespace ClockBombGames.CircleBeats.Playground
 		[Export] MeshInstance3D mesh;
 
 		int carrouselIndex;
-
 		float size;
 
 		Scenario scenario;
+
+		static float[] Spectrum => Director.Instance.AudioSpectrum;
 
 
 		private int Index
@@ -40,11 +41,11 @@ namespace ClockBombGames.CircleBeats.Playground
 			{
 				int index = carrouselIndex + scenario.CarrouselIndexPosition;
 
-				if (index >= scenario.Spectrum.Length) {
-					index -= scenario.Spectrum.Length;
+				if (index >= Spectrum.Length) {
+					index -= Spectrum.Length;
 
 				} else if (index < 0) {
-					index += scenario.Spectrum.Length;
+					index += Spectrum.Length;
 				}
 
 
@@ -68,7 +69,7 @@ namespace ClockBombGames.CircleBeats.Playground
 
 		public override void _Process(double delta)
 		{
-			float value = scenario.Spectrum[Index];
+			float value = Spectrum[Index];
 
 			if (value > size) {
 				size = Mathf.Clamp(value, 0, 1) * 10f;

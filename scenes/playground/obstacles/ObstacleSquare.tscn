@@ -12,13 +12,20 @@ shader = ExtResource("2_1xssu")
 
 [node name="ObstacleSquare" type="StaticBody3D" node_paths=PackedStringArray("meshInstance")]
 script = ExtResource("1_m7ifr")
-meshInstance = NodePath("MeshInstance3D")
+meshInstance = NodePath("Renderer")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="Renderer" type="MeshInstance3D" parent="."]
 material_overlay = SubResource("ShaderMaterial_m7kbx")
 cast_shadow = 0
 instance_shader_parameters/_color = Color(1, 1, 1, 1)
 mesh = ExtResource("2_m7kbx")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="Shadow" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.24)
+material_overlay = SubResource("ShaderMaterial_m7kbx")
+cast_shadow = 0
+instance_shader_parameters/_color = Color(0, 0, 0, 1)
+mesh = ExtResource("2_m7kbx")
+
+[node name="Hitbox" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_m7ifr")

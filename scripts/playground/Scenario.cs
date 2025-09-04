@@ -50,25 +50,21 @@ namespace ClockBombGames.CircleBeats.Playground
 		double carrouselTickTime;
 
 		float scale = 1f;
-		float[] spectrum;
 
 		readonly int carrouselSpikes = 5;
-		readonly int spectrumSamples = 128;
 
 		public int CarrouselIndexPosition { get; private set; }
 
 		ObjectTimeline<Square> obstacles;
-
-		public float[] Spectrum => spectrum;
 		public Player Player => player;
 
+		static int SpectrumSamples => Director.SPECTRUM_SAMPLES;
 		static AudioStreamPlayer MusicPlayer => Director.Instance.MusicPlayer;
+		static float AverageSample => Director.Instance.AverageSample;
 
 
 		public override void _Ready()
 		{
-			spectrum = new float[spectrumSamples];
-
 			for (int i = 0; i < radialParts.Length; i++) {
 				MeshInstance3D mesh = radialParts[i];
 
@@ -83,8 +79,8 @@ namespace ClockBombGames.CircleBeats.Playground
 				for (int j = 0; j < carrouselSpikes; j++) {
 					float jAngle = j * (360f / carrouselSpikes);
 
-					for (int i = 0; i < spectrumSamples; i++) {
-						float angle = i * (360f / spectrumSamples) + jAngle;
+					for (int i = 0; i < SpectrumSamples; i++) {
+						float angle = i * (360f / SpectrumSamples) + jAngle;
 
 						CarrouselBar bar = carrouselBarScene.Instantiate<CarrouselBar>();
 
@@ -151,7 +147,7 @@ namespace ClockBombGames.CircleBeats.Playground
 		{
 			float decibelsForce = playground.DecibelsForce;
 
-			float bump = 1f + (playground.AverageSample - 0.2f) * decibelsForce;
+			float bump = 1f + (AverageSample - 0.2f) * decibelsForce;
 
 
 			scale = Mathf.Lerp(scale, bump, 0.75f * RSMath.FixedDelta(delta));
@@ -161,8 +157,6 @@ namespace ClockBombGames.CircleBeats.Playground
 			#region Spectrum and carousel
 
 			if (MusicPlayer.Playing) {
-				playground.AudioBusReader.GetSpectrum(ref spectrum);
-
 				// Spin carrousel
 				carrouselTickTime += delta;
 
@@ -171,7 +165,7 @@ namespace ClockBombGames.CircleBeats.Playground
 					CarrouselIndexPosition -= 5;
 
 					if (CarrouselIndexPosition < 0) {
-						CarrouselIndexPosition = spectrumSamples - 1;
+						CarrouselIndexPosition = SpectrumSamples - 1;
 					}
 				}
 			}
