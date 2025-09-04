@@ -45,6 +45,10 @@ namespace ClockBombGames.CircleBeats.Structures
 
 		public void GetTime(float time)
 		{
+			if (Root == null) {
+				return;
+			}
+
 			// Find all required nodes
 			Root.FindIntersectInterval(time, (nodeFound) =>
 			{

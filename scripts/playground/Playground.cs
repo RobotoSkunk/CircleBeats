@@ -81,42 +81,42 @@ namespace ClockBombGames.CircleBeats.Playground
 
 			obstacles = new([ squareObstacle ]);
 
-			float audioLength = 200f;
+			// float audioLength = 200f;
 
-			for (int i = 0; i < 2500; i++) {
-				TimelineParameters parameters = new();
+			// for (int i = 0; i < 2500; i++) {
+			// 	TimelineParameters parameters = new();
 
-				Vector2 pos1 = RandomVector();
-				Vector2 pos2 = RandomVector();
-				Vector2 pos3 = RandomVector();
+			// 	Vector2 pos1 = RandomVector();
+			// 	Vector2 pos2 = RandomVector();
+			// 	Vector2 pos3 = RandomVector();
 
-				parameters.PositionFrames.Add(new(0f, 0.5f, new(pos1, pos2, BezierCurve.EaseInOut)));
-				parameters.PositionFrames.Add(new(0.5f, 1f, new(pos2, pos3, BezierCurve.EaseInOut)));
+			// 	parameters.PositionFrames.Add(new(0f, 0.5f, new(pos1, pos2, BezierCurve.EaseInOut)));
+			// 	parameters.PositionFrames.Add(new(0.5f, 1f, new(pos2, pos3, BezierCurve.EaseInOut)));
 
-				parameters.ScaleFrames.Add(new(0f,   0.2f, new(Vector2.Zero, Vector2.One, BezierCurve.QuartIn)));
-				parameters.ScaleFrames.Add(new(0.2f, 0.8f, new(Vector2.One, Vector2.One, BezierCurve.Linear)));
-				parameters.ScaleFrames.Add(new(0.8f,   1f, new(Vector2.One, Vector2.Zero, BezierCurve.QuartOut)));
+			// 	parameters.ScaleFrames.Add(new(0f,   0.2f, new(Vector2.Zero, Vector2.One, BezierCurve.QuartIn)));
+			// 	parameters.ScaleFrames.Add(new(0.2f, 0.8f, new(Vector2.One, Vector2.One, BezierCurve.Linear)));
+			// 	parameters.ScaleFrames.Add(new(0.8f,   1f, new(Vector2.One, Vector2.Zero, BezierCurve.QuartOut)));
 
-				parameters.RotationFrames.Add(new(0f, 1f, new(0f, _random.NextSingle() * 360f, BezierCurve.CubicInOut)));
+			// 	parameters.RotationFrames.Add(new(0f, 1f, new(0f, _random.NextSingle() * 360f, BezierCurve.CubicInOut)));
 
 
-				float timeStart = _random.NextSingle() * audioLength;
-				float timeEnd = timeStart + 5f;
-				// float timeEnd = timeStart + _random.NextSingle() * (audioLength - timeStart);
+			// 	float timeStart = _random.NextSingle() * audioLength;
+			// 	float timeEnd = timeStart + 5f;
+			// 	// float timeEnd = timeStart + _random.NextSingle() * (audioLength - timeStart);
 
-				Node parentTarget = _random.NextSingle() switch {
-					< 0.33f => scenario.ObstaclesContainerBack,
-					> 0.66f => scenario.ObstaclesContainerFront,
-					_ => scenario.ObstaclesContainerMiddle,
-				};
+			// 	Node parentTarget = _random.NextSingle() switch {
+			// 		< 0.33f => scenario.ObstaclesContainerBack,
+			// 		> 0.66f => scenario.ObstaclesContainerFront,
+			// 		_ => scenario.ObstaclesContainerMiddle,
+			// 	};
 
-				ObjectTimeline<Square>.NodeTimeline nodeTimeline = new(timeStart, timeEnd, parameters) {
-					PoolIndex = 0,
-					ParentTarget = parentTarget,
-				};
+			// 	ObjectTimeline<Square>.NodeTimeline nodeTimeline = new(timeStart, timeEnd, parameters) {
+			// 		PoolIndex = 0,
+			// 		ParentTarget = parentTarget,
+			// 	};
 
-				obstacles.Add(nodeTimeline);
-			}
+			// 	obstacles.Add(nodeTimeline);
+			// }
 		}
 
 		public override void _Process(double delta)
