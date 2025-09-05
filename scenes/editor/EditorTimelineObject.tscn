@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://cm65srkr0dgmn"]
+
+[ext_resource type="Script" uid="uid://bkk25ty5yj8wh" path="res://scripts/editor/EditorTimelineObject.cs" id="1_ib2ro"]
+
+[node name="Editor Timeline Object" type="ColorRect"]
+custom_minimum_size = Vector2(0, 40)
+anchors_preset = -1
+anchor_right = 1.0
+offset_bottom = 40.0
+color = Color(1, 0, 0, 0.207843)
+script = ExtResource("1_ib2ro")

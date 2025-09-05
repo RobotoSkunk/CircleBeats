@@ -16,7 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+using System;
 
+using ClockBombGames.CircleBeats.Structures;
+using ClockBombGames.CircleBeats.Utils;
 using Godot;
 
 
@@ -26,6 +29,8 @@ namespace ClockBombGames.CircleBeats.Editor
 	{
 		private const float LEFT_PADDING = 200f;
 
+		[Export] Editor editor;
+
 		[ExportCategory("Editor Elements")]
 		[Export] EditorTimeline timeline;
 
@@ -34,11 +39,18 @@ namespace ClockBombGames.CircleBeats.Editor
 		[Export] Control timelineContent;
 		[Export] VBoxContainer layersControllers;
 
+		[ExportGroup("Scene References")]
+		[Export] PackedScene editorTimelineObjectRef;
+
 		float minTime;
 		float maxTime = 1;
 
+		bool isJustPressed = true;
+		bool mouseInLayersBackgroundsContainer;
+
 		// Try to minimize GD API calls as much as possible
 		Vector2 sizeCache;
+
 
 		private float ContentWidth
 		{
@@ -50,12 +62,17 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		public override void _Ready()
 		{
-			sizeCache = Size;
+			OnResized();
 		}
 
 		public override void _EnterTree()
 		{
 			timeline.OnSliderChange += ResizeContentContainer;
+
+			layersBackgrounds.MouseEntered += OnMouseEnteredLayersContainer;
+			layersBackgrounds.MouseExited += OnMouseExitedLayersContainer;
+
+			Resized += OnResized;
 		}
 
 		public override void _ExitTree()
@@ -66,13 +83,45 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		public override void _Process(double delta)
 		{
-			Vector2 size = Size;
-
-			if (sizeCache != size) {
-				sizeCache = size;
-
-				ResizeContentContainerImpl();
+			if (Director.Instance.MusicPlayer.Stream == null) {
+				return;
 			}
+
+			bool buttonPressed = Input.IsMouseButtonPressed(MouseButton.Left);
+
+			if (mouseInLayersBackgroundsContainer && isJustPressed && buttonPressed) {
+				isJustPressed = false;
+
+				float timeZoom = maxTime - minTime;
+
+				if (timeZoom == 0f) {
+					return;
+				}
+
+				float xPos = timelineContent.GetLocalMousePosition().X;
+				float timeStart = xPos * (maxTime - minTime) / ContentWidth;
+
+				var newNode = editor.Playground.AddTimelineObject(timeStart, timeStart + 5f);
+				var timelineObject = editorTimelineObjectRef.Instantiate<EditorTimelineObject>();
+
+				Callable.From(() =>
+				{
+					timelineContent.AddChild(timelineObject);
+
+					timelineObject.AnchorLeft = timeStart;
+					timelineObject.AnchorRight = timeStart + 5f;
+				}).CallDeferred();
+
+			} else if (!buttonPressed) {
+				isJustPressed = true;
+			}
+		}
+
+		private void OnResized()
+		{
+			sizeCache = Size;
+
+			ResizeContentContainerImpl();
 		}
 
 
@@ -101,5 +150,10 @@ namespace ClockBombGames.CircleBeats.Editor
 			timelineContent.Position = contentPos;
 			timelineContent.Size = contentSize;
 		}
+
+
+		// This is also temporal
+		void OnMouseEnteredLayersContainer() => mouseInLayersBackgroundsContainer = true;
+		void OnMouseExitedLayersContainer() => mouseInLayersBackgroundsContainer = false;
 	}
 }

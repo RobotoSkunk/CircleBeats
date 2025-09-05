@@ -1,7 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://utps1w84iu0u"]
+[gd_scene load_steps=14 format=3 uid="uid://utps1w84iu0u"]
 
 [ext_resource type="Script" uid="uid://gt5s5teibpv5" path="res://scripts/editor/Editor.cs" id="1_40f74"]
 [ext_resource type="Texture2D" uid="uid://vwcladgmfhn6" path="res://assets/sprites/symbols/skip-backward.svg" id="2_cujcb"]
+[ext_resource type="PackedScene" uid="uid://cm65srkr0dgmn" path="res://scenes/editor/EditorTimelineObject.tscn" id="2_e5664"]
 [ext_resource type="Texture2D" uid="uid://bq8313lmmorpc" path="res://assets/sprites/symbols/pause.svg" id="3_bneo7"]
 [ext_resource type="Script" uid="uid://b8fxhbes0hn2v" path="res://scripts/editor/EditorTimeline.cs" id="4_00nnq"]
 [ext_resource type="Texture2D" uid="uid://cxbehkd6cf2px" path="res://assets/sprites/symbols/play.svg" id="4_prgs7"]
@@ -195,7 +196,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 1, 0.160784)
 
-[node name="Content" type="Control" parent="Timeline/Timeline Container/Content/Body" node_paths=PackedStringArray("timeline", "layersBackgrounds", "timelineContent", "layersControllers")]
+[node name="Content" type="Control" parent="Timeline/Timeline Container/Content/Body" node_paths=PackedStringArray("editor", "timeline", "layersBackgrounds", "timelineContent", "layersControllers")]
 clip_children = 1
 clip_contents = true
 layout_mode = 1
@@ -205,10 +206,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("8_fwlfl")
+editor = NodePath("../../../../..")
 timeline = NodePath("../../../..")
 layersBackgrounds = NodePath("Layers Backgrounds")
 timelineContent = NodePath("Timeline Content")
 layersControllers = NodePath("Layers Controllers")
+editorTimelineObjectRef = ExtResource("2_e5664")
 
 [node name="Layers Backgrounds" type="VBoxContainer" parent="Timeline/Timeline Container/Content/Body/Content"]
 layout_mode = 1
@@ -216,16 +219,20 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 80.0
 grow_horizontal = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 2
 theme_override_constants/separation = 0
 
 [node name="Layer" type="ColorRect" parent="Timeline/Timeline Container/Content/Body/Content/Layers Backgrounds"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
+mouse_filter = 2
 color = Color(0, 0, 0, 0.254902)
 
 [node name="Layer2" type="ColorRect" parent="Timeline/Timeline Container/Content/Body/Content/Layers Backgrounds"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
+mouse_filter = 2
 color = Color(0, 0, 0, 0.392157)
 
 [node name="Timeline Content" type="Control" parent="Timeline/Timeline Container/Content/Body/Content"]
@@ -234,14 +241,7 @@ layout_mode = 1
 anchors_preset = 0
 offset_right = 1.0
 offset_bottom = 40.0
-
-[node name="ColorRect" type="ColorRect" parent="Timeline/Timeline Container/Content/Body/Content/Timeline Content"]
-visible = false
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 30.0
-anchor_right = 50.0
+mouse_filter = 2
 
 [node name="Layers Controllers" type="VBoxContainer" parent="Timeline/Timeline Container/Content/Body/Content"]
 layout_mode = 1
@@ -419,7 +419,7 @@ initial_position = 2
 ok_button_text = "Open"
 file_mode = 0
 access = 2
-filters = PackedStringArray("*.mp3;Audio Files;audio/mp3")
+filters = PackedStringArray("*.mpga,*.mp3;audio/mpeg")
 use_native_dialog = true
 
 [node name="Open Project File Dialog" type="FileDialog" parent="."]

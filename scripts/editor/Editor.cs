@@ -81,6 +81,10 @@ namespace ClockBombGames.CircleBeats.Editor
 			audioFileDialog.FileSelected -= OnAudioFileSelected;
 		}
 
+		public override void _Process(double delta)
+		{
+		}
+
 
 		#region Temporal debug stuff until a proper file handling system is created
 
