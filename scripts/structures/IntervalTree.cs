@@ -64,22 +64,22 @@ namespace ClockBombGames.CircleBeats.Structures
 				Max = interval.End;
 			}
 
-			private static int GetHeight(TreeNode TreeNode)
+			private static int GetHeight(TreeNode root)
 			{
-				if (TreeNode == null) {
+				if (root == null) {
 					return 0;
 				}
 
-				return TreeNode.Height;
+				return root.Height;
 			}
 
-			private static float GetMax(TreeNode TreeNode)
+			private static float GetMax(TreeNode root)
 			{
-				if (TreeNode == null) {
+				if (root == null) {
 					return int.MinValue;
 				}
 
-				return TreeNode.Max;
+				return root.Max;
 			}
 
 			private int GetBalance()
@@ -149,49 +149,49 @@ namespace ClockBombGames.CircleBeats.Structures
 			/// <br/><br/>
 			/// Complexity: O(log n)
 			/// </summary>
-			public static TreeNode Insert(TreeNode TreeNode, TreeNode keyNode)
+			public static TreeNode Insert(TreeNode root, TreeNode keyNode)
 			{
-				if (TreeNode == null) {
+				if (root == null) {
 					return keyNode;
 				}
 
-				if (keyNode.CompareTo(TreeNode) < 0) {
-					TreeNode.Left = Insert(TreeNode.Left, keyNode);
+				if (keyNode.CompareTo(root) < 0) {
+					root.Left = Insert(root.Left, keyNode);
 
 				} else {
-					TreeNode.Right = Insert(TreeNode.Right, keyNode);
+					root.Right = Insert(root.Right, keyNode);
 				}
 
-				TreeNode.Height = 1 + Mathf.Max(GetHeight(TreeNode.Left), GetHeight(TreeNode.Right));
-				TreeNode.SetMax();
+				root.Height = 1 + Mathf.Max(GetHeight(root.Left), GetHeight(root.Right));
+				root.SetMax();
 
 
-				int balance = TreeNode.GetBalance();
+				int balance = root.GetBalance();
 
 
 				// Left Left case
-				if (balance > 1 && keyNode.CompareTo(TreeNode.Left) < 0) {
-					return RightRotate(TreeNode);
+				if (balance > 1 && keyNode.CompareTo(root.Left) < 0) {
+					return RightRotate(root);
 				}
 
 				// Right Right case
-				if (balance < -1 && keyNode.CompareTo(TreeNode.Right) >= 0) {
-					return LeftRotate(TreeNode);
+				if (balance < -1 && keyNode.CompareTo(root.Right) >= 0) {
+					return LeftRotate(root);
 				}
 
 				// Left Right case
-				if (balance > 1 && keyNode.CompareTo(TreeNode.Left) > 0) {
-					TreeNode.Left = LeftRotate(TreeNode.Left);
-					return RightRotate(TreeNode);
+				if (balance > 1 && keyNode.CompareTo(root.Left) > 0) {
+					root.Left = LeftRotate(root.Left);
+					return RightRotate(root);
 				}
 
 				// Right Left case
-				if (balance < -1 && keyNode.CompareTo(TreeNode.Right) < 0) {
-					TreeNode.Right = RightRotate(TreeNode.Right);
-					return LeftRotate(TreeNode);
+				if (balance < -1 && keyNode.CompareTo(root.Right) < 0) {
+					root.Right = RightRotate(root.Right);
+					return LeftRotate(root);
 				}
 
-				return TreeNode;
+				return root;
 			}
 
 
