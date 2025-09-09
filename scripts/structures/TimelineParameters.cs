@@ -44,7 +44,14 @@ namespace ClockBombGames.CircleBeats.Structures
 
 		public virtual void TransformByTime(Node3D node, float time)
 		{
-			#region Position
+			TransformPositionByTime(node, time);
+			TransformScaleByTime(node, time);
+			TransformRotationByTime(node, time);
+		}
+
+
+		protected virtual void TransformPositionByTime(Node3D node, float time)
+		{
 			var positionNode = PositionFrames.Search(time);
 
 			if (positionNode != null) {
@@ -55,10 +62,10 @@ namespace ClockBombGames.CircleBeats.Structures
 				Vector2 position = positionInterval.Value.GetVector(positionTime);
 				node.Position = new(position.X, position.Y, 0f);
 			}
-			#endregion
+		}
 
-
-			#region Scale
+		protected virtual void TransformScaleByTime(Node3D node, float time)
+		{
 			var scaleNode = ScaleFrames.Search(time);
 
 			if (scaleNode != null) {
@@ -77,10 +84,10 @@ namespace ClockBombGames.CircleBeats.Structures
 
 				node.Scale = new(scale.X, scale.Y, 1f);
 			}
-			#endregion
+		}
 
-
-			#region Rotation
+		protected virtual void TransformRotationByTime(Node3D node, float time)
+		{
 			var rotationNode = RotationFrames.Search(time);
 
 			if (rotationNode != null) {
@@ -90,7 +97,6 @@ namespace ClockBombGames.CircleBeats.Structures
 
 				node.RotationDegrees = new(0f, 0f, rotationInterval.Value.GetScalar(rotationTime));
 			}
-			#endregion
 		}
 	}
 }
