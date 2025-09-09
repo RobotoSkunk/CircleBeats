@@ -26,6 +26,17 @@ namespace ClockBombGames.CircleBeats.Structures
 {
 	public class TimelineParameters
 	{
+		/// <summary>
+		/// Tells which packed scene has to be used.
+		/// </summary>
+		public int PoolIndex { get; set; }
+
+		/// <summary>
+		/// Tells which node will be the scene added to.
+		/// </summary>
+		public Node ParentTarget { get; set; }
+
+
 		public IntervalTree<Vector2Frame> PositionFrames { get; set; } = new();
 		public IntervalTree<Vector2Frame> ScaleFrames    { get; set; } = new();
 		public IntervalTree<ScalarFrame>  RotationFrames { get; set; } = new();

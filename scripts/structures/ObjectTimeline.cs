@@ -55,7 +55,8 @@ namespace ClockBombGames.CircleBeats.Structures
 				NodeTimeline node = (NodeTimeline)nodeFound;
 
 				if (node.Scene == null) {
-					node.Scene = objectPool.RequestScene(node.PoolIndex, node.ParentTarget);
+					var value = node.Interval.Value;
+					node.Scene = objectPool.RequestScene(value.PoolIndex, value.ParentTarget);
 
 					node.Scene.SetInterval(node.Interval);
 				}
@@ -105,16 +106,6 @@ namespace ClockBombGames.CircleBeats.Structures
 		{
 			public NodeTimeline(float start, float end, TimelineParameters parameters) : base(start, end, parameters) { }
 			public NodeTimeline(Interval<TimelineParameters> interval) : base(interval) { }
-
-			/// <summary>
-			/// Tells which packed scene has to be used.
-			/// </summary>
-			public int PoolIndex { get; set; }
-
-			/// <summary>
-			/// Tells which node will be the scene added to.
-			/// </summary>
-			public Node ParentTarget { get; set; }
 
 			/// <summary>
 			/// Used by ObjectTimeline, <b>Do not edit this variable in runtime.</b>

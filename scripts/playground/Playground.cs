@@ -118,11 +118,10 @@ namespace ClockBombGames.CircleBeats.Playground
 				_ => scenario.ObstaclesContainerMiddle,
 			};
 
-			ObjectTimeline<Square>.NodeTimeline nodeTimeline = new(timeStart, timeEnd, parameters) {
-				PoolIndex = 0,
-				ParentTarget = parentTarget,
-			};
+			parameters.PoolIndex = 0;
+			parameters.ParentTarget = parentTarget;
 
+			ObjectTimeline<Square>.NodeTimeline nodeTimeline = new(timeStart, timeEnd, parameters);
 			obstacles.Add(nodeTimeline);
 
 			return nodeTimeline;
