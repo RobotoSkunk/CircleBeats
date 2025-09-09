@@ -124,6 +124,7 @@ namespace ClockBombGames.CircleBeats.Structures
 	/// </summary>
 	public class Interval<T>(float start, float end, T value) : Interval(start, end), IInterval<T>
 	{
+		public Guid ID { get; private set; } = Guid.NewGuid();
 		public T Value { get; private set; } = value;
 
 

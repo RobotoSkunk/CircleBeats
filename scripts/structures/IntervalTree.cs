@@ -136,6 +136,16 @@ namespace ClockBombGames.CircleBeats.Structures
 			}
 
 
+			private static TreeNode GetLeftmostLeaf(TreeNode root)
+			{
+				TreeNode current = root;
+
+				while (current.Left != null) {
+					current = current.Left;
+				}
+
+				return current;
+			}
 
 
 			public float CompareTo(TreeNode other)
@@ -187,6 +197,81 @@ namespace ClockBombGames.CircleBeats.Structures
 
 				// Right Left case
 				if (balance < -1 && keyNode.CompareTo(root.Right) < 0) {
+					root.Right = RightRotate(root.Right);
+					return LeftRotate(root);
+				}
+
+				return root;
+			}
+
+
+			/// <summary>
+			/// Deletes an interval from the tree.
+			/// <br/><br/>
+			/// Complexity: O(log n)
+			/// </summary>
+			public static TreeNode Delete(TreeNode root, Interval<TValue> interval)
+			{
+				if (root == null) {
+					return null;
+				}
+
+				int comparison = interval.CompareTo(root.Interval);
+
+				if (comparison < 0) {
+					root.Left = Delete(root.Left, interval);
+
+				} else if (comparison > 0 || !root.Interval.ID.Equals(interval.ID)) {
+					root.Right = Delete(root.Right, interval);
+
+				} else {
+					if (root.Left == null || root.Right == null) {
+						TreeNode temp = root.Left ?? root.Right;
+
+						if (temp == null) {
+							root = null;
+						} else {
+							root = temp;
+						}
+					} else {
+						TreeNode temp = GetLeftmostLeaf(root.Right);
+
+						root.Interval = temp.Interval;
+						root.Right = Delete(root.Right, temp.Interval);
+					}
+				}
+
+
+				// If the root is null, this means that a leaf was deleted. Self-balance is not needed.
+				if (root == null) {
+					return null;
+				}
+
+				root.Height = 1 + Mathf.Max(GetHeight(root.Left), GetHeight(root.Right));
+				root.SetMax();
+
+
+				int balance = root.GetBalance();
+
+
+				// Left Left case
+				if (balance > 1 && root.Left.GetBalance() >= 0) {
+					return RightRotate(root);
+				}
+
+				// Left Right case
+				if (balance > 1 && root.Left.GetBalance() < 0) {
+					root.Left = LeftRotate(root.Left);
+					return RightRotate(root);
+				}
+
+				// Right Right case
+				if (balance < -1 && root.Right.GetBalance() <= 0) {
+					return LeftRotate(root);
+				}
+
+				// Right Left case
+				if (balance < -1 && root.Right.GetBalance() > 0) {
 					root.Right = RightRotate(root.Right);
 					return LeftRotate(root);
 				}
