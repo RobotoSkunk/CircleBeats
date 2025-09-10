@@ -25,30 +25,59 @@ namespace ClockBombGames.CircleBeats.Editor
 {
 	public partial class EditorTimelineObject : ColorRect
 	{
+		[Export] Control leftResizerHandler;
+		[Export] Control rightResizerHandler;
+
 		public Interval<TimelineParameters> TargetObject { get; set; }
 		public Playground.Playground Playground { get; set; }
 		public LayersContainer LayersContainer { get; set; }
 
 		bool hovered;
 		bool dragging;
+		bool resizingLeftAnchor;
+		bool resizingRightAnchor;
+
+		bool hoveredLeftResizer;
+		bool hoveredRightResizer;
 
 		float dragTimePoint;
 		float originAnchor;
+		float originDuration;
 
 
 		public override void _Ready()
 		{
 			MouseEntered += OnMouseEntered;
 			MouseExited += OnMouseExited;
+
+			leftResizerHandler.MouseEntered += OnMouseEnteredLeftResizer;
+			leftResizerHandler.MouseExited += OnMouseExitedLeftResizer;
+
+			rightResizerHandler.MouseEntered += OnMouseEnteredRightResizer;
+			rightResizerHandler.MouseExited += OnMouseExitedRightResizer;
 		}
 
 		public override void _Process(double delta)
 		{
-			if (hovered) {
+			if (hoveredLeftResizer || hoveredRightResizer) {
+				if (Input.IsActionJustPressed("editor_create")) {
+					dragTimePoint = LayersContainer.GetTimeByCursorPosition();
+
+					if (hoveredLeftResizer) {
+						originAnchor = AnchorLeft;
+						resizingLeftAnchor = true;
+					} else {
+						originAnchor = AnchorRight;
+						resizingRightAnchor = true;
+					}
+				}
+
+			} else if (hovered) {
 				if (Input.IsActionJustPressed("editor_create")) {
 
 					dragTimePoint = LayersContainer.GetTimeByCursorPosition();
 					originAnchor = AnchorLeft;
+					originDuration = AnchorRight - AnchorLeft;
 
 					dragging = true;
 
@@ -59,27 +88,61 @@ namespace ClockBombGames.CircleBeats.Editor
 				}
 			}
 
-			if (dragging && Input.IsActionPressed("editor_create")) {
+			if ((resizingLeftAnchor || resizingRightAnchor) && Input.IsActionPressed("editor_create")) {
+
+				float diff = LayersContainer.GetTimeByCursorPosition() - dragTimePoint;
+				float targetTime = originAnchor + diff;
+
+				if (resizingLeftAnchor) {
+					if (targetTime > AnchorRight) {
+						targetTime = AnchorRight;
+					}
+
+					AnchorLeft = targetTime;
+				} else {
+					if (targetTime < AnchorLeft) {
+						targetTime = AnchorLeft;
+					}
+
+					AnchorRight = targetTime;
+				}
+
+			} else if (dragging && Input.IsActionPressed("editor_create")) {
 
 				float diff = LayersContainer.GetTimeByCursorPosition() - dragTimePoint;
 				float targetTime = originAnchor + diff;
 
 				AnchorLeft = targetTime;
-				AnchorRight = targetTime + 5f;
+				AnchorRight = targetTime + originDuration;
 
-			} else if (dragging) {
+			} else if (dragging || resizingLeftAnchor || resizingRightAnchor) {
 				dragging = false;
 
-				Playground.DeleteTimelineObject(TargetObject);
+				resizingLeftAnchor = false;
+				resizingRightAnchor = false;
 
-				TargetObject.Start = AnchorLeft;
-				TargetObject.End = AnchorRight;
-
-				Playground.AddTimelineObject(TargetObject);
+				UpdateTimelineTree();
 			}
 		}
 
 		void OnMouseEntered() => hovered = true;
 		void OnMouseExited() => hovered = false;
+
+		void OnMouseEnteredLeftResizer() => hoveredLeftResizer = true;
+		void OnMouseExitedLeftResizer() => hoveredLeftResizer = false;
+
+		void OnMouseEnteredRightResizer() => hoveredRightResizer = true;
+		void OnMouseExitedRightResizer() => hoveredRightResizer = false;
+
+
+		void UpdateTimelineTree()
+		{
+			Playground.DeleteTimelineObject(TargetObject);
+
+			TargetObject.Start = AnchorLeft;
+			TargetObject.End = AnchorRight;
+
+			Playground.AddTimelineObject(TargetObject);
+		}
 	}
 }

@@ -2,10 +2,32 @@
 
 [ext_resource type="Script" uid="uid://bkk25ty5yj8wh" path="res://scripts/editor/EditorTimelineObject.cs" id="1_ib2ro"]
 
-[node name="Editor Timeline Object" type="ColorRect"]
+[node name="Editor Timeline Object" type="ColorRect" node_paths=PackedStringArray("leftResizerHandler", "rightResizerHandler")]
 custom_minimum_size = Vector2(0, 40)
-anchors_preset = 10
-anchor_right = 1.0
+anchors_preset = -1
+anchor_right = 0.1
 offset_bottom = 40.0
-color = Color(1, 0, 0, 0.207843)
+mouse_default_cursor_shape = 6
+color = Color(0.605469, 0.605469, 0.605469, 0.819608)
 script = ExtResource("1_ib2ro")
+leftResizerHandler = NodePath("Left Resizer")
+rightResizerHandler = NodePath("Right Resizer")
+
+[node name="Left Resizer" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(3, 0)
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+grow_vertical = 2
+mouse_default_cursor_shape = 10
+
+[node name="Right Resizer" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(3, 0)
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_default_cursor_shape = 10
