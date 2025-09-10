@@ -27,8 +27,13 @@ namespace ClockBombGames.CircleBeats.Editor
 	{
 		public Interval<TimelineParameters> TargetObject { get; set; }
 		public Playground.Playground Playground { get; set; }
+		public LayersContainer LayersContainer { get; set; }
 
 		bool hovered;
+		bool dragging;
+
+		float dragTimePoint;
+		float originAnchor;
 
 
 		public override void _Ready()
@@ -39,9 +44,38 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		public override void _Process(double delta)
 		{
-			if (hovered && Input.IsActionJustPressed("editor_remove")) {
+			if (hovered) {
+				if (Input.IsActionJustPressed("editor_create")) {
+
+					dragTimePoint = LayersContainer.GetTimeByCursorPosition();
+					originAnchor = AnchorLeft;
+
+					dragging = true;
+
+				} else if (Input.IsActionJustPressed("editor_remove")) {
+
+					Playground.DeleteTimelineObject(TargetObject);
+					Free();
+				}
+			}
+
+			if (dragging && Input.IsActionPressed("editor_create")) {
+
+				float diff = LayersContainer.GetTimeByCursorPosition() - dragTimePoint;
+				float targetTime = originAnchor + diff;
+
+				AnchorLeft = targetTime;
+				AnchorRight = targetTime + 5f;
+
+			} else if (dragging) {
+				dragging = false;
+
 				Playground.DeleteTimelineObject(TargetObject);
-				Free();
+
+				TargetObject.Start = AnchorLeft;
+				TargetObject.End = AnchorRight;
+
+				Playground.AddTimelineObject(TargetObject);
 			}
 		}
 

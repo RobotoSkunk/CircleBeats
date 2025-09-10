@@ -16,10 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-using System;
-
-using ClockBombGames.CircleBeats.Structures;
-using ClockBombGames.CircleBeats.Utils;
 using Godot;
 
 
@@ -93,14 +89,14 @@ namespace ClockBombGames.CircleBeats.Editor
 					return;
 				}
 
-				float xPos = timelineContent.GetLocalMousePosition().X;
-				float timeStart = xPos * (maxTime - minTime) / ContentWidth;
+				float timeStart = GetTimeByCursorPosition();
 
 				var newInterval = editor.Playground.AddTimelineObject(timeStart, timeStart + 5f);
 				var timelineObject = editorTimelineObjectRef.Instantiate<EditorTimelineObject>();
 
 				timelineObject.TargetObject = newInterval;
 				timelineObject.Playground = editor.Playground;
+				timelineObject.LayersContainer = this;
 
 				Callable.From(() =>
 				{
@@ -144,6 +140,13 @@ namespace ClockBombGames.CircleBeats.Editor
 
 			timelineContent.Position = contentPos;
 			timelineContent.Size = contentSize;
+		}
+
+
+		public float GetTimeByCursorPosition()
+		{
+			float xPos = timelineContent.GetLocalMousePosition().X;
+			return xPos * (maxTime - minTime) / ContentWidth;
 		}
 
 

@@ -121,10 +121,15 @@ namespace ClockBombGames.CircleBeats.Playground
 			parameters.PoolIndex = 0;
 			parameters.ParentTarget = parentTarget;
 
-			ObjectTimeline<Square>.NodeTimeline nodeTimeline = new(timeStart, timeEnd, parameters);
+			return AddTimelineObject(new(timeStart, timeEnd, parameters));
+		}
+
+		public Interval<TimelineParameters> AddTimelineObject(Interval<TimelineParameters> interval)
+		{
+			ObjectTimeline<Square>.NodeTimeline nodeTimeline = new(interval);
 			obstacles.Add(nodeTimeline);
 
-			return nodeTimeline.Interval;
+			return interval;
 		}
 
 		public void DeleteTimelineObject(Interval<TimelineParameters> interval)

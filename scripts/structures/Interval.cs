@@ -43,8 +43,8 @@ namespace ClockBombGames.CircleBeats.Structures
 	/// </summary>
 	public class Interval : IInterval, IEquatable<Interval>
 	{
-		public float Start { get; private set; }
-		public float End { get; private set; }
+		public float Start { get; set; }
+		public float End { get; set; }
 		public float Zoom => End - Start;
 
 
