@@ -54,6 +54,6 @@ namespace ClockBombGames.CircleBeats.Editor
 		}
 
 		void OnMouseEntered() => hovered = true;
-		void OnMouseExited() => hovered = true;
+		void OnMouseExited() => hovered = false;
 	}
 }
