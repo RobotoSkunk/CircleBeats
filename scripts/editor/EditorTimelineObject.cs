@@ -29,7 +29,6 @@ namespace ClockBombGames.CircleBeats.Editor
 		public Playground.Playground Playground { get; set; }
 
 		bool hovered;
-		bool isJustPressed;
 
 
 		public override void _Ready()
@@ -40,16 +39,9 @@ namespace ClockBombGames.CircleBeats.Editor
 
 		public override void _Process(double delta)
 		{
-			bool buttonPressed = Input.IsMouseButtonPressed(MouseButton.Left);
-
-			if (hovered && isJustPressed && buttonPressed) {
-				isJustPressed = false;
-
+			if (hovered && Input.IsActionJustPressed("editor_remove")) {
 				Playground.DeleteTimelineObject(TargetObject);
 				Free();
-
-			} else if (!buttonPressed) {
-				isJustPressed = true;
 			}
 		}
 

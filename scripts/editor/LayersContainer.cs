@@ -45,7 +45,6 @@ namespace ClockBombGames.CircleBeats.Editor
 		float minTime;
 		float maxTime = 1;
 
-		bool isJustPressed = true;
 		bool mouseInLayersBackgroundsContainer;
 
 		// Try to minimize GD API calls as much as possible
@@ -87,11 +86,7 @@ namespace ClockBombGames.CircleBeats.Editor
 				return;
 			}
 
-			bool buttonPressed = Input.IsMouseButtonPressed(MouseButton.Left);
-
-			if (mouseInLayersBackgroundsContainer && isJustPressed && buttonPressed) {
-				isJustPressed = false;
-
+			if (mouseInLayersBackgroundsContainer && Input.IsActionJustPressed("editor_create")) {
 				float timeZoom = maxTime - minTime;
 
 				if (timeZoom == 0f) {
@@ -114,9 +109,6 @@ namespace ClockBombGames.CircleBeats.Editor
 					timelineObject.AnchorLeft = timeStart;
 					timelineObject.AnchorRight = timeStart + 5f;
 				}).CallDeferred();
-
-			} else if (!buttonPressed) {
-				isJustPressed = true;
 			}
 		}
 
