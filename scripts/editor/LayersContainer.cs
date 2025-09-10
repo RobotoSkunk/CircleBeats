@@ -101,8 +101,11 @@ namespace ClockBombGames.CircleBeats.Editor
 				float xPos = timelineContent.GetLocalMousePosition().X;
 				float timeStart = xPos * (maxTime - minTime) / ContentWidth;
 
-				var newNode = editor.Playground.AddTimelineObject(timeStart, timeStart + 5f);
+				var newInterval = editor.Playground.AddTimelineObject(timeStart, timeStart + 5f);
 				var timelineObject = editorTimelineObjectRef.Instantiate<EditorTimelineObject>();
+
+				timelineObject.TargetObject = newInterval;
+				timelineObject.Playground = editor.Playground;
 
 				Callable.From(() =>
 				{

@@ -393,5 +393,16 @@ namespace ClockBombGames.CircleBeats.Structures
 
 			Root = TreeNode.Insert(Root, keyNode);
 		}
+
+
+		/// <summary>
+		/// Deletes an interval to the tree.
+		/// <br/><br/>
+		/// Complexity: O(log n)
+		/// </summary>
+		public void Delete(Interval<TValue> interval)
+		{
+			Root = TreeNode.Delete(Root, interval);
+		}
 	}
 }

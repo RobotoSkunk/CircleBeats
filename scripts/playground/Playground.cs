@@ -95,7 +95,7 @@ namespace ClockBombGames.CircleBeats.Playground
 
 
 
-		public ObjectTimeline<Square>.NodeTimeline AddTimelineObject(float timeStart, float timeEnd)
+		public Interval<TimelineParameters> AddTimelineObject(float timeStart, float timeEnd)
 		{
 			TimelineParameters parameters = new();
 
@@ -124,7 +124,12 @@ namespace ClockBombGames.CircleBeats.Playground
 			ObjectTimeline<Square>.NodeTimeline nodeTimeline = new(timeStart, timeEnd, parameters);
 			obstacles.Add(nodeTimeline);
 
-			return nodeTimeline;
+			return nodeTimeline.Interval;
+		}
+
+		public void DeleteTimelineObject(Interval<TimelineParameters> interval)
+		{
+			obstacles.Delete(interval);
 		}
 
 		Vector2 RandomVector()

@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-using ClockBombGames.CircleBeats.Playground.Obstacles;
 using ClockBombGames.CircleBeats.Structures;
+
 using Godot;
 
 
@@ -25,8 +25,35 @@ namespace ClockBombGames.CircleBeats.Editor
 {
 	public partial class EditorTimelineObject : ColorRect
 	{
-		public ObjectTimeline<Square>.NodeTimeline NodeTimeline { get; set; }
+		public Interval<TimelineParameters> TargetObject { get; set; }
+		public Playground.Playground Playground { get; set; }
 
-		
+		bool hovered;
+		bool isJustPressed;
+
+
+		public override void _Ready()
+		{
+			MouseEntered += OnMouseEntered;
+			MouseExited += OnMouseExited;
+		}
+
+		public override void _Process(double delta)
+		{
+			bool buttonPressed = Input.IsMouseButtonPressed(MouseButton.Left);
+
+			if (hovered && isJustPressed && buttonPressed) {
+				isJustPressed = false;
+
+				Playground.DeleteTimelineObject(TargetObject);
+				Free();
+
+			} else if (!buttonPressed) {
+				isJustPressed = true;
+			}
+		}
+
+		void OnMouseEntered() => hovered = true;
+		void OnMouseExited() => hovered = true;
 	}
 }
