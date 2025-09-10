@@ -60,13 +60,6 @@ namespace ClockBombGames.CircleBeats.Playground
 
 		public override void _Ready()
 		{
-			for (int i = 0; i < radialParts.Length; i++) {
-				MeshInstance3D mesh = radialParts[i];
-
-				mesh.SetInstanceShaderParameter("_color", Color.FromHsv(0, 0, i % 2 == 0 ? 0.5f : 0.75f));
-			}
-
-
 			Task.Run(async () =>
 			{
 				await Task.Yield();

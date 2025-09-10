@@ -117,6 +117,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.28)
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 material_overlay = SubResource("ShaderMaterial_i18kr")
 cast_shadow = 0
+instance_shader_parameters/_color = Color(1, 1, 1, 1)
 mesh = ExtResource("6_0im0l")
 
 [node name="Center" type="MeshInstance3D" parent="Content/Circle/Outer Circle"]
@@ -133,6 +134,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.06)
 transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 0, 0)
 material_overlay = SubResource("ShaderMaterial_i18kr")
 cast_shadow = 0
+instance_shader_parameters/_color = Color(1, 1, 1, 1)
 mesh = ExtResource("6_0im0l")
 
 [node name="Center" type="MeshInstance3D" parent="Content/Circle/Inner Circle"]
@@ -160,6 +162,7 @@ dart = NodePath("Model")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
 material_overlay = SubResource("ShaderMaterial_yjfh5")
 cast_shadow = 0
+instance_shader_parameters/_color = Color(1, 1, 1, 1)
 mesh = ExtResource("9_jby3v")
 
 [node name="Shadow" type="MeshInstance3D" parent="Content/Player/Model"]
