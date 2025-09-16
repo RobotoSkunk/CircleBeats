@@ -57,6 +57,9 @@ namespace ClockBombGames.CircleBeats.Analyzers
 
 			DataLength = 0;
 			Ready = false;
+
+			waveformData = [];
+			GC.Collect();
 		}
 
 
